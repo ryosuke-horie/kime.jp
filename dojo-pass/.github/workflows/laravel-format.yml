@@ -1,0 +1,40 @@
+name: laravel-format
+
+###############################################################################################
+# Laravelのフォーマットチェック
+# Laravel Pintを採用
+# 修正は行わない
+###############################################################################################
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "server/**"
+      - ".github/workflows/laravel-format.yml"
+
+jobs:
+  laravel-format-check:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-laravel-format
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Composer Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress
+        working-directory: server
+
+      - name: Laravel Format Check
+        run: ./vendor/bin/pint --test
+        working-directory: server

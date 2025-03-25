@@ -1,0 +1,57 @@
+name: laravel-feature-test
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "supabase/**"
+      - "server/**"
+      - ".github/workflows/laravel-feature-test.yml"
+jobs:
+  laravel-feature-test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-laravel-format
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Composer Setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress
+        working-directory: server
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install npm dependencies
+        run: npm ci
+        working-directory: infra
+
+      - name: Setup Local Supabase
+        run: npm run supabase
+        working-directory: ./
+
+      - name: Laravel Setup
+        run: php artisan config:cache --env=ci
+        working-directory: server
+
+      - name: Laravel Migrate
+        run: php artisan migrate
+        working-directory: server
+
+      - name: Laravel Feature Test
+        run: ./vendor/bin/phpunit --testsuite Feature
+        working-directory: server

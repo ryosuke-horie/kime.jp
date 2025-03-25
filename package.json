@@ -1,0 +1,14 @@
+{
+  "name": "dojo-pass",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "supabase": "npx supabase start",
+    "supabase:stop": "npx supabase stop"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "supabase": "^1.219.2"
+  }
+}

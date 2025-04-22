@@ -8,6 +8,7 @@
     "deploy": "turbo run deploy"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "turbo": "latest"
   },
   "packageManager": "pnpm@10.7.0"

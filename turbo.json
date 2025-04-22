@@ -5,6 +5,14 @@
 		"dev": {
 			"cache": false,
 			"persistent": true
-		}
+		},
+        "lint": {
+            "cache": false,
+            "persistent": true
+        },
+        "format": {
+            "cache": false,
+            "persistent": true
+        }
 	}
 }

@@ -4,6 +4,8 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
+		"lint": "pnpm biome check",
+		"format": "pnpm biome check --write",
 		"preview": "$npm_execpath run build && wrangler dev dist-server/index.js",
 		"deploy": "$npm_execpath run build && wrangler deploy dist-server/index.js",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings"

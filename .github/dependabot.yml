@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # GitHub Actionsの依存関係を管理
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(actions)"
+      prefix-development: "chore(actions)"
+      include: "scope"

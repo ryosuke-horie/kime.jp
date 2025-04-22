@@ -6,7 +6,7 @@ export default defineConfig(({ command }) => {
 	if (command === "serve") {
 		return { plugins: [cloudflare()] };
 	}
-	
+
 	// For API server only - no SSR
 	return {
 		plugins: [build({ outputDir: "dist-server" })],

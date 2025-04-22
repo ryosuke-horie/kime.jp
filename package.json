@@ -1,14 +1,16 @@
 {
-  "name": "kime-monorepo",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "deploy": "turbo run deploy"
-  },
-  "devDependencies": {
-    "turbo": "latest"
-  },
-  "packageManager": "pnpm@10.7.0"
+	"name": "kime-monorepo",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"format": "turbo run format",
+		"deploy": "turbo run deploy"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"turbo": "latest"
+	},
+	"packageManager": "pnpm@10.7.0"
 }

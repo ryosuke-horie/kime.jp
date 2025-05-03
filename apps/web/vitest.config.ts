@@ -1,9 +1,9 @@
 import { resolve } from "node:path";
-import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-	plugins: [react()],
+	// テストのみの設定なので、pluginsは使用しない
+	// plugins: [react()],
 	// PostCSSの設定を回避
 	css: {
 		postcss: {

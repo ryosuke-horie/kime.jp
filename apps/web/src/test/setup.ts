@@ -1,4 +1,5 @@
 // テスト環境セットアップ
+import { beforeAll, afterAll } from "vitest";
 
 // テスト前の共通処理
 beforeAll(() => {

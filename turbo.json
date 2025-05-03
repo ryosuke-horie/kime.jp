@@ -20,7 +20,7 @@
 		},
 		"test": {
 			"cache": true,
-			"outputs": ["coverage/**"]
+			"outputs": []
 		},
 		"test:coverage": {
 			"cache": true,

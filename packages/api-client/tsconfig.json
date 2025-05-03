@@ -2,13 +2,11 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"outDir": "./dist",
-		"rootDir": "./src",
-		"paths": {
-			"@kime/api-types": ["../api-types/src"]
-		}
+		"composite": true,
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"skipLibCheck": true
 	},
-	"include": ["src"],
-	"references": [
-		{ "path": "../api-types" }
-	]
+	"include": ["src/**/*.ts", "../api-types/src/**/*.ts"]
 }

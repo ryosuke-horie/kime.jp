@@ -2,7 +2,7 @@
 	"name": "kime-monorepo",
 	"private": true,
 	"scripts": {
-		"build": "turbo run build",
+		"build": "pnpm --filter @kime/api-types build && turbo run build",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
 		"format": "turbo run format",
@@ -11,10 +11,10 @@
 		"test:watch": "vitest -w",
 		"test:coverage": "turbo run test:coverage",
 		"test:ui": "vitest --ui",
-		"typecheck": "turbo run typecheck",
+		"typecheck": "pnpm --filter @kime/api-types build && turbo run typecheck",
 		"prepare": "husky",
 		"lint-staged": "lint-staged",
-		"clean": "find . -name '.turbo' -type d -prune -exec rm -rf {} \\; && find . -name '.vitest-cache' -type d -prune -exec rm -rf {} \\;"
+		"clean": "find . -name '.turbo' -type d -prune -exec rm -rf {} \\; && find . -name '.vitest-cache' -type d -prune -exec rm -rf {} \\; && find . -name 'dist' -type d -prune -exec rm -rf {} \\;"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

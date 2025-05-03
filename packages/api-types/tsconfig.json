@@ -5,7 +5,14 @@
 		"rootDir": "./src",
 		"composite": true,
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+		"sourceMap": true
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"files": [
+		"src/index.ts",
+		"src/common.ts",
+		"src/gym.ts",
+		"src/health.ts"
+	]
 }

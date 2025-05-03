@@ -7,7 +7,14 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["*/.next", "*/.turbo", "*/.wrangler", "*/dist*","*/node_modules", "*/cloudflare-env.d.ts"]
+		"ignore": [
+			"*/.next",
+			"*/.turbo",
+			"*/.wrangler",
+			"*/dist*",
+			"*/node_modules",
+			"*/cloudflare-env.d.ts"
+		]
 	},
 	"formatter": {
 		"enabled": true,

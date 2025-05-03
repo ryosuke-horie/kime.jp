@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
-import { gymRouter } from "./index";
-import { createCloudflareEnvMock } from "../../../test/mocks";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Env } from "../../../env";
+import { createCloudflareEnvMock } from "../../../test/mocks";
+import { gymRouter } from "./index";
 
 // DO Clientモック
 vi.mock("../../../lib/do-client", () => ({
@@ -75,7 +75,7 @@ describe("Gym Router", () => {
 		if (data.gym) {
 			expect(data).toHaveProperty("gym");
 			expect(data.gym).toHaveProperty("id");
-		} 
+		}
 		// gymsリストが返される場合
 		else if (data.gyms) {
 			expect(data).toHaveProperty("gyms");

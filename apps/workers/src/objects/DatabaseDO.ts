@@ -379,7 +379,9 @@ export class DatabaseDO {
 					break;
 				}
 				case "members": {
-					const memberId = !data.memberId ? generateUUID() : String(data.memberId);
+					const memberId = !data.memberId
+						? generateUUID()
+						: String(data.memberId);
 					// Drizzle型定義に合わせてデータをキャスト
 					const memberData: NewMember = {
 						memberId,
@@ -387,10 +389,14 @@ export class DatabaseDO {
 						name: String(data.name),
 						email: data.email ? String(data.email) : undefined,
 						phone: data.phone ? String(data.phone) : undefined,
-						status: data.status ? String(data.status) as any : undefined,
+						status: data.status ? (String(data.status) as any) : undefined,
 						joinedAt: data.joinedAt ? String(data.joinedAt) : undefined,
-						policyVersion: data.policyVersion ? String(data.policyVersion) : undefined,
-						policySignedAt: data.policySignedAt ? String(data.policySignedAt) : undefined,
+						policyVersion: data.policyVersion
+							? String(data.policyVersion)
+							: undefined,
+						policySignedAt: data.policySignedAt
+							? String(data.policySignedAt)
+							: undefined,
 						createdAt: data.createdAt ? String(data.createdAt) : undefined,
 						updatedAt: data.updatedAt ? String(data.updatedAt) : undefined,
 					};
@@ -424,7 +430,7 @@ export class DatabaseDO {
 						gymId: String(data.gymId),
 						classId: String(data.classId),
 						memberId: String(data.memberId),
-						status: data.status ? String(data.status) as any : undefined,
+						status: data.status ? (String(data.status) as any) : undefined,
 						bookedAt: data.bookedAt ? String(data.bookedAt) : undefined,
 					};
 					await this.db?.insert(schema.bookings).values(bookingData);

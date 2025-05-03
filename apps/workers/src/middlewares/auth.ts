@@ -15,7 +15,10 @@ export const authMiddleware = (): MiddlewareHandler<{
 	Bindings: Env;
 	Variables: AppContext;
 }> => {
-	return async (c: Context<{ Bindings: Env; Variables: AppContext }>, next: Next) => {
+	return async (
+		c: Context<{ Bindings: Env; Variables: AppContext }>,
+		next: Next,
+	) => {
 		// MVPフェーズでは認証をスキップ（開発用）
 		// TODO: 本番環境では適切な認証を実装する
 
@@ -37,7 +40,10 @@ export const adminOnlyMiddleware = (): MiddlewareHandler<{
 	Bindings: Env;
 	Variables: AppContext;
 }> => {
-	return async (_c: Context<{ Bindings: Env; Variables: AppContext }>, next: Next) => {
+	return async (
+		_c: Context<{ Bindings: Env; Variables: AppContext }>,
+		next: Next,
+	) => {
 		// MVPフェーズでは認証をスキップ（開発用）
 		// TODO: 本番環境では適切な認証と権限チェックを実装する
 

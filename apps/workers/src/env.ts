@@ -34,7 +34,9 @@ export interface DurableObjectNamespace {
 	idFromName: (name: string) => DurableObjectId;
 	idFromString: (id: string) => DurableObjectId;
 	newUniqueId: () => DurableObjectId;
-	jurisdiction: (jurisdiction: string) => { get: (id: DurableObjectId) => DurableObject };
+	jurisdiction: (jurisdiction: string) => {
+		get: (id: DurableObjectId) => DurableObject;
+	};
 	get: (id: DurableObjectId) => DurableObject;
 }
 

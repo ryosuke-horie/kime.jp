@@ -13,6 +13,7 @@
 		"@kime/api-types": "workspace:*"
 	},
 	"devDependencies": {
+		"@types/node": "^22.15.3",
 		"tsup": "^8.0.2",
 		"typescript": "^5.8.3",
 		"zod": "^3.24.3"

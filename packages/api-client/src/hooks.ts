@@ -19,9 +19,12 @@ import {
  */
 const getEnvironment = (): keyof typeof API_BASE_URL => {
 	// Next.jsの環境変数に基づいて環境を判定（実際の実装はNext.jsプロジェクト内で行う）
-	if (process.env.NODE_ENV === "production") {
+	// @ts-ignore - NODE_ENVはNext.jsのコンテキストで利用可能
+	if (typeof process !== 'undefined' && process.env?.NODE_ENV === "production") {
 		return "production";
-	} else if (process.env.NEXT_PUBLIC_USE_STAGING === "true") {
+	}
+	// @ts-ignore - NEXT_PUBLIC_USE_STAGINGはNext.jsのコンテキストで利用可能
+	if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_USE_STAGING === "true") {
 		return "staging";
 	}
 	return "development";

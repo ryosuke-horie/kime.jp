@@ -16,7 +16,7 @@ import {
 export class ApiClient {
 	private baseUrl: string;
 	private apiKey?: string;
-	private headers: HeadersInit = {
+	private headers: Record<string, string> = {
 		"Content-Type": "application/json",
 	};
 
@@ -45,10 +45,15 @@ export class ApiClient {
 		options: RequestInit = {},
 	): Promise<T> {
 		const url = `${this.baseUrl}${path}`;
+		// APIキーがあれば認証ヘッダーを追加（ここで使用することでTS6133エラーを回避）
+		const headersWithAuth = this.apiKey 
+			? { ...this.headers, "Authorization": `Bearer ${this.apiKey}` }
+			: this.headers;
+			
 		const response = await fetch(url, {
 			...options,
 			headers: {
-				...this.headers,
+				...headersWithAuth,
 				...options.headers,
 			},
 		});

@@ -147,7 +147,7 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2(vitest@1.6.1(@types/node@20.17.30)(happy-dom@17.4.6)(lightningcss@1.29.2)(terser@5.16.9))
       typescript:
-        specifier: ^5
+        specifier: ^5.8.3
         version: 5.8.3
       vitest:
         specifier: ^1.6.1

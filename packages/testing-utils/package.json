@@ -4,15 +4,18 @@
 	"private": true,
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"scripts": {
-		"build": "tsc",
+		"build": "pnpm exec tsc --project ./tsconfig.json",
 		"lint": "pnpm biome check",
 		"format": "pnpm biome check --write"
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "^3.1.2",
-		"typescript": "^5",
+		"typescript": "^5.8.3",
 		"vitest": "^1.6.1"
 	}
 }

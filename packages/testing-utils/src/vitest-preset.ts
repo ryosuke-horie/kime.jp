@@ -1,25 +1,27 @@
-import { mergeConfig } from "vitest/config";
-import type { UserConfig } from "vitest/config";
-
-export const defineSharedConfig = (config: UserConfig) => {
-	return mergeConfig(
-		{
-			test: {
-				globals: true,
-				include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-				exclude: ["**/node_modules/**", "**/dist/**"],
-				coverage: {
-					provider: "v8",
-					reporter: ["text", "json", "html"],
-					exclude: ["**/node_modules/**", "**/test/**"],
-				},
-				outputFile: {
-					json: "./test-results.json",
-				},
+/**
+ * 共通設定を定義するヘルパー関数
+ * @param config ユーザー設定
+ * @returns マージされた設定オブジェクト
+ */
+export const defineSharedConfig = (config: any) => {
+	// Vitestの設定をマージする
+	return {
+		test: {
+			globals: true,
+			include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+			exclude: ["**/node_modules/**", "**/dist/**"],
+			coverage: {
+				provider: "v8",
+				reporter: ["text", "json", "html"],
+				exclude: ["**/node_modules/**", "**/test/**"],
 			},
+			outputFile: {
+				json: "./test-results.json",
+			},
+			...(config.test || {})
 		},
-		config,
-	);
+		...config,
+	};
 };
 
 // Cloudflare Workers向けの設定プリセット

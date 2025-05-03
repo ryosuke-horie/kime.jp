@@ -1,15 +1,15 @@
-import { vi } from "vitest";
+// vi変数がグローバルで利用可能になるようにtsconfig.jsonでvitest/globalsを追加済み
 
 /**
  * Cloudflare環境のモックを作成する
  * カスタムモックを渡すことで特定のテストケース向けに挙動をカスタマイズ可能
  */
-export const createCloudflareEnvMock = (customMocks = {}) => {
+export const createCloudflareEnvMock = (customMocks: Record<string, unknown> = {}) => {
 	return {
 		DB_DO: {
 			idFromName: vi.fn().mockReturnValue("test-id"),
 			get: vi.fn().mockReturnValue({
-				fetch: vi.fn().mockImplementation(async (url) => {
+				fetch: vi.fn().mockImplementation(async (url: string | URL) => {
 					// URLに基づいてレスポンスを分岐
 					const urlObj = new URL(url);
 					const path = urlObj.pathname;
@@ -71,7 +71,7 @@ export const createCloudflareEnvMock = (customMocks = {}) => {
 		CLASS_LOCKER: {
 			idFromName: vi.fn().mockReturnValue("test-id"),
 			get: vi.fn().mockReturnValue({
-				fetch: vi.fn().mockImplementation(async (url) => {
+				fetch: vi.fn().mockImplementation(async (url: string | URL) => {
 					const urlObj = new URL(url);
 					const path = urlObj.pathname;
 

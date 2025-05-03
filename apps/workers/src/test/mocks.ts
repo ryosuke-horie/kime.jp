@@ -29,7 +29,7 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 			idFromName: vi.fn().mockReturnValue("test-id"),
 			idFromString: vi.fn().mockReturnValue("test-id"),
 			newUniqueId: vi.fn().mockReturnValue("unique-id"),
-			jurisdiction: vi.fn().mockImplementation((j: string) => { return { get: vi.fn() }; }),
+			jurisdiction: vi.fn().mockImplementation((_j: string) => { return { get: vi.fn() }; }),
 			get: vi.fn().mockReturnValue({
 				fetch: vi.fn().mockImplementation(async (url) => {
 					// URLに基づいてレスポンスを分岐
@@ -95,7 +95,7 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 			idFromName: vi.fn().mockReturnValue("test-id"),
 			idFromString: vi.fn().mockReturnValue("test-id"),
 			newUniqueId: vi.fn().mockReturnValue("unique-id"),
-			jurisdiction: vi.fn().mockImplementation((j: string) => { return { get: vi.fn() }; }),
+			jurisdiction: vi.fn().mockImplementation((_j: string) => { return { get: vi.fn() }; }),
 			get: vi.fn().mockReturnValue({
 				fetch: vi.fn().mockImplementation(async (url) => {
 					const urlObj = new URL(url);

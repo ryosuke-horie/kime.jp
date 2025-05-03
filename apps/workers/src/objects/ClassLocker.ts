@@ -3,6 +3,7 @@
 export class ClassLocker {
 	private locks: Map<string, boolean> = new Map();
 
+	// @ts-ignore - 将来的なストレージ使用のためのstate
 	constructor(private _state: DurableObjectState) {
 		// ロック状態の初期化
 	}

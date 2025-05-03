@@ -12,7 +12,7 @@ import {
 	HealthCheckResponseType,
 	SuccessResponseType,
 	UpdateGymRequestType,
-} from "@kime/api-types";
+} from "../../../packages/api-types/src";
 
 /**
  * 環境設定を取得する（Next.jsアプリケーション内で実装）

@@ -8,7 +8,7 @@ import {
 	HealthCheckResponseType,
 	SuccessResponseType,
 	UpdateGymRequestType,
-} from "@kime/api-types";
+} from "../../../packages/api-types/src";
 
 /**
  * API接続用クライアントクラス

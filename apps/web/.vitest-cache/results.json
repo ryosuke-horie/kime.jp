@@ -1,9 +1,0 @@
-{
-	"version": "3.1.2",
-	"results": [
-		[
-			":src/__tests__/example.test.tsx",
-			{ "duration": 1.3933749999999918, "failed": false }
-		]
-	]
-}

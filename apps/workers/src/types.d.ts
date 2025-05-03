@@ -1,5 +1,12 @@
 // Cloudflare Workers および Durable Objects の型定義
 
+// Environment 型定義
+interface Env {
+	DB: D1Database;
+	DB_DO: DurableObjectNamespace;
+	CLASS_LOCKER: DurableObjectNamespace;
+}
+
 // D1 Database
 interface D1Database {
 	prepare(query: string): D1PreparedStatement;

@@ -5,7 +5,25 @@ import type { Env } from "../env";
  * Cloudflare環境のモックを作成する
  */
 export const createCloudflareEnvMock = (customMocks = {}): Env => {
+	// D1データベースのモック
+	const mockD1 = {
+		prepare: vi.fn().mockReturnValue({
+			bind: vi.fn().mockReturnSelf(),
+			first: vi.fn().mockResolvedValue({ id: "test-id", name: "Test Item" }),
+			run: vi.fn().mockResolvedValue({ results: [], success: true }),
+			all: vi.fn().mockResolvedValue({ results: [{ id: "item1" }, { id: "item2" }], success: true }),
+			raw: vi.fn().mockResolvedValue([{ id: "item1" }, { id: "item2" }]),
+		}),
+		dump: vi.fn().mockResolvedValue(new ArrayBuffer(0)),
+		batch: vi.fn().mockResolvedValue([{ results: [], success: true }]),
+		exec: vi.fn().mockResolvedValue({ results: [], success: true }),
+	};
+
 	return {
+		// D1データベース
+		DB: mockD1,
+		
+		// DatabaseDO
 		DB_DO: {
 			idFromName: vi.fn().mockReturnValue("test-id"),
 			get: vi.fn().mockReturnValue({
@@ -68,6 +86,7 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 				}),
 			}),
 		},
+		// ClassLockerDO
 		CLASS_LOCKER: {
 			idFromName: vi.fn().mockReturnValue("test-id"),
 			get: vi.fn().mockReturnValue({
@@ -113,7 +132,7 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 			}),
 		},
 		...customMocks,
-	} as Env;
+	};
 };
 
 /**

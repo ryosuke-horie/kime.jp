@@ -1,3 +1,6 @@
 node_modules/*
 .turbo
 **/.claude/settings.local.json
+**/dist
+.next
+coverage

@@ -35,9 +35,5 @@ export default defineConfig({
 		},
 		// 高速失敗を有効化
 		bail: 1,
-		// React関連のテストのパフォーマンス向上
-		transformMode: {
-			web: [/\.[jt]sx$/],
-		},
 	},
 });

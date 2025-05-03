@@ -1,0 +1,6 @@
+{
+	"version": "1.6.1",
+	"results": [
+		[":src/__tests__/example.test.tsx", { "duration": 1, "failed": false }]
+	]
+}

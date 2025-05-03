@@ -21,7 +21,7 @@ jobs:
       - id: get-packages
         name: Get Packages
         run: |
-          PACKAGES=$(ls -d apps/* | jq -R . | jq -s .)
+          PACKAGES=$(ls -d apps/* | jq -R --compact-output .)
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
   test:
@@ -51,15 +51,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Setup Turbo cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.job }}-${{ matrix.package }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ github.job }}-${{ matrix.package }}-
-            ${{ runner.os }}-turbo-${{ github.job }}-
-            ${{ runner.os }}-turbo-
+      # Turboレポをキャッシュ
+      # キャッシュを介した高速化
 
       - name: Run tests
         run: pnpm --filter=${{ matrix.package }} test

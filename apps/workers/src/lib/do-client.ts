@@ -1,10 +1,16 @@
 import type { Env } from "../env";
 
+// URLをRequest型に変換するヘルパー関数
+function urlToRequest(url: URL, options?: RequestInit): Request {
+	return new Request(url.toString(), options);
+}
+
 // DatabaseDOのレスポンス型定義
 interface DBResponse<T = unknown> {
 	success: boolean;
 	data?: T;
 	error?: string;
+	id?: string; // 新規作成時に返されるID
 }
 
 // BookingレスポンスのためのDB特殊レスポンス型
@@ -22,7 +28,7 @@ export function getDatabaseClient(env: Env, id = "default") {
 		// DBの単一レコード取得
 		async getOne<T = Record<string, unknown>>(table: string, id: string): Promise<DBResponse<T>> {
 			const url = new URL(`/get/${table}/${id}`, "http://internal.do");
-			const response = await doDatabaseObj.fetch(url);
+			const response = await doDatabaseObj.fetch(urlToRequest(url));
 			return await response.json() as DBResponse<T>;
 		},
 
@@ -32,55 +38,55 @@ export function getDatabaseClient(env: Env, id = "default") {
 			for (const [key, value] of Object.entries(params)) {
 				url.searchParams.append(key, value);
 			}
-			const response = await doDatabaseObj.fetch(url);
+			const response = await doDatabaseObj.fetch(urlToRequest(url));
 			return await response.json() as DBResponse<T>;
 		},
 
 		// DBのレコード作成
 		async create<T = Record<string, unknown>>(table: string, data: Record<string, unknown>): Promise<DBResponse<T>> {
 			const url = new URL(`/create/${table}`, "http://internal.do");
-			const response = await doDatabaseObj.fetch(url, {
+			const response = await doDatabaseObj.fetch(urlToRequest(url, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(data),
-			});
+			}));
 			return await response.json() as DBResponse<T>;
 		},
 
 		// DBのレコード更新
 		async update<T = Record<string, unknown>>(table: string, id: string, data: Record<string, unknown>): Promise<DBResponse<T>> {
 			const url = new URL(`/update/${table}/${id}`, "http://internal.do");
-			const response = await doDatabaseObj.fetch(url, {
+			const response = await doDatabaseObj.fetch(urlToRequest(url, {
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(data),
-			});
+			}));
 			return await response.json() as DBResponse<T>;
 		},
 
 		// DBのレコード削除
 		async delete(table: string, id: string): Promise<DBResponse> {
 			const url = new URL(`/delete/${table}/${id}`, "http://internal.do");
-			const response = await doDatabaseObj.fetch(url, {
+			const response = await doDatabaseObj.fetch(urlToRequest(url, {
 				method: "DELETE",
-			});
+			}));
 			return await response.json() as DBResponse;
 		},
 
 		// DBのトランザクション実行
 		async transaction(queries: string[]): Promise<DBResponse> {
 			const url = new URL("/transaction", "http://internal.do");
-			const response = await doDatabaseObj.fetch(url, {
+			const response = await doDatabaseObj.fetch(urlToRequest(url, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({ queries }),
-			});
+			}));
 			return await response.json() as DBResponse;
 		},
 
@@ -88,7 +94,7 @@ export function getDatabaseClient(env: Env, id = "default") {
 		async query<T = unknown>(sql: string): Promise<DBResponse<T>> {
 			const url = new URL("/query", "http://internal.do");
 			url.searchParams.append("sql", sql);
-			const response = await doDatabaseObj.fetch(url);
+			const response = await doDatabaseObj.fetch(urlToRequest(url));
 			return await response.json() as DBResponse<T>;
 		},
 	};
@@ -112,25 +118,25 @@ export function getClassLockerClient(env: Env, classId: string) {
 		// 予約ロックの取得
 		async lock(): Promise<ClassLockerResponse> {
 			const url = new URL(`/lock/${classId}`, "http://internal.do");
-			const response = await doClassLockerObj.fetch(url, {
+			const response = await doClassLockerObj.fetch(urlToRequest(url, {
 				method: "POST",
-			});
+			}));
 			return await response.json() as ClassLockerResponse;
 		},
 
 		// 予約ロックの解除
 		async unlock(): Promise<ClassLockerResponse> {
 			const url = new URL(`/unlock/${classId}`, "http://internal.do");
-			const response = await doClassLockerObj.fetch(url, {
+			const response = await doClassLockerObj.fetch(urlToRequest(url, {
 				method: "POST",
-			});
+			}));
 			return await response.json() as ClassLockerResponse;
 		},
 
 		// ロック状態の確認
 		async check(): Promise<ClassLockerResponse> {
 			const url = new URL(`/check/${classId}`, "http://internal.do");
-			const response = await doClassLockerObj.fetch(url);
+			const response = await doClassLockerObj.fetch(urlToRequest(url));
 			return await response.json() as ClassLockerResponse;
 		},
 	};
@@ -149,13 +155,13 @@ export async function bookClass(
 	const url = new URL("/booking", "http://internal.do");
 	const doDatabaseObj = env.DB_DO.get(env.DB_DO.idFromName("default"));
 
-	const response = await doDatabaseObj.fetch(url, {
+	const response = await doDatabaseObj.fetch(urlToRequest(url, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(data),
-	});
+	}));
 
 	return await response.json() as BookingResponse;
 }

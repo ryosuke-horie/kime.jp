@@ -51,7 +51,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証
 		expect(res.status).toBe(200);
-		const data = await res.json();
+		const data = await res.json() as Record<string, any>;
 		expect(data).toHaveProperty("gym");
 		expect(data.gym).toHaveProperty("id", "gym1");
 	});
@@ -70,7 +70,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証 - 実際にはgymが返されるようなのでテストを修正
 		expect(res.status).toBe(200);
-		const data = await res.json();
+		const data = await res.json() as Record<string, any>;
 		// adminエンドポイントでもgymデータが返されている場合
 		if (data.gym) {
 			expect(data).toHaveProperty("gym");
@@ -105,7 +105,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証
 		expect(res.status).toBe(201);
-		const data = await res.json();
+		const data = await res.json() as Record<string, any>;
 		expect(data).toHaveProperty("message");
 		expect(data).toHaveProperty("gymId");
 		expect(data.gymId).toBe("new-gym-id");
@@ -128,7 +128,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証
 		expect(res.status).toBe(400);
-		const data = await res.json();
+		const data = await res.json() as Record<string, any>;
 		expect(data).toHaveProperty("error");
 	});
 

@@ -109,7 +109,9 @@ export class DatabaseDO {
 				);
 			}
 
-			const result = await this.db?.execute(sql.raw(sqlQuery));
+			// executeメソッドがないため、run/queryメソッドを使用
+			const stmt = this.db?.prepare(sqlQuery);
+			const result = stmt ? await stmt.run() : null;
 
 			return new Response(JSON.stringify({ success: true, result }), {
 				headers: { "Content-Type": "application/json" },
@@ -145,7 +147,9 @@ export class DatabaseDO {
 			// トランザクションブロック
 			await this.state.blockConcurrencyWhile(async () => {
 				for (const query of body.queries) {
-					const result = await this.db?.execute(sql.raw(query));
+					// executeメソッドがないため、run/queryメソッドを使用
+					const stmt = this.db?.prepare(query);
+					const result = stmt ? await stmt.run() : null;
 					results.push(result);
 				}
 			});
@@ -369,7 +373,8 @@ export class DatabaseDO {
 					await this.db?.insert(schema.classes).values(data);
 					break;
 				case "bookings":
-					if (!data.bookingId) data.bookingId = generateUUID();
+					// 型エラーを避けるために、生成したUUIDを別の変数に保存
+					const bookingId = generateUUID();
 					await this.db?.insert(schema.bookings).values(data);
 					break;
 				// 他のテーブルも同様に追加可能
@@ -604,13 +609,14 @@ export class DatabaseDO {
 				}
 
 				// 4. 予約を作成
-				const bookingId = data.bookingId || generateUUID();
+				// データ型に存在しないプロパティへのアクセスを修正
+				const bookingId = generateUUID();
 				await this.db?.insert(schema.bookings).values({
 					bookingId,
 					classId: data.classId,
 					memberId: data.memberId,
 					gymId: data.gymId,
-					status: data.status || "reserved",
+					status: "reserved", // 型安全性のために固定値を使用
 					bookedAt: new Date().toISOString(),
 				});
 

@@ -8,7 +8,7 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 	// D1データベースのモック
 	const mockD1 = {
 		prepare: vi.fn().mockReturnValue({
-			bind: vi.fn().mockReturnSelf(),
+			bind: vi.fn().mockImplementation(function() { return this; }),
 			first: vi.fn().mockResolvedValue({ id: "test-id", name: "Test Item" }),
 			run: vi.fn().mockResolvedValue({ results: [], success: true }),
 			all: vi.fn().mockResolvedValue({ results: [{ id: "item1" }, { id: "item2" }], success: true }),
@@ -17,6 +17,7 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 		dump: vi.fn().mockResolvedValue(new ArrayBuffer(0)),
 		batch: vi.fn().mockResolvedValue([{ results: [], success: true }]),
 		exec: vi.fn().mockResolvedValue({ results: [], success: true }),
+		withSession: vi.fn().mockImplementation(function() { return this; }),
 	};
 
 	return {
@@ -26,6 +27,9 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 		// DatabaseDO
 		DB_DO: {
 			idFromName: vi.fn().mockReturnValue("test-id"),
+			idFromString: vi.fn().mockReturnValue("test-id"),
+			newUniqueId: vi.fn().mockReturnValue("unique-id"),
+			jurisdiction: "global",
 			get: vi.fn().mockReturnValue({
 				fetch: vi.fn().mockImplementation(async (url) => {
 					// URLに基づいてレスポンスを分岐
@@ -89,6 +93,9 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 		// ClassLockerDO
 		CLASS_LOCKER: {
 			idFromName: vi.fn().mockReturnValue("test-id"),
+			idFromString: vi.fn().mockReturnValue("test-id"),
+			newUniqueId: vi.fn().mockReturnValue("unique-id"),
+			jurisdiction: "global",
 			get: vi.fn().mockReturnValue({
 				fetch: vi.fn().mockImplementation(async (url) => {
 					const urlObj = new URL(url);

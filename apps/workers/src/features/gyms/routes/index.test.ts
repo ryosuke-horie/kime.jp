@@ -4,6 +4,24 @@ import type { Env } from "../../../env";
 import { createCloudflareEnvMock } from "../../../test/mocks";
 import { gymRouter } from "./index";
 
+// APIレスポンス型定義
+interface GymResponse {
+	gym?: {
+		id: string;
+		name: string;
+		[key: string]: unknown;
+	};
+	gyms?: Array<{
+		id: string;
+		name: string;
+		[key: string]: unknown;
+	}>;
+	message?: string;
+	gymId?: string;
+	error?: string;
+	[key: string]: unknown;
+}
+
 // DO Clientモック
 vi.mock("../../../lib/do-client", () => ({
 	getDatabaseClient: vi.fn().mockImplementation(() => ({
@@ -51,7 +69,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証
 		expect(res.status).toBe(200);
-		const data = (await res.json()) as Record<string, any>;
+		const data = (await res.json()) as GymResponse;
 		expect(data).toHaveProperty("gym");
 		expect(data.gym).toHaveProperty("id", "gym1");
 	});
@@ -70,7 +88,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証 - 実際にはgymが返されるようなのでテストを修正
 		expect(res.status).toBe(200);
-		const data = (await res.json()) as Record<string, any>;
+		const data = (await res.json()) as GymResponse;
 		// adminエンドポイントでもgymデータが返されている場合
 		if (data.gym) {
 			expect(data).toHaveProperty("gym");
@@ -105,7 +123,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証
 		expect(res.status).toBe(201);
-		const data = (await res.json()) as Record<string, any>;
+		const data = (await res.json()) as GymResponse;
 		expect(data).toHaveProperty("message");
 		expect(data).toHaveProperty("gymId");
 		expect(data.gymId).toBe("new-gym-id");
@@ -128,7 +146,7 @@ describe("Gym Router", () => {
 
 		// レスポンス検証
 		expect(res.status).toBe(400);
-		const data = (await res.json()) as Record<string, any>;
+		const data = (await res.json()) as GymResponse;
 		expect(data).toHaveProperty("error");
 	});
 

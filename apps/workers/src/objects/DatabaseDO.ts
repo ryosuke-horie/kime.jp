@@ -1,6 +1,10 @@
 // @ts-nocheck - このファイルは別途リファクタリング予定
 import * as schema from "@kime/db";
 import type { NewBooking, NewClass, NewGym, NewMember } from "@kime/db";
+
+// ステータス型の定義（後でスキーマから正確な型をインポートする予定）
+type MemberStatus = string;
+type BookingStatus = string;
 import { and, eq, sql } from "drizzle-orm";
 // DatabaseDO.ts - D1データベースへのアクセスを管理するDurable Object
 import { createD1Client, generateUUID } from "../lib/db-client";
@@ -389,7 +393,9 @@ export class DatabaseDO {
 						name: String(data.name),
 						email: data.email ? String(data.email) : undefined,
 						phone: data.phone ? String(data.phone) : undefined,
-						status: data.status ? (String(data.status) as any) : undefined,
+						status: data.status
+							? (String(data.status) as MemberStatus)
+							: undefined,
 						joinedAt: data.joinedAt ? String(data.joinedAt) : undefined,
 						policyVersion: data.policyVersion
 							? String(data.policyVersion)
@@ -430,7 +436,9 @@ export class DatabaseDO {
 						gymId: String(data.gymId),
 						classId: String(data.classId),
 						memberId: String(data.memberId),
-						status: data.status ? (String(data.status) as any) : undefined,
+						status: data.status
+							? (String(data.status) as BookingStatus)
+							: undefined,
 						bookedAt: data.bookedAt ? String(data.bookedAt) : undefined,
 					};
 					await this.db?.insert(schema.bookings).values(bookingData);

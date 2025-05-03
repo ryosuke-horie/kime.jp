@@ -109,6 +109,9 @@ importers:
       drizzle-kit:
         specifier: ^0.21.4
         version: 0.21.4
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
       vite:
         specifier: ^6.1.1
         version: 6.3.2(@types/node@20.17.30)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.16.9)(yaml@2.7.1)
@@ -137,6 +140,9 @@ importers:
       drizzle-kit:
         specifier: ^0.21.1
         version: 0.21.4
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
       vitest:
         specifier: ^1.6.1
         version: 1.6.1(@types/node@20.17.30)(happy-dom@17.4.6)(lightningcss@1.29.2)(terser@5.16.9)

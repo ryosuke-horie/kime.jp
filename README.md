@@ -19,10 +19,19 @@ turboを直接使うのではなく、pnpmを使ってturboを実行する。
 - `pnpm test:watch` - ウォッチモードでテストを実行
 - `pnpm test:coverage` - カバレッジレポート付きでテストを実行
 
+### 型チェック
+
+TypeScriptの型チェックを実行するためのコマンド：
+- `pnpm typecheck` - すべてのパッケージの型チェックを実行
+- `pnpm --filter=<パッケージ名> typecheck` - 特定のパッケージの型チェックを実行
+
+すべてのパッケージは共通の基本型設定（tsconfig.base.json）を継承しており、厳格な型チェックが適用されています。
+
 ### CI/CD
 
 GitHub Actionsによる自動化が設定されています：
 
 - ビルド & リント: PRと`main`ブランチへのプッシュ時に実行
 - テスト: PRと`main`ブランチへのプッシュ時に実行
+- 型チェック: PRと`main`ブランチへのプッシュ時に実行
 - カバレッジレポート: `main`ブランチのテスト成功後、GitHub Pagesに公開

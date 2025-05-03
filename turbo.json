@@ -25,6 +25,10 @@
 		"test:coverage": {
 			"cache": true,
 			"outputs": ["coverage/**"]
+		},
+		"typecheck": {
+			"cache": true,
+			"outputs": []
 		}
 	}
 }

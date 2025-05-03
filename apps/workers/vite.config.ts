@@ -1,10 +1,10 @@
-// @ts-nocheck - Viteバージョン間の型互換性の問題を一時的に回避
 import { resolve } from "node:path";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import build from "@hono/vite-build/cloudflare-workers";
-import { defineConfig } from "vite";
+import { type ConfigEnv, defineConfig } from "vite";
 
-export default defineConfig(({ command }) => {
+export default defineConfig((env: ConfigEnv) => {
+	const { command } = env;
 	const commonConfig = {
 		resolve: {
 			alias: {

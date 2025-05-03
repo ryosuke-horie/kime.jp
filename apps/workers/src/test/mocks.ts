@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import type { Env } from "../env";
+import type { D1Database, D1PreparedStatement, Env } from "../env";
 
 /**
  * Cloudflare環境のモックを作成する
@@ -8,28 +8,37 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 	// D1データベースのモック
 	const mockD1 = {
 		prepare: vi.fn().mockReturnValue({
-			bind: vi.fn().mockImplementation(function(this: any) { return this; }),
+			bind: vi.fn().mockImplementation(function (this: D1PreparedStatement) {
+				return this;
+			}),
 			first: vi.fn().mockResolvedValue({ id: "test-id", name: "Test Item" }),
 			run: vi.fn().mockResolvedValue({ results: [], success: true }),
-			all: vi.fn().mockResolvedValue({ results: [{ id: "item1" }, { id: "item2" }], success: true }),
+			all: vi.fn().mockResolvedValue({
+				results: [{ id: "item1" }, { id: "item2" }],
+				success: true,
+			}),
 			raw: vi.fn().mockResolvedValue([{ id: "item1" }, { id: "item2" }]),
 		}),
 		dump: vi.fn().mockResolvedValue(new ArrayBuffer(0)),
 		batch: vi.fn().mockResolvedValue([{ results: [], success: true }]),
 		exec: vi.fn().mockResolvedValue({ results: [], success: true }),
-		withSession: vi.fn().mockImplementation(function(this: any) { return this; }),
+		withSession: vi.fn().mockImplementation(function (this: D1Database) {
+			return this;
+		}),
 	};
 
 	return {
 		// D1データベース
 		DB: mockD1,
-		
+
 		// DatabaseDO
 		DB_DO: {
-			idFromName: vi.fn().mockReturnValue("test-id"),
-			idFromString: vi.fn().mockReturnValue("test-id"),
-			newUniqueId: vi.fn().mockReturnValue("unique-id"),
-			jurisdiction: vi.fn().mockImplementation((_j: string) => { return { get: vi.fn() }; }),
+			idFromName: vi.fn().mockReturnValue({ toString: () => "test-id" }),
+			idFromString: vi.fn().mockReturnValue({ toString: () => "test-id" }),
+			newUniqueId: vi.fn().mockReturnValue({ toString: () => "unique-id" }),
+			jurisdiction: vi.fn().mockImplementation((_j: string) => {
+				return { get: vi.fn() };
+			}),
 			get: vi.fn().mockReturnValue({
 				fetch: vi.fn().mockImplementation(async (url) => {
 					// URLに基づいてレスポンスを分岐
@@ -92,10 +101,12 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 		},
 		// ClassLockerDO
 		CLASS_LOCKER: {
-			idFromName: vi.fn().mockReturnValue("test-id"),
-			idFromString: vi.fn().mockReturnValue("test-id"),
-			newUniqueId: vi.fn().mockReturnValue("unique-id"),
-			jurisdiction: vi.fn().mockImplementation((_j: string) => { return { get: vi.fn() }; }),
+			idFromName: vi.fn().mockReturnValue({ toString: () => "test-id" }),
+			idFromString: vi.fn().mockReturnValue({ toString: () => "test-id" }),
+			newUniqueId: vi.fn().mockReturnValue({ toString: () => "unique-id" }),
+			jurisdiction: vi.fn().mockImplementation((_j: string) => {
+				return { get: vi.fn() };
+			}),
 			get: vi.fn().mockReturnValue({
 				fetch: vi.fn().mockImplementation(async (url) => {
 					const urlObj = new URL(url);

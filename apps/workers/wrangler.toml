@@ -6,22 +6,19 @@ main = "./src/index.tsx"
 [[d1_databases]]
 binding = "DB"
 database_name = "kime_mvp"
-database_id = ""
+database_id = "7a7157a9-65bd-4cbf-82ec-bee523f661ab"
 
 # Durable Objects
-[[durable_objects.bindings]]
-name = "DB_DO"
-class_name = "DatabaseDO"
-
-[[durable_objects.bindings]]
-name = "CLASS_LOCKER"
-class_name = "ClassLocker"
-
 [durable_objects]
 bindings = [
   { name = "DB_DO", class_name = "DatabaseDO" },
   { name = "CLASS_LOCKER", class_name = "ClassLocker" }
 ]
+
+# Durable Objects Migrations
+[[migrations]]
+tag = "v1" 
+new_classes = ["DatabaseDO", "ClassLocker"]
 
 # Preview/Production設定
 [env.preview]

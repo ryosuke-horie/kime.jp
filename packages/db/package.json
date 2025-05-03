@@ -6,7 +6,12 @@
   "types": "./src/index.ts",
   "scripts": {
     "lint": "pnpm biome check",
-    "format": "pnpm biome check --write"
+    "format": "pnpm biome check --write",
+    "generate": "drizzle-kit generate:sqlite",
+    "migrate": "drizzle-kit migrate:sqlite",
+    "drop": "drizzle-kit drop",
+    "check": "drizzle-kit check:sqlite",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "drizzle-orm": "^0.30.4",

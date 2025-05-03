@@ -7,23 +7,26 @@
 			"persistent": true
 		},
 		"lint": {
-			"cache": false,
-			"persistent": true
+			"cache": true,
+			"outputs": []
 		},
 		"format": {
-			"cache": false,
-			"persistent": true
+			"cache": true,
+			"outputs": []
 		},
 		"build": {
-			"cache": false,
-			"persistent": true
+			"cache": true,
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".next/**", "dist-server/**"]
 		},
 		"test": {
 			"cache": true,
+			"dependsOn": ["^build"],
 			"outputs": []
 		},
 		"test:coverage": {
 			"cache": true,
+			"dependsOn": ["^build"],
 			"outputs": ["coverage/**"]
 		},
 		"typecheck": {

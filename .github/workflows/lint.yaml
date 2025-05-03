@@ -7,17 +7,38 @@ on:
     types: [opened, synchronize]
  
 jobs:
-  build-lint:
-    name: Build and Lint
-    timeout-minutes: 15
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
- 
+    outputs:
+      packages: ${{ steps.get-packages.outputs.packages }}
     steps:
       - name: Check out code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 2
- 
+
+      - id: get-packages
+        name: Get Packages
+        run: |
+          echo "packages=[\"apps/web\",\"apps/workers\"]" >> $GITHUB_OUTPUT
+
+  build:
+    name: Build - ${{ matrix.package }}
+    needs: setup
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.setup.outputs.packages) }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 2
+
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
 
       - name: Setup Node.js environment
@@ -25,13 +46,40 @@ jobs:
         with:
           node-version: 22
           cache: 'pnpm'
- 
+
       - name: Install dependencies
-        run: pnpm install
- 
+        run: pnpm install --no-frozen-lockfile
+
+      # Turboレポをキャッシュ
+      # キャッシュを介した高速化
+
       - name: Build
-        run: pnpm build
- 
+        run: pnpm --filter=${{ matrix.package }} build
+
+  lint-format:
+    name: Lint and Format
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      # Turboレポをキャッシュ
+      # キャッシュを介した高速化
+
       - name: Lint
         run: pnpm lint
         

@@ -24,5 +24,13 @@ export default defineConfig({
 		// 	exclude: ["**/node_modules/**", "**/test/**"],
 		// },
 		globals: true,
+		// ファイル変更を監視する際のパフォーマンス向上
+		watchExclude: ["**/node_modules/**", "**/dist/**"],
+		// キャッシュの有効化
+		cache: {
+			dir: ".vitest-cache",
+		},
+		// 高速失敗を有効化
+		bail: 1,
 	},
 });

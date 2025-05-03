@@ -13,7 +13,8 @@
 			"*/.wrangler",
 			"*/dist*",
 			"*/node_modules",
-			"*/cloudflare-env.d.ts"
+			"*/cloudflare-env.d.ts",
+			"*/worker-configuration.d.ts"
 		]
 	},
 	"formatter": {
@@ -26,8 +27,14 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
-		}
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "error"
+			}
+		},
+		"ignore": [
+			"**/worker-configuration.d.ts"
+		]
 	},
 	"javascript": {
 		"formatter": {

@@ -1,7 +1,19 @@
 import { Hono } from "hono";
+import { z } from "zod";
 import type { Env } from "../../../env";
 import { getDatabaseClient } from "../../../lib/do-client";
 import { adminOnlyMiddleware } from "../../../middlewares/auth";
+import {
+	CreateGymRequest,
+	GymDetailResponse,
+	GymListResponse,
+	UpdateGymRequest,
+} from "../../../schemas";
+import {
+	validateBody,
+	validateParam,
+	validatedJson,
+} from "../../../utils/validator";
 
 // Gymルーター
 export const gymRouter = new Hono<{ Bindings: Env }>();
@@ -14,8 +26,16 @@ const adminRouter = new Hono<{ Bindings: Env }>().use(
 	adminOnlyMiddleware(),
 );
 
+// クエリパラメータのスキーマ
+const GymListQuerySchema = z.object({
+	page: z.coerce.number().int().min(1).optional().default(1),
+	limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+});
+
 // ジム一覧取得（管理者用）
-adminRouter.get("/", async (c) => {
+adminRouter.get("/", validateParam(GymListQuerySchema), async (c) => {
+	const { page, limit } = c.req.valid("query");
+
 	const dbClient = getDatabaseClient(c.env);
 	const result = await dbClient.list("gyms");
 
@@ -23,17 +43,23 @@ adminRouter.get("/", async (c) => {
 		return c.json({ error: result.error }, 500);
 	}
 
-	return c.json({ gyms: result.data });
+	// ページネーション情報を追加（今回は簡易実装）
+	const meta = {
+		total: result.data.length,
+		page,
+		limit,
+		totalPages: Math.ceil(result.data.length / limit),
+	};
+
+	return validatedJson(c, GymListResponse, {
+		gyms: result.data,
+		meta,
+	});
 });
 
 // ジム登録（管理者用）
-adminRouter.post("/", async (c) => {
-	const data = await c.req.json();
-
-	// バリデーション
-	if (!data.name || !data.ownerEmail) {
-		return c.json({ error: "ジム名とオーナーメールアドレスは必須です" }, 400);
-	}
+adminRouter.post("/", validateBody(CreateGymRequest), async (c) => {
+	const data = c.req.valid("json");
 
 	const dbClient = getDatabaseClient(c.env);
 	const result = await dbClient.create("gyms", {
@@ -46,7 +72,12 @@ adminRouter.post("/", async (c) => {
 		return c.json({ error: result.error }, 500);
 	}
 
-	return c.json(
+	return validatedJson(
+		c,
+		z.object({
+			message: z.string(),
+			gymId: z.string().uuid(),
+		}),
 		{
 			message: "ジムが登録されました",
 			gymId: result.id,
@@ -55,9 +86,14 @@ adminRouter.post("/", async (c) => {
 	);
 });
 
+// パスパラメータのスキーマ
+const GymIdParamSchema = z.object({
+	gymId: z.string().uuid(),
+});
+
 // ジム詳細取得
-gymRouter.get("/:gymId", async (c) => {
-	const gymId = c.req.param("gymId");
+gymRouter.get("/:gymId", validateParam(GymIdParamSchema), async (c) => {
+	const { gymId } = c.req.valid("param");
 
 	const dbClient = getDatabaseClient(c.env);
 	const result = await dbClient.getOne("gyms", gymId);
@@ -66,42 +102,53 @@ gymRouter.get("/:gymId", async (c) => {
 		return c.json({ error: "ジムが見つかりません" }, 404);
 	}
 
-	return c.json({ gym: result.data });
+	return validatedJson(c, GymDetailResponse, { gym: result.data });
 });
 
 // ジム情報更新（管理者用）
-adminRouter.patch("/:gymId", async (c) => {
-	const gymId = c.req.param("gymId");
-	const data = await c.req.json();
+adminRouter.patch(
+	"/:gymId",
+	validateParam(GymIdParamSchema),
+	validateBody(UpdateGymRequest),
+	async (c) => {
+		const { gymId } = c.req.valid("param");
+		const data = c.req.valid("json");
 
-	const dbClient = getDatabaseClient(c.env);
+		const dbClient = getDatabaseClient(c.env);
 
-	// 更新前に存在確認
-	const checkResult = await dbClient.getOne("gyms", gymId);
-	if (!checkResult.success) {
-		return c.json({ error: "ジムが見つかりません" }, 404);
-	}
+		// 更新前に存在確認
+		const checkResult = await dbClient.getOne("gyms", gymId);
+		if (!checkResult.success) {
+			return c.json({ error: "ジムが見つかりません" }, 404);
+		}
 
-	// 更新処理
-	const updateData = {
-		...data,
-		updatedAt: new Date().toISOString(),
-	};
+		// 更新処理
+		const updateData = {
+			...data,
+			updatedAt: new Date().toISOString(),
+		};
 
-	const result = await dbClient.update("gyms", gymId, updateData);
+		const result = await dbClient.update("gyms", gymId, updateData);
 
-	if (!result.success) {
-		return c.json({ error: result.error }, 500);
-	}
+		if (!result.success) {
+			return c.json({ error: result.error }, 500);
+		}
 
-	return c.json({
-		message: "ジム情報が更新されました",
-	});
-});
+		return validatedJson(
+			c,
+			z.object({
+				message: z.string(),
+			}),
+			{
+				message: "ジム情報が更新されました",
+			},
+		);
+	},
+);
 
 // ジム削除（管理者用）
-adminRouter.delete("/:gymId", async (c) => {
-	const gymId = c.req.param("gymId");
+adminRouter.delete("/:gymId", validateParam(GymIdParamSchema), async (c) => {
+	const { gymId } = c.req.valid("param");
 
 	const dbClient = getDatabaseClient(c.env);
 
@@ -118,9 +165,15 @@ adminRouter.delete("/:gymId", async (c) => {
 		return c.json({ error: result.error }, 500);
 	}
 
-	return c.json({
-		message: "ジムが削除されました",
-	});
+	return validatedJson(
+		c,
+		z.object({
+			message: z.string(),
+		}),
+		{
+			message: "ジムが削除されました",
+		},
+	);
 });
 
 // 管理者用ルートをメインルーターにマウント

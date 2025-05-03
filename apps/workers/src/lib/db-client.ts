@@ -18,7 +18,7 @@ export function createD1Client(db: D1Database) {
  * @param storage Durable Object storage
  * @returns Drizzleクライアントインスタンス
  */
-export function createDOClient(storage: DurableObjectStorage) {
+export function createDOClient(_storage: DurableObjectStorage) {
 	// TODO: Durable Object storage用のDrizzleアダプターが必要
 	// 現在はDOStorage → Drizzleの直接アダプターはないため、
 	// D1を経由するか独自実装が必要

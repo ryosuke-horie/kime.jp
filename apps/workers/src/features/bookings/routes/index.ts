@@ -124,7 +124,7 @@ bookingRouter.post("/:bookingId/cancel", async (c) => {
 	}
 
 	// 既にキャンセル済みでないか確認
-	if (checkResult.data.status === "cancelled") {
+	if (checkResult.data?.status === "cancelled") {
 		return c.json({ error: "既にキャンセル済みの予約です" }, 400);
 	}
 
@@ -156,7 +156,7 @@ adminRouter.post("/:bookingId/attend", async (c) => {
 	}
 
 	// 既に出席済みでないか確認
-	if (checkResult.data.status === "attended") {
+	if (checkResult.data?.status === "attended") {
 		return c.json({ error: "既に出席済みの予約です" }, 400);
 	}
 
@@ -188,7 +188,7 @@ adminRouter.post("/:bookingId/no-show", async (c) => {
 	}
 
 	// 既に欠席済みでないか確認
-	if (checkResult.data.status === "no_show") {
+	if (checkResult.data?.status === "no_show") {
 		return c.json({ error: "既に欠席済みの予約です" }, 400);
 	}
 

@@ -8,7 +8,8 @@
 	"scripts": {
 		"build": "pnpm exec tsc --project ./tsconfig.json",
 		"lint": "pnpm biome check",
-		"format": "pnpm biome check --write"
+		"format": "pnpm biome check --write",
+		"typecheck": "pnpm exec tsc --noEmit --project ./tsconfig.json"
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "^3.1.2",

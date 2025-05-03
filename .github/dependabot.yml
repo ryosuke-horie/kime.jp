@@ -1,10 +1,48 @@
 version: 2
 updates:
+  # npm パッケージの依存関係を管理
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 10
+    groups:
+      # テスト関連のパッケージをグループ化
+      testing-deps:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+          - "@cloudflare/vitest*"
+      # 開発ツール関連のパッケージをグループ化
+      dev-tools:
+        patterns:
+          - "@biomejs/*"
+          - "turbo"
+    labels:
+      - "dependencies"
+    reviewers:
+      - "ryosuke-horie"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    
   # GitHub Actionsの依存関係を管理
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    reviewers:
+      - "ryosuke-horie"
     commit-message:
       prefix: "chore(actions)"
       prefix-development: "chore(actions)"

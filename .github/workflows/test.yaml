@@ -21,7 +21,7 @@ jobs:
       - id: get-packages
         name: Get Packages
         run: |
-          PACKAGES=$(ls -d apps/* | jq -R --compact-output .)
+          PACKAGES=$(ls -d apps/* | jq -R -s .)
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
   test:

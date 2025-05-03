@@ -25,8 +25,9 @@ export default defineConfig({
 			exclude: ["**/node_modules/**", "**/test/**"],
 		},
 		globals: true,
-		// ファイル変更を監視する際のパフォーマンス向上
-		watchExclude: ["**/node_modules/**", "**/dist/**"],
+		// Vitest 3.1.2ではwatchExcludeからwatchIgnoreに変更された
+		// https://github.com/vitest-dev/vitest/releases/tag/v0.34.0
+		watchIgnore: ["**/node_modules/**", "**/dist/**"],
 		// キャッシュの有効化
 		cache: {
 			dir: ".vitest-cache",

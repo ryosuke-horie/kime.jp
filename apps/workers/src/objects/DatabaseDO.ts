@@ -1,7 +1,7 @@
+import * as schema from "@kime/db";
+import { and, count, eq, sql } from "drizzle-orm";
 // DatabaseDO.ts - D1データベースへのアクセスを管理するDurable Object
 import { createD1Client, generateUUID } from "../lib/db-client";
-import * as schema from "@kime/db";
-import { eq, and, count, sql } from "drizzle-orm";
 
 interface Env {
 	DB: D1Database;
@@ -17,16 +17,13 @@ export class DatabaseDO {
 	// Worker EnvironmentからのHTTP fetchイベントを処理
 	async fetch(request: Request): Promise<Response> {
 		const env = (request as any).cf?.env as Env;
-		
+
 		// D1がバインドされているか確認
 		if (!env?.DB) {
-			return new Response(
-				JSON.stringify({ error: "D1 database not bound" }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "D1 database not bound" }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		// Drizzleクライアントの初期化（初回のみ）
@@ -40,26 +37,29 @@ export class DatabaseDO {
 
 		// ルートパスはDOの状態を返す
 		if (path.length === 0) {
-			return new Response(JSON.stringify({ status: "ok", type: "DatabaseDO" }), {
-				headers: { "Content-Type": "application/json" },
-			});
+			return new Response(
+				JSON.stringify({ status: "ok", type: "DatabaseDO" }),
+				{
+					headers: { "Content-Type": "application/json" },
+				},
+			);
 		}
 
 		const action = path[0];
 
 		// リクエストボディをJSONとして解析（必要な場合）
 		let body = null;
-		if (["create", "update", "transaction"].includes(action) && request.method !== "GET") {
+		if (
+			["create", "update", "transaction"].includes(action) &&
+			request.method !== "GET"
+		) {
 			try {
 				body = await request.json();
 			} catch (e) {
-				return new Response(
-					JSON.stringify({ error: "Invalid JSON body" }),
-					{
-						status: 400,
-						headers: { "Content-Type": "application/json" },
-					},
-				);
+				return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
+					status: 400,
+					headers: { "Content-Type": "application/json" },
+				});
 			}
 		}
 
@@ -98,7 +98,7 @@ export class DatabaseDO {
 		try {
 			const url = new URL(request.url);
 			const sqlQuery = url.searchParams.get("sql");
-			
+
 			if (!sqlQuery) {
 				return new Response(
 					JSON.stringify({ error: "SQL query is required" }),
@@ -109,22 +109,16 @@ export class DatabaseDO {
 				);
 			}
 
-			const result = await this.db!.execute(sql.raw(sqlQuery));
-			
-			return new Response(
-				JSON.stringify({ success: true, result }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			const result = await this.db?.execute(sql.raw(sqlQuery));
+
+			return new Response(JSON.stringify({ success: true, result }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
@@ -143,29 +137,23 @@ export class DatabaseDO {
 		try {
 			// D1のbatchを使用してトランザクションを模倣
 			const results = [];
-			
+
 			// トランザクションブロック
 			await this.state.blockConcurrencyWhile(async () => {
 				for (const query of body.queries) {
-					const result = await this.db!.execute(sql.raw(query));
+					const result = await this.db?.execute(sql.raw(query));
 					results.push(result);
 				}
 			});
-			
-			return new Response(
-				JSON.stringify({ success: true, results }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+
+			return new Response(JSON.stringify({ success: true, results }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
@@ -183,139 +171,160 @@ export class DatabaseDO {
 
 		try {
 			let result = null;
-			
+
 			// テーブルに応じたクエリを実行
 			switch (table) {
 				case "gyms":
-					result = await this.db!.select().from(schema.gyms).where(eq(schema.gyms.gymId, id)).get();
+					result = await this.db
+						?.select()
+						.from(schema.gyms)
+						.where(eq(schema.gyms.gymId, id))
+						.get();
 					break;
 				case "members":
-					result = await this.db!.select().from(schema.members).where(eq(schema.members.memberId, id)).get();
+					result = await this.db
+						?.select()
+						.from(schema.members)
+						.where(eq(schema.members.memberId, id))
+						.get();
 					break;
 				case "classes":
-					result = await this.db!.select().from(schema.classes).where(eq(schema.classes.classId, id)).get();
+					result = await this.db
+						?.select()
+						.from(schema.classes)
+						.where(eq(schema.classes.classId, id))
+						.get();
 					break;
 				case "bookings":
-					result = await this.db!.select().from(schema.bookings).where(eq(schema.bookings.bookingId, id)).get();
+					result = await this.db
+						?.select()
+						.from(schema.bookings)
+						.where(eq(schema.bookings.bookingId, id))
+						.get();
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
-					return new Response(
-						JSON.stringify({ error: "Unknown table" }),
-						{
-							status: 400,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
-			}
-			
-			if (!result) {
-				return new Response(
-					JSON.stringify({ error: "Record not found" }),
-					{
-						status: 404,
+					return new Response(JSON.stringify({ error: "Unknown table" }), {
+						status: 400,
 						headers: { "Content-Type": "application/json" },
-					},
-				);
+					});
 			}
-			
-			return new Response(
-				JSON.stringify({ success: true, data: result }),
-				{
+
+			if (!result) {
+				return new Response(JSON.stringify({ error: "Record not found" }), {
+					status: 404,
 					headers: { "Content-Type": "application/json" },
-				},
-			);
+				});
+			}
+
+			return new Response(JSON.stringify({ success: true, data: result }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
 	// 複数レコード取得ハンドラ
 	private async handleList(table: string, request: Request): Promise<Response> {
 		if (!table) {
-			return new Response(
-				JSON.stringify({ error: "Table is required" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Table is required" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		try {
 			const url = new URL(request.url);
-			const limit = parseInt(url.searchParams.get("limit") || "100");
-			const offset = parseInt(url.searchParams.get("offset") || "0");
+			const limit = Number.parseInt(url.searchParams.get("limit") || "100");
+			const offset = Number.parseInt(url.searchParams.get("offset") || "0");
 			const gymId = url.searchParams.get("gym_id");
-			
+
 			let results = [];
-			
+
 			// テーブルに応じたクエリを実行
 			switch (table) {
 				case "gyms":
-					results = await this.db!.select().from(schema.gyms).limit(limit).offset(offset).all();
+					results = await this.db
+						?.select()
+						.from(schema.gyms)
+						.limit(limit)
+						.offset(offset)
+						.all();
 					break;
 				case "members":
 					if (gymId) {
-						results = await this.db!.select().from(schema.members)
+						results = await this.db
+							?.select()
+							.from(schema.members)
 							.where(eq(schema.members.gymId, gymId))
-							.limit(limit).offset(offset).all();
+							.limit(limit)
+							.offset(offset)
+							.all();
 					} else {
-						results = await this.db!.select().from(schema.members)
-							.limit(limit).offset(offset).all();
+						results = await this.db
+							?.select()
+							.from(schema.members)
+							.limit(limit)
+							.offset(offset)
+							.all();
 					}
 					break;
 				case "classes":
 					if (gymId) {
-						results = await this.db!.select().from(schema.classes)
+						results = await this.db
+							?.select()
+							.from(schema.classes)
 							.where(eq(schema.classes.gymId, gymId))
-							.limit(limit).offset(offset).all();
+							.limit(limit)
+							.offset(offset)
+							.all();
 					} else {
-						results = await this.db!.select().from(schema.classes)
-							.limit(limit).offset(offset).all();
+						results = await this.db
+							?.select()
+							.from(schema.classes)
+							.limit(limit)
+							.offset(offset)
+							.all();
 					}
 					break;
 				case "bookings":
 					if (gymId) {
-						results = await this.db!.select().from(schema.bookings)
+						results = await this.db
+							?.select()
+							.from(schema.bookings)
 							.where(eq(schema.bookings.gymId, gymId))
-							.limit(limit).offset(offset).all();
+							.limit(limit)
+							.offset(offset)
+							.all();
 					} else {
-						results = await this.db!.select().from(schema.bookings)
-							.limit(limit).offset(offset).all();
+						results = await this.db
+							?.select()
+							.from(schema.bookings)
+							.limit(limit)
+							.offset(offset)
+							.all();
 					}
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
-					return new Response(
-						JSON.stringify({ error: "Unknown table" }),
-						{
-							status: 400,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
+					return new Response(JSON.stringify({ error: "Unknown table" }), {
+						status: 400,
+						headers: { "Content-Type": "application/json" },
+					});
 			}
-			
-			return new Response(
-				JSON.stringify({ success: true, data: results }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+
+			return new Response(JSON.stringify({ success: true, data: results }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
@@ -336,50 +345,51 @@ export class DatabaseDO {
 			switch (table) {
 				case "gyms":
 					if (!data.gymId) data.gymId = generateUUID();
-					await this.db!.insert(schema.gyms).values(data);
+					await this.db?.insert(schema.gyms).values(data);
 					break;
 				case "members":
 					if (!data.memberId) data.memberId = generateUUID();
-					await this.db!.insert(schema.members).values(data);
+					await this.db?.insert(schema.members).values(data);
 					break;
 				case "classes":
 					if (!data.classId) data.classId = generateUUID();
-					await this.db!.insert(schema.classes).values(data);
+					await this.db?.insert(schema.classes).values(data);
 					break;
 				case "bookings":
 					if (!data.bookingId) data.bookingId = generateUUID();
-					await this.db!.insert(schema.bookings).values(data);
+					await this.db?.insert(schema.bookings).values(data);
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
-					return new Response(
-						JSON.stringify({ error: "Unknown table" }),
-						{
-							status: 400,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
+					return new Response(JSON.stringify({ error: "Unknown table" }), {
+						status: 400,
+						headers: { "Content-Type": "application/json" },
+					});
 			}
-			
+
 			return new Response(
-				JSON.stringify({ success: true, id: data.gymId || data.memberId || data.classId || data.bookingId }),
+				JSON.stringify({
+					success: true,
+					id: data.gymId || data.memberId || data.classId || data.bookingId,
+				}),
 				{
 					headers: { "Content-Type": "application/json" },
 				},
 			);
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
 	// レコード更新ハンドラ
-	private async handleUpdate(table: string, id: string, data: any): Promise<Response> {
+	private async handleUpdate(
+		table: string,
+		id: string,
+		data: any,
+	): Promise<Response> {
 		if (!table || !id || !data) {
 			return new Response(
 				JSON.stringify({ error: "Table, ID and data are required" }),
@@ -394,50 +404,45 @@ export class DatabaseDO {
 			// 更新処理
 			switch (table) {
 				case "gyms":
-					await this.db!.update(schema.gyms)
+					await this.db
+						?.update(schema.gyms)
 						.set(data)
 						.where(eq(schema.gyms.gymId, id));
 					break;
 				case "members":
-					await this.db!.update(schema.members)
+					await this.db
+						?.update(schema.members)
 						.set(data)
 						.where(eq(schema.members.memberId, id));
 					break;
 				case "classes":
-					await this.db!.update(schema.classes)
+					await this.db
+						?.update(schema.classes)
 						.set(data)
 						.where(eq(schema.classes.classId, id));
 					break;
 				case "bookings":
-					await this.db!.update(schema.bookings)
+					await this.db
+						?.update(schema.bookings)
 						.set(data)
 						.where(eq(schema.bookings.bookingId, id));
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
-					return new Response(
-						JSON.stringify({ error: "Unknown table" }),
-						{
-							status: 400,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
+					return new Response(JSON.stringify({ error: "Unknown table" }), {
+						status: 400,
+						headers: { "Content-Type": "application/json" },
+					});
 			}
-			
-			return new Response(
-				JSON.stringify({ success: true }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+
+			return new Response(JSON.stringify({ success: true }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
@@ -457,46 +462,39 @@ export class DatabaseDO {
 			// 削除処理
 			switch (table) {
 				case "gyms":
-					await this.db!.delete(schema.gyms)
-						.where(eq(schema.gyms.gymId, id));
+					await this.db?.delete(schema.gyms).where(eq(schema.gyms.gymId, id));
 					break;
 				case "members":
-					await this.db!.delete(schema.members)
+					await this.db
+						?.delete(schema.members)
 						.where(eq(schema.members.memberId, id));
 					break;
 				case "classes":
-					await this.db!.delete(schema.classes)
+					await this.db
+						?.delete(schema.classes)
 						.where(eq(schema.classes.classId, id));
 					break;
 				case "bookings":
-					await this.db!.delete(schema.bookings)
+					await this.db
+						?.delete(schema.bookings)
 						.where(eq(schema.bookings.bookingId, id));
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
-					return new Response(
-						JSON.stringify({ error: "Unknown table" }),
-						{
-							status: 400,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
+					return new Response(JSON.stringify({ error: "Unknown table" }), {
+						status: 400,
+						headers: { "Content-Type": "application/json" },
+					});
 			}
-			
-			return new Response(
-				JSON.stringify({ success: true }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+
+			return new Response(JSON.stringify({ success: true }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 
@@ -504,7 +502,9 @@ export class DatabaseDO {
 	private async handleBooking(data: any): Promise<Response> {
 		if (!data || !data.classId || !data.memberId || !data.gymId) {
 			return new Response(
-				JSON.stringify({ error: "Class ID, Member ID and Gym ID are required" }),
+				JSON.stringify({
+					error: "Class ID, Member ID and Gym ID are required",
+				}),
 				{
 					status: 400,
 					headers: { "Content-Type": "application/json" },
@@ -516,33 +516,35 @@ export class DatabaseDO {
 			// トランザクションのためにblockConcurrencyWhileを使用
 			return await this.state.blockConcurrencyWhile(async () => {
 				// 1. クラスの存在確認
-				const classData = await this.db!.select().from(schema.classes)
+				const classData = await this.db
+					?.select()
+					.from(schema.classes)
 					.where(eq(schema.classes.classId, data.classId))
 					.get();
-				
+
 				if (!classData) {
-					return new Response(
-						JSON.stringify({ error: "Class not found" }),
-						{
-							status: 404,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
+					return new Response(JSON.stringify({ error: "Class not found" }), {
+						status: 404,
+						headers: { "Content-Type": "application/json" },
+					});
 				}
-				
+
 				// 2. 予約数の確認
-				const bookingsResult = await this.db!.select({
-					count: sql<number>`count(*)`
-				})
+				const bookingsResult = await this.db
+					?.select({
+						count: sql<number>`count(*)`,
+					})
 					.from(schema.bookings)
-					.where(and(
-						eq(schema.bookings.classId, data.classId),
-						eq(schema.bookings.status, "reserved")
-					))
+					.where(
+						and(
+							eq(schema.bookings.classId, data.classId),
+							eq(schema.bookings.status, "reserved"),
+						),
+					)
 					.get();
-				
+
 				const bookingsCount = bookingsResult?.count || 0;
-				
+
 				if (bookingsCount >= classData.capacity) {
 					return new Response(
 						JSON.stringify({ error: "Class is fully booked" }),
@@ -552,29 +554,35 @@ export class DatabaseDO {
 						},
 					);
 				}
-				
+
 				// 3. 既存予約の確認（二重予約防止）
-				const existingBooking = await this.db!.select()
+				const existingBooking = await this.db
+					?.select()
 					.from(schema.bookings)
-					.where(and(
-						eq(schema.bookings.classId, data.classId),
-						eq(schema.bookings.memberId, data.memberId)
-					))
+					.where(
+						and(
+							eq(schema.bookings.classId, data.classId),
+							eq(schema.bookings.memberId, data.memberId),
+						),
+					)
 					.get();
-				
+
 				if (existingBooking) {
 					return new Response(
-						JSON.stringify({ error: "Member already has a booking for this class", bookingId: existingBooking.bookingId }),
+						JSON.stringify({
+							error: "Member already has a booking for this class",
+							bookingId: existingBooking.bookingId,
+						}),
 						{
 							status: 409,
 							headers: { "Content-Type": "application/json" },
 						},
 					);
 				}
-				
+
 				// 4. 予約を作成
 				const bookingId = data.bookingId || generateUUID();
-				await this.db!.insert(schema.bookings).values({
+				await this.db?.insert(schema.bookings).values({
 					bookingId,
 					classId: data.classId,
 					memberId: data.memberId,
@@ -582,22 +590,16 @@ export class DatabaseDO {
 					status: data.status || "reserved",
 					bookedAt: new Date().toISOString(),
 				});
-				
-				return new Response(
-					JSON.stringify({ success: true, bookingId }),
-					{
-						headers: { "Content-Type": "application/json" },
-					},
-				);
+
+				return new Response(JSON.stringify({ success: true, bookingId }), {
+					headers: { "Content-Type": "application/json" },
+				});
 			});
 		} catch (error: any) {
-			return new Response(
-				JSON.stringify({ error: error.message }),
-				{
-					status: 500,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: 500,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 	}
 }

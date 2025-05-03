@@ -14,9 +14,12 @@ export class ClassLocker {
 
 		// ルートパスはDOの状態を返す
 		if (path.length === 0) {
-			return new Response(JSON.stringify({ status: "ok", type: "ClassLocker" }), {
-				headers: { "Content-Type": "application/json" },
-			});
+			return new Response(
+				JSON.stringify({ status: "ok", type: "ClassLocker" }),
+				{
+					headers: { "Content-Type": "application/json" },
+				},
+			);
 		}
 
 		// 主な操作: lock, unlock, check
@@ -24,13 +27,10 @@ export class ClassLocker {
 		const classId = path[1]; // クラスID
 
 		if (!classId) {
-			return new Response(
-				JSON.stringify({ error: "Class ID is required" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Class ID is required" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		switch (action) {
@@ -41,13 +41,10 @@ export class ClassLocker {
 			case "check":
 				return this.checkLock(classId);
 			default:
-				return new Response(
-					JSON.stringify({ error: "Invalid action" }),
-					{
-						status: 400,
-						headers: { "Content-Type": "application/json" },
-					},
-				);
+				return new Response(JSON.stringify({ error: "Invalid action" }), {
+					status: 400,
+					headers: { "Content-Type": "application/json" },
+				});
 		}
 	}
 
@@ -64,42 +61,33 @@ export class ClassLocker {
 		}
 
 		this.locks.set(classId, true);
-		
+
 		// 将来的にはstate.storageにロック情報を永続化可能
 		// await this.state.storage.put(`lock:${classId}`, true);
 
-		return new Response(
-			JSON.stringify({ locked: true, success: true }),
-			{
-				headers: { "Content-Type": "application/json" },
-			},
-		);
+		return new Response(JSON.stringify({ locked: true, success: true }), {
+			headers: { "Content-Type": "application/json" },
+		});
 	}
 
 	// クラスのロックを解除（予約処理完了）
 	private async unlockClass(classId: string): Promise<Response> {
 		this.locks.set(classId, false);
-		
+
 		// 将来的にはstate.storageからロック情報を削除可能
 		// await this.state.storage.delete(`lock:${classId}`);
 
-		return new Response(
-			JSON.stringify({ locked: false, success: true }),
-			{
-				headers: { "Content-Type": "application/json" },
-			},
-		);
+		return new Response(JSON.stringify({ locked: false, success: true }), {
+			headers: { "Content-Type": "application/json" },
+		});
 	}
 
 	// クラスのロック状態を確認
 	private async checkLock(classId: string): Promise<Response> {
 		const isLocked = this.locks.get(classId) || false;
-		
-		return new Response(
-			JSON.stringify({ locked: isLocked }),
-			{
-				headers: { "Content-Type": "application/json" },
-			},
-		);
+
+		return new Response(JSON.stringify({ locked: isLocked }), {
+			headers: { "Content-Type": "application/json" },
+		});
 	}
 }

@@ -1,21 +1,21 @@
+import { resolve } from "node:path";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import build from "@hono/vite-build/cloudflare-workers";
 import { defineConfig } from "vite";
-import { resolve } from "path";
 
 export default defineConfig(({ command }) => {
 	const commonConfig = {
 		resolve: {
 			alias: {
-				'@kime/db': resolve(__dirname, '../../packages/db/src/index.ts')
-			}
-		}
+				"@kime/db": resolve(__dirname, "../../packages/db/src/index.ts"),
+			},
+		},
 	};
 
 	if (command === "serve") {
-		return { 
+		return {
 			...commonConfig,
-			plugins: [cloudflare()] 
+			plugins: [cloudflare()],
 		};
 	}
 

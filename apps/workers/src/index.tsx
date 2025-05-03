@@ -2,16 +2,16 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
-import { Env } from "./env";
+import type { Env } from "./env";
 import { authMiddleware } from "./middlewares/auth";
-import { DatabaseDO } from "./objects/DatabaseDO";
 import { ClassLocker } from "./objects/ClassLocker";
+import { DatabaseDO } from "./objects/DatabaseDO";
 
+import bookingRouter from "./features/bookings/routes";
+import classRouter from "./features/classes/routes";
 // 各機能のルーターをインポート
 import gymRouter from "./features/gyms/routes";
 import memberRouter from "./features/members/routes";
-import classRouter from "./features/classes/routes";
-import bookingRouter from "./features/bookings/routes";
 
 // アプリケーションインスタンスを作成
 const app = new Hono<{ Bindings: Env }>();
@@ -24,16 +24,16 @@ app.use("/api/*", authMiddleware());
 
 // ルートパス
 app.get("/", (c) => {
-  return c.text("Kime API - Hello!");
+	return c.text("Kime API - Hello!");
 });
 
 // ヘルスチェック
 app.get("/health", (c) => {
-  return c.json({ 
-    status: "ok", 
-    timestamp: new Date().toISOString(),
-    version: "0.1.0"
-  });
+	return c.json({
+		status: "ok",
+		timestamp: new Date().toISOString(),
+		version: "0.1.0",
+	});
 });
 
 // 開発用テストエンドポイントは削除
@@ -54,10 +54,10 @@ app.route("/api", api);
 
 // Workerエクスポート
 export default {
-  // Fetch ハンドラー
-  fetch: app.fetch,
-  
-  // Durable Objects
-  DatabaseDO,
-  ClassLocker,
+	// Fetch ハンドラー
+	fetch: app.fetch,
+
+	// Durable Objects
+	DatabaseDO,
+	ClassLocker,
 };

@@ -2,27 +2,31 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Commands
-- Build: `pnpm build` (all) or `pnpm --filter=<app> build`
-- Dev: `pnpm dev` (all) or `pnpm --filter=<app> dev`
-- Lint: `pnpm lint` or `pnpm --filter=<app> lint`
-- Format: `pnpm format` or `pnpm --filter=<app> format`
-- Deploy: `pnpm deploy` or `pnpm --filter=<app> deploy`
-- Preview: `pnpm --filter=<app> preview` (for web and workers)
+## 言語設定
+- 基本的に日本語で応答してください
+- コードやコマンドの説明も日本語で行ってください
 
-## Code Style Guidelines
-- Use Biome for linting and formatting (not ESLint)
-- Indentation: tabs (not spaces)
-- Quotes: double quotes
-- React components: PascalCase (`RootLayout`, `Home`)
-- Variables/functions: camelCase
-- Imports: organize imports (`import React from 'react'` before other imports)
-- Type annotations: use TypeScript interfaces and types
-- Error handling: use try/catch blocks for error handling
-- File structure: follow existing patterns in the monorepo
+## コマンド
+- ビルド: `pnpm build` (全て) または `pnpm --filter=<app> build`
+- 開発: `pnpm dev` (全て) または `pnpm --filter=<app> dev`
+- リント: `pnpm lint` または `pnpm --filter=<app> lint`
+- フォーマット: `pnpm format` または `pnpm --filter=<app> format`
+- デプロイ: `pnpm deploy` または `pnpm --filter=<app> deploy`
+- プレビュー: `pnpm --filter=<app> preview` (web と workers 用)
 
-## Project Structure
-- Monorepo managed with Turborepo and pnpm
-- Apps:
-  - `web`: Next.js app with Turbopack and Cloudflare deployment
-  - `workers`: Cloudflare Workers using Hono framework and Vite
+## コードスタイルガイドライン
+- Biome を使用してリントとフォーマットを行う (ESLint は使用しない)
+- インデント: タブ（スペースではなく）
+- 引用符: ダブルクォート
+- React コンポーネント: パスカルケース (`RootLayout`, `Home`)
+- 変数/関数: キャメルケース
+- インポート: インポートを整理する (`import React from 'react'` を他のインポートの前に配置)
+- 型アノテーション: TypeScript のインターフェースと型を使用する
+- エラー処理: try/catch ブロックを使用する
+- ファイル構造: モノレポの既存パターンに従う
+
+## プロジェクト構造
+- Turborepo と pnpm で管理されたモノレポ
+- アプリ:
+  - `web`: Turbopack と Cloudflare デプロイメントを備えた Next.js アプリ
+  - `workers`: Hono フレームワークと Vite を使用した Cloudflare Workers

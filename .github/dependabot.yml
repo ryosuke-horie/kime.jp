@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # npm パッケージの依存関係を管理
+  # ルートディレクトリのpnpmパッケージの依存関係を管理
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -9,6 +9,7 @@ updates:
       time: "07:00"
       timezone: "Asia/Tokyo"
     open-pull-requests-limit: 10
+    package-manager: "pnpm"
     groups:
       # テスト関連のパッケージをグループ化
       testing-deps:
@@ -23,10 +24,122 @@ updates:
           - "turbo"
     labels:
       - "dependencies"
+      - "root"
     reviewers:
       - "ryosuke-horie"
     commit-message:
       prefix: "chore(deps)"
+      include: "scope"
+    
+  # Webアプリケーションの依存関係を管理
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    package-manager: "pnpm"
+    groups:
+      # React関連パッケージをグループ化
+      react-deps:
+        patterns:
+          - "react*"
+          - "next*"
+          - "@types/react*"
+      # テスト関連パッケージをグループ化
+      test-deps:
+        patterns:
+          - "vitest*"
+          - "@vitest/*"
+          - "@vitejs/*"
+    labels:
+      - "dependencies"
+      - "web"
+    reviewers:
+      - "ryosuke-horie"
+    commit-message:
+      prefix: "chore(deps-web)"
+      include: "scope"
+      
+  # Workersアプリケーションの依存関係を管理
+  - package-ecosystem: "npm"
+    directory: "/apps/workers"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    package-manager: "pnpm"
+    groups:
+      # Cloudflare関連パッケージをグループ化
+      cloudflare-deps:
+        patterns:
+          - "@cloudflare/*"
+          - "wrangler"
+      # APIフレームワーク関連パッケージをグループ化
+      api-deps:
+        patterns:
+          - "hono*"
+          - "@hono/*"
+          - "zod*"
+      # テスト関連パッケージをグループ化
+      test-deps:
+        patterns:
+          - "vitest*"
+          - "@vitest/*"
+    labels:
+      - "dependencies"
+      - "workers"
+    reviewers:
+      - "ryosuke-horie"
+    commit-message:
+      prefix: "chore(deps-workers)"
+      include: "scope"
+
+  # DBパッケージの依存関係を管理
+  - package-ecosystem: "npm"
+    directory: "/packages/db"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 3
+    package-manager: "pnpm"
+    groups:
+      # データベース関連パッケージをグループ化
+      db-deps:
+        patterns:
+          - "drizzle*"
+    labels:
+      - "dependencies"
+      - "db"
+    reviewers:
+      - "ryosuke-horie"
+    commit-message:
+      prefix: "chore(deps-db)"
+      include: "scope"
+
+  # テストユーティリティパッケージの依存関係を管理
+  - package-ecosystem: "npm"
+    directory: "/packages/testing-utils"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 3
+    package-manager: "pnpm"
+    labels:
+      - "dependencies"
+      - "testing-utils"
+    reviewers:
+      - "ryosuke-horie"
+    commit-message:
+      prefix: "chore(deps-testing)"
       include: "scope"
     
   # GitHub Actionsの依存関係を管理

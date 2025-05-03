@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"paths": {
+			"@kime/api-types": ["../api-types/src"]
+		}
+	},
+	"include": ["src"],
+	"references": [
+		{ "path": "../api-types" }
+	]
+}

@@ -36,6 +36,19 @@ app.get("/health", (c) => {
   });
 });
 
+// テスト用エンドポイント
+app.get("/test-api", (c) => {
+  return c.json({
+    message: "テスト用APIエンドポイントが動作しています",
+    timestamp: new Date().toISOString(),
+    env: {
+      hasDO: !!c.env.DB_DO,
+      hasClassLocker: !!c.env.CLASS_LOCKER,
+      hasDB: !!c.env.DB
+    }
+  });
+});
+
 // APIエンドポイント
 const api = new Hono<{ Bindings: Env }>();
 
@@ -44,6 +57,14 @@ api.route("/gyms", gymRouter);
 api.route("/members", memberRouter);
 api.route("/classes", classRouter);
 api.route("/bookings", bookingRouter);
+
+// シンプルなテスト用エンドポイントを追加
+api.get("/admin-test", (c) => {
+  return c.json({
+    message: "管理者APIテストエンドポイントが動作しています",
+    timestamp: new Date().toISOString()
+  });
+});
 
 // APIルーターをメインアプリにマウント
 app.route("/api", api);

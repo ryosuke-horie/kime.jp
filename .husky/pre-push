@@ -1,20 +1,20 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo ">� �÷�Mn<��L-..."
+echo "🧪 プッシュ前の検証を実行中..."
 
-# ���ï�L
-echo "= TypeScriptn���ï��L-..."
+# 型チェック実行
+echo "🔍 TypeScriptの型チェックを実行中..."
 pnpm typecheck || { 
-  echo "L ���ïk1WW~W_�cWfK����÷�WfO`UD"; 
+  echo "❌ 型チェックに失敗しました。修正してから再度プッシュしてください。"; 
   exit 1; 
 }
 
-# ƹȟL
-echo ">� ƹȒ�L-..."
+# テスト実行
+echo "🧪 テストを実行中..."
 pnpm test || { 
-  echo "L ƹ�k1WW~W_�cWfK����÷�WfO`UD"; 
+  echo "❌ テストに失敗しました。修正してから再度プッシュしてください。"; 
   exit 1; 
 }
 
-echo " hfn<L��W~W_"
+echo "✅ 全ての検証が完了しました！"

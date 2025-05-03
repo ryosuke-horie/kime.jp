@@ -17,12 +17,13 @@ export default defineConfig({
 		setupFiles: ["./src/test/setup.ts"],
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
 		exclude: ["**/node_modules/**", "**/dist/**"],
-		// カバレッジ設定 - 現時点ではVitest 1.6.1とプロバイダーの互換性に問題がある
-		// coverage: {
-		// 	provider: "istanbul",
-		// 	reporter: ["text", "json", "html"],
-		// 	exclude: ["**/node_modules/**", "**/test/**"],
-		// },
+		// Vitest 3.1.2で互換性問題が解決されたため有効化
+		coverage: {
+			provider: "v8", // v8プロバイダーに変更して統一
+			reporter: ["text", "json", "html"],
+			reportsDirectory: "./coverage", // GitHub Actionsで認識されるパスに統一
+			exclude: ["**/node_modules/**", "**/test/**"],
+		},
 		globals: true,
 		// ファイル変更を監視する際のパフォーマンス向上
 		watchExclude: ["**/node_modules/**", "**/dist/**"],

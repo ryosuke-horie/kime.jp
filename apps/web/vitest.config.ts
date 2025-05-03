@@ -24,6 +24,7 @@ export default defineConfig({
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
+			reportsDirectory: "./coverage", // GitHub Actionsで認識されるパスに統一
 			exclude: ["**/node_modules/**", "**/test/**"],
 		},
 		globals: true,

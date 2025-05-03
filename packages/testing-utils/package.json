@@ -4,10 +4,7 @@
 	"private": true,
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"scripts": {
 		"build": "pnpm exec tsc --project ./tsconfig.json",
 		"lint": "pnpm biome check",

@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo ">ê ×Ã·åMn<’ŸL-..."
+
+# ‹Á§Ã¯ŸL
+echo "= TypeScriptn‹Á§Ã¯’ŸL-..."
+pnpm typecheck || { 
+  echo "L ‹Á§Ã¯k1WW~W_îcWfK‰¦×Ã·åWfO`UD"; 
+  exit 1; 
+}
+
+# Æ¹ÈŸL
+echo ">ê Æ¹È’ŸL-..."
+pnpm test || { 
+  echo "L Æ¹Èk1WW~W_îcWfK‰¦×Ã·åWfO`UD"; 
+  exit 1; 
+}
+
+echo " hfn<LŒ†W~W_"

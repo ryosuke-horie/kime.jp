@@ -27,6 +27,19 @@ TypeScriptの型チェックを実行するためのコマンド：
 
 すべてのパッケージは共通の基本型設定（tsconfig.base.json）を継承しており、厳格な型チェックが適用されています。
 
+### Git Hooks
+
+プロジェクトでは [Husky](https://typicode.github.io/husky/) と [lint-staged](https://github.com/lint-staged/lint-staged) を使用して、Git操作時に自動検証を行っています：
+
+- **pre-commit**: コミット前に以下を実行
+  - 変更されたファイルのBiomeによるフォーマットとリント
+
+- **pre-push**: プッシュ前に以下を実行
+  - TypeScriptの型チェック (`pnpm typecheck`)
+  - テスト実行 (`pnpm test`)
+
+注意: 初回クローン後、`pnpm install`を実行することでGit Hooksが自動的に設定されます。
+
 ### CI/CD
 
 GitHub Actionsによる自動化が設定されています：

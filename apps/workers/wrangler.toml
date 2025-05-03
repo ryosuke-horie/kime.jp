@@ -1,0 +1,37 @@
+name = "kime-workers"
+compatibility_date = "2024-04-01"
+main = "./src/index.tsx"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "kime_mvp"
+database_id = ""
+
+# Durable Objects
+[[durable_objects.bindings]]
+name = "DB_DO"
+class_name = "DatabaseDO"
+
+[[durable_objects.bindings]]
+name = "CLASS_LOCKER"
+class_name = "ClassLocker"
+
+[durable_objects]
+bindings = [
+  { name = "DB_DO", class_name = "DatabaseDO" },
+  { name = "CLASS_LOCKER", class_name = "ClassLocker" }
+]
+
+# Preview/Production設定
+[env.preview]
+name = "kime-workers-preview"
+d1_databases = [{ binding = "DB", database_name = "kime_mvp_preview" }]
+
+[env.production]
+name = "kime-workers-prod"
+d1_databases = [{ binding = "DB", database_name = "kime_mvp_prod" }]
+
+# Worker Secrets (API Keys, etc.)
+# [vars]
+# MY_API_KEY = "dummy-value"

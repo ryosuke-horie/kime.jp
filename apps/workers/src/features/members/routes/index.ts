@@ -18,7 +18,7 @@ adminRouter.get("/", async (c) => {
 
 	// ジムIDでフィルタリングする場合
 	const gymId = c.req.query("gymId");
-	let result: { success: boolean; data?: any; error?: string };
+	let result: { success: boolean; data?: unknown; error?: string };
 
 	if (gymId) {
 		result = await dbClient.list("members", { gym_id: gymId });

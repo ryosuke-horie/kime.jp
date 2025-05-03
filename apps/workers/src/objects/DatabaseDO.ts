@@ -16,7 +16,7 @@ export class DatabaseDO {
 
 	// Worker EnvironmentからのHTTP fetchイベントを処理
 	async fetch(request: Request): Promise<Response> {
-		const env = (request as any).cf?.env as Env;
+		const env = (request as unknown as { cf?: { env: Env } }).cf?.env;
 
 		// D1がバインドされているか確認
 		if (!env?.DB) {
@@ -114,8 +114,10 @@ export class DatabaseDO {
 			return new Response(JSON.stringify({ success: true, result }), {
 				headers: { "Content-Type": "application/json" },
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -123,7 +125,9 @@ export class DatabaseDO {
 	}
 
 	// トランザクション実行ハンドラ
-	private async handleTransaction(body: any): Promise<Response> {
+	private async handleTransaction(body: {
+		queries?: string[];
+	}): Promise<Response> {
 		if (!body || !Array.isArray(body.queries)) {
 			return new Response(
 				JSON.stringify({ error: "Transaction requires 'queries' array" }),
@@ -149,8 +153,10 @@ export class DatabaseDO {
 			return new Response(JSON.stringify({ success: true, results }), {
 				headers: { "Content-Type": "application/json" },
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -220,8 +226,10 @@ export class DatabaseDO {
 			return new Response(JSON.stringify({ success: true, data: result }), {
 				headers: { "Content-Type": "application/json" },
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -320,8 +328,10 @@ export class DatabaseDO {
 			return new Response(JSON.stringify({ success: true, data: results }), {
 				headers: { "Content-Type": "application/json" },
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -329,7 +339,10 @@ export class DatabaseDO {
 	}
 
 	// レコード作成ハンドラ
-	private async handleCreate(table: string, data: any): Promise<Response> {
+	private async handleCreate(
+		table: string,
+		data: Record<string, unknown>,
+	): Promise<Response> {
 		if (!table || !data) {
 			return new Response(
 				JSON.stringify({ error: "Table and data are required" }),
@@ -376,8 +389,10 @@ export class DatabaseDO {
 					headers: { "Content-Type": "application/json" },
 				},
 			);
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -388,7 +403,7 @@ export class DatabaseDO {
 	private async handleUpdate(
 		table: string,
 		id: string,
-		data: any,
+		data: Record<string, unknown>,
 	): Promise<Response> {
 		if (!table || !id || !data) {
 			return new Response(
@@ -438,8 +453,10 @@ export class DatabaseDO {
 			return new Response(JSON.stringify({ success: true }), {
 				headers: { "Content-Type": "application/json" },
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -490,8 +507,10 @@ export class DatabaseDO {
 			return new Response(JSON.stringify({ success: true }), {
 				headers: { "Content-Type": "application/json" },
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});
@@ -499,7 +518,11 @@ export class DatabaseDO {
 	}
 
 	// 予約処理（整合性確保のため特別な処理）
-	private async handleBooking(data: any): Promise<Response> {
+	private async handleBooking(data: {
+		classId?: string;
+		memberId?: string;
+		gymId?: string;
+	}): Promise<Response> {
 		if (!data || !data.classId || !data.memberId || !data.gymId) {
 			return new Response(
 				JSON.stringify({
@@ -595,8 +618,10 @@ export class DatabaseDO {
 					headers: { "Content-Type": "application/json" },
 				});
 			});
-		} catch (error: any) {
-			return new Response(JSON.stringify({ error: error.message }), {
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
 			});

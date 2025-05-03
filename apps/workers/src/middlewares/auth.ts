@@ -5,10 +5,17 @@ import type { Env } from "../env";
  * APIリクエストに対する基本的な認証チェックを行うミドルウェア
  * ※ MVPフェーズでは簡易的な実装。将来的にはJWT検証などを追加予定
  */
+// 拡張コンテキスト型の定義
+interface AppContext {
+	requestId: string;
+	requestTime: number;
+}
+
 export const authMiddleware = (): MiddlewareHandler<{
 	Bindings: Env;
+	Variables: AppContext;
 }> => {
-	return async (c: Context<{ Bindings: Env }>, next: Next) => {
+	return async (c: Context<{ Bindings: Env; Variables: AppContext }>, next: Next) => {
 		// MVPフェーズでは認証をスキップ（開発用）
 		// TODO: 本番環境では適切な認証を実装する
 
@@ -28,8 +35,9 @@ export const authMiddleware = (): MiddlewareHandler<{
  */
 export const adminOnlyMiddleware = (): MiddlewareHandler<{
 	Bindings: Env;
+	Variables: AppContext;
 }> => {
-	return async (c: Context<{ Bindings: Env }>, next: Next) => {
+	return async (_c: Context<{ Bindings: Env; Variables: AppContext }>, next: Next) => {
 		// MVPフェーズでは認証をスキップ（開発用）
 		// TODO: 本番環境では適切な認証と権限チェックを実装する
 

@@ -1,5 +1,5 @@
 import * as schema from "@kime/db";
-import { and, count, eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 // DatabaseDO.ts - D1データベースへのアクセスを管理するDurable Object
 import { createD1Client, generateUUID } from "../lib/db-client";
 
@@ -375,6 +375,8 @@ export class DatabaseDO {
 				case "bookings":
 					// 型エラーを避けるために、生成したUUIDを別の変数に保存
 					const bookingId = generateUUID();
+					// bookingIdをdataに追加してから挿入
+					data.bookingId = bookingId;
 					await this.db?.insert(schema.bookings).values(data);
 					break;
 				// 他のテーブルも同様に追加可能

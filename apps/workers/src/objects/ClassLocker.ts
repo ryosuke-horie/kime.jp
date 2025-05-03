@@ -3,7 +3,7 @@
 export class ClassLocker {
 	private locks: Map<string, boolean> = new Map();
 
-	constructor(private state: DurableObjectState) {
+	constructor(private _state: DurableObjectState) {
 		// ロック状態の初期化
 	}
 

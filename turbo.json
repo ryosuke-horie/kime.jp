@@ -17,6 +17,14 @@
 		"build": {
 			"cache": false,
 			"persistent": true
+		},
+		"test": {
+			"cache": true,
+			"outputs": ["coverage/**"]
+		},
+		"test:coverage": {
+			"cache": true,
+			"outputs": ["coverage/**"]
 		}
 	}
 }

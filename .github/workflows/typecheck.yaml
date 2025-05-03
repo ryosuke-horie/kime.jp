@@ -21,8 +21,7 @@ jobs:
       - id: get-packages
         name: Get Packages
         run: |
-          PACKAGES=$(ls -d apps/* | jq -R -s .)
-          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+          echo "packages=[\"apps/web\",\"apps/workers\"]" >> $GITHUB_OUTPUT
 
   typecheck:
     name: TypeScript Check - ${{ matrix.package }}

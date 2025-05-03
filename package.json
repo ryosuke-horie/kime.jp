@@ -10,17 +10,21 @@
 		"test": "turbo run test",
 		"test:watch": "vitest -w",
 		"test:coverage": "turbo run test:coverage",
+		"test:ui": "vitest --ui",
 		"typecheck": "turbo run typecheck",
 		"prepare": "husky",
-		"lint-staged": "lint-staged"
+		"lint-staged": "lint-staged",
+		"clean": "find . -name '.turbo' -type d -prune -exec rm -rf {} \\; && find . -name '.vitest-cache' -type d -prune -exec rm -rf {} \\;"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@cloudflare/vitest-pool-workers": "^0.8.24",
 		"@vitest/coverage-istanbul": "^3.1.2",
+		"@vitest/ui": "^1.7.3",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.5.1",
-		"turbo": "latest"
+		"turbo": "latest",
+		"vitest": "^1.7.3"
 	},
 	"packageManager": "pnpm@10.9.0"
 }

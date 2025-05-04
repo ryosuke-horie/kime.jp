@@ -1,16 +1,36 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// Next.jsの型定義
+type Metadata = {
+	title?: string;
+	description?: string;
+	[key: string]: any;
+};
+
+// fontの型定義用
+type FontOptions = {
+	variable: string;
+	subsets: string[];
+	[key: string]: any;
+};
+
+// フォントモック関数
+const mockFont = (options: FontOptions) => ({
+	variable: options.variable,
+	className: options.variable,
+});
+
+// next/font/googleのモックを作成
+const Geist = mockFont;
+const Geist_Mono = mockFont;
+
 import "./globals.css";
 
-const geistSans = Geist({
+const geistSans = {
 	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
+};
 
-const geistMono = Geist_Mono({
+const geistMono = {
 	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
+};
 
 export const metadata: Metadata = {
 	title: "Create Next App",

@@ -5,23 +5,6 @@ type Metadata = {
 	[key: string]: any;
 };
 
-// fontの型定義用
-type FontOptions = {
-	variable: string;
-	subsets: string[];
-	[key: string]: any;
-};
-
-// フォントモック関数
-const mockFont = (options: FontOptions) => ({
-	variable: options.variable,
-	className: options.variable,
-});
-
-// next/font/googleのモックを作成
-const Geist = mockFont;
-const Geist_Mono = mockFont;
-
 import "./globals.css";
 
 const geistSans = {

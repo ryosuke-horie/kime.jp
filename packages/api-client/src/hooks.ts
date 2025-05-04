@@ -12,7 +12,7 @@ import {
 	HealthCheckResponseType,
 	SuccessResponseType,
 	UpdateGymRequestType,
-} from "../../../packages/api-types/src";
+} from "./client";
 
 /**
  * 環境設定を取得する（Next.jsアプリケーション内で実装）

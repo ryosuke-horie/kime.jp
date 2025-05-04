@@ -1,5 +1,5 @@
 // テスト環境セットアップ
-import { afterAll, beforeAll } from "vitest";
+// vitestのglobalsを使用するため、明示的なインポートは不要
 
 // テスト前の共通処理
 beforeAll(() => {

@@ -6,13 +6,10 @@
 		"composite": true,
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true
 	},
 	"include": ["src/**/*.ts"],
-	"files": [
-		"src/index.ts",
-		"src/common.ts",
-		"src/gym.ts",
-		"src/health.ts"
-	]
+	"files": ["./src/index.ts", "./src/common.ts", "./src/gym.ts", "./src/health.ts"]
 }

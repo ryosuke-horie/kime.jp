@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+// vitestのglobalsを使用するため、明示的なインポートは不要
+// tsconfig.jsonに"types": ["vitest/globals"]を追加済み
 
 describe("基本テスト", () => {
 	it("trueはtrueであるべき", () => {

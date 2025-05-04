@@ -1,14 +1,84 @@
-import {
-	API_BASE_URL,
-	CreateGymRequestType,
-	CreateGymResponseType,
-	ErrorResponseType,
-	GymDetailResponseType,
-	GymListResponseType,
-	HealthCheckResponseType,
-	SuccessResponseType,
-	UpdateGymRequestType,
-} from "../../../packages/api-types/src";
+// API URLの定義
+export const API_BASE_URL = {
+	production: "https://api.kime.jp",
+	staging: "https://api-staging.kime.jp",
+	development: "http://localhost:8787",
+};
+
+// レスポンス型
+export interface ErrorResponseType {
+	error: string;
+	details?: {
+		path: string;
+		message: string;
+	}[];
+}
+
+export interface SuccessResponseType {
+	success: boolean;
+	message?: string;
+}
+
+// ヘルスチェック
+export interface HealthCheckResponseType {
+	status: "ok";
+	version: string;
+	environment: string;
+}
+
+// ジム関連
+export interface GymDetailResponseType {
+	id: string;
+	name: string;
+	address: string;
+	phone?: string;
+	email?: string;
+	website?: string;
+	description?: string;
+	activeStatus: "active" | "inactive";
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface GymListResponseType {
+	items: GymDetailResponseType[];
+	total: number;
+	page: number;
+	pageSize: number;
+	hasMore: boolean;
+}
+
+export interface CreateGymRequestType {
+	name: string;
+	address: string;
+	phone?: string;
+	email?: string;
+	website?: string;
+	description?: string;
+}
+
+export interface CreateGymResponseType {
+	id: string;
+	name: string;
+	address: string;
+	phone?: string;
+	email?: string;
+	website?: string;
+	description?: string;
+	activeStatus: "active";
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface UpdateGymRequestType {
+	name?: string;
+	address?: string;
+	phone?: string;
+	email?: string;
+	website?: string;
+	description?: string;
+	activeStatus?: "active" | "inactive";
+}
 
 /**
  * API接続用クライアントクラス

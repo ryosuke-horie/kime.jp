@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
-import { defineConfig } from "vitest/config";
+// defineConfigを使わない方法でconfig作成
 
-export default defineConfig({
+export default {
 	// テストのみの設定なので、pluginsは使用しない
 	// plugins: [react()],
 	// PostCSSの設定を回避
@@ -28,10 +28,6 @@ export default defineConfig({
 			exclude: ["**/node_modules/**", "**/test/**"],
 		},
 		globals: true,
-		// Vitest 3.1.2ではwatchExcludeからwatchIgnoreに変更されたが型定義にまだ反映されていない
-		// https://github.com/vitest-dev/vitest/releases/tag/v0.34.0
-		// 型エラーを回避するため一時的にコメントアウト
-		// watchIgnore: ["**/node_modules/**", "**/dist/**"],
 		// キャッシュの有効化
 		cache: {
 			dir: ".vitest-cache",
@@ -39,4 +35,4 @@ export default defineConfig({
 		// 高速失敗を有効化
 		bail: 1,
 	},
-});
+};

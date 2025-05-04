@@ -5,13 +5,13 @@ pre-commit:
   parallel: true
   commands:
     biome-check:
-      glob: "*.{js,jsx,ts,tsx,json,yaml,yml,md}"
+      glob: "**/*.{js,jsx,ts,tsx,json,yaml,yml,md}"
       run: |
         echo "📝 コミット前の検証を実行中..."
         echo "🔍 Biomeによるコードチェックを実行中..."
         pnpm biome check --write {staged_files}
     biome-lint:
-      glob: "*.{js,jsx,ts,tsx}"
+      glob: "**/*.{js,jsx,ts,tsx}"
       run: |
         echo "🔍 Biomeによるリントを実行中..."
         pnpm biome lint --apply {staged_files}
@@ -25,6 +25,10 @@ pre-push:
         echo "🧪 プッシュ前の検証を実行中..."
         echo "🔍 TypeScriptの型チェックを実行中..."
         pnpm typecheck
+    lint:
+      run: |
+        echo "🔍 リントチェックを実行中..."
+        pnpm lint
     test:
       run: |
         echo "🧪 テストを実行中..."

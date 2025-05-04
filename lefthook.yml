@@ -14,7 +14,7 @@ pre-commit:
       glob: "**/*.{js,jsx,ts,tsx}"
       run: |
         echo "🔍 Biomeによるリントを実行中..."
-        pnpm biome lint --apply {staged_files}
+        pnpm biome lint --write {staged_files}
 
 # pre-pushフック設定
 pre-push:

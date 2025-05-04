@@ -56,7 +56,7 @@ jobs:
       - id: get-packages
         name: Get Packages
         run: |
-          echo "packages=[\"apps/web\",\"apps/workers\"]" >> $GITHUB_OUTPUT
+          echo "packages=[\"apps/web\",\"apps/workers\",\"packages/api-client\",\"packages/api-types\",\"packages/db\",\"packages/testing-utils\"]" >> $GITHUB_OUTPUT
 
   build:
     name: Build - ${{ matrix.package }}

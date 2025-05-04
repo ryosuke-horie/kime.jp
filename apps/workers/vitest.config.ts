@@ -25,10 +25,9 @@ export default defineConfig({
 			exclude: ["**/node_modules/**", "**/test/**"],
 		},
 		globals: true,
-		// Vitest 3.1.2ではwatchExcludeからwatchIgnoreに変更されたが型定義にまだ反映されていない
+		// @ts-expect-error: Vitest 3.1.2ではwatchExcludeからwatchIgnoreに変更されたが型定義にまだ反映されていない
 		// https://github.com/vitest-dev/vitest/releases/tag/v0.34.0
-		// 型エラーを回避するため一時的にコメントアウト
-		// watchIgnore: ["**/node_modules/**", "**/dist/**"],
+		watchIgnore: ["**/node_modules/**", "**/dist/**"],
 		// キャッシュの有効化
 		cache: {
 			dir: ".vitest-cache",

@@ -5,18 +5,32 @@ on:
     branches: ["main"]
     paths:
       - '.github/workflows/typecheck.yaml'   # 自身のワークフローファイル
+      # 型に影響するファイル
       - '**/*.ts'                           # TypeScriptファイル
       - '**/*.tsx'                          # React TypeScriptファイル
-      - '**/package.json'                   # パッケージ設定
+      - '**/*.d.ts'                         # 型定義ファイル
+      # TypeScript設定
       - '**/tsconfig*.json'                 # TypeScript設定ファイル
+      - 'tsconfig.base.json'                # ベースTypeScript設定
+      # 依存関係
+      - 'package.json'                      # ルートパッケージ設定
+      - '**/package.json'                   # パッケージ設定
+      - 'pnpm-lock.yaml'                    # 依存関係ロックファイル
   pull_request:
     types: [opened, synchronize]
     paths:
       - '.github/workflows/typecheck.yaml'   # 自身のワークフローファイル
+      # 型に影響するファイル
       - '**/*.ts'                           # TypeScriptファイル
       - '**/*.tsx'                          # React TypeScriptファイル
-      - '**/package.json'                   # パッケージ設定
+      - '**/*.d.ts'                         # 型定義ファイル
+      # TypeScript設定
       - '**/tsconfig*.json'                 # TypeScript設定ファイル
+      - 'tsconfig.base.json'                # ベースTypeScript設定
+      # 依存関係
+      - 'package.json'                      # ルートパッケージ設定
+      - '**/package.json'                   # パッケージ設定
+      - 'pnpm-lock.yaml'                    # 依存関係ロックファイル
 
 jobs:
   setup:

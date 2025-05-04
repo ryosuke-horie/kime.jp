@@ -4,23 +4,37 @@ on:
   push:
     branches: ["main"]
     paths:
-      - '.github/workflows/lint.yaml'  # 自身のワークフローファイル
-      - '**/*.ts'                      # TypeScriptファイル
-      - '**/*.tsx'                     # React TypeScriptファイル
-      - '**/*.js'                      # JavaScriptファイル
-      - '**/*.jsx'                     # React JavaScriptファイル
-      - '**/package.json'              # パッケージ設定
-      - 'biome.json'                   # Biome設定
+      - '.github/workflows/lint.yaml'      # 自身のワークフローファイル
+      - 'biome.json'                       # Biome設定
+      - 'lefthook.yml'                     # Lefthook設定
+      - 'config/biome/**'                  # Biome設定ディレクトリ
+      # コード品質に影響するファイル
+      - '**/*.ts'                          # TypeScriptファイル
+      - '**/*.tsx'                         # React TypeScriptファイル
+      - '**/*.js'                          # JavaScriptファイル
+      - '**/*.jsx'                         # React JavaScriptファイル
+      - '**/*.css'                         # CSSファイル
+      - '**/*.scss'                        # SCSSファイル
+      # 共通設定ファイル
+      - 'package.json'                     # ルートパッケージ設定
+      - 'pnpm-workspace.yaml'              # PNPM ワークスペース設定
   pull_request:
     types: [opened, synchronize]
     paths:
-      - '.github/workflows/lint.yaml'  # 自身のワークフローファイル
-      - '**/*.ts'                      # TypeScriptファイル
-      - '**/*.tsx'                     # React TypeScriptファイル
-      - '**/*.js'                      # JavaScriptファイル
-      - '**/*.jsx'                     # React JavaScriptファイル
-      - '**/package.json'              # パッケージ設定
-      - 'biome.json'                   # Biome設定
+      - '.github/workflows/lint.yaml'      # 自身のワークフローファイル
+      - 'biome.json'                       # Biome設定
+      - 'lefthook.yml'                     # Lefthook設定
+      - 'config/biome/**'                  # Biome設定ディレクトリ
+      # コード品質に影響するファイル
+      - '**/*.ts'                          # TypeScriptファイル
+      - '**/*.tsx'                         # React TypeScriptファイル
+      - '**/*.js'                          # JavaScriptファイル
+      - '**/*.jsx'                         # React JavaScriptファイル
+      - '**/*.css'                         # CSSファイル
+      - '**/*.scss'                        # SCSSファイル
+      # 共通設定ファイル
+      - 'package.json'                     # ルートパッケージ設定
+      - 'pnpm-workspace.yaml'              # PNPM ワークスペース設定
  
 jobs:
   setup:

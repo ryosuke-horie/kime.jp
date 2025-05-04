@@ -4,27 +4,53 @@ on:
   push:
     branches: ["main"]
     paths:
-      - '.github/workflows/test.yaml'  # 自身のワークフローファイル
-      - '**/*.ts'                     # TypeScriptファイル
-      - '**/*.tsx'                    # React TypeScriptファイル
-      - '**/*.js'                     # JavaScriptファイル
-      - '**/*.jsx'                    # React JavaScriptファイル
-      - '**/package.json'             # パッケージ設定
-      - '**/__tests__/**'             # テストファイル
-      - '**/test/**'                  # テストディレクトリ
-      - '**/vitest.config.*'          # Vitest設定ファイル
+      - '.github/workflows/test.yaml'      # 自身のワークフローファイル
+      # テスト関連ファイル
+      - '**/__tests__/**'                  # テストファイル
+      - '**/test/**'                       # テストディレクトリ
+      - '**/*.test.ts'                     # テストファイル
+      - '**/*.test.tsx'                    # Reactテストファイル
+      - '**/*.test.js'                     # JSテストファイル
+      - '**/*.test.jsx'                    # React JSテストファイル
+      - '**/*.spec.ts'                     # テストファイル
+      - '**/*.spec.tsx'                    # Reactテストファイル
+      # テスト設定
+      - '**/vitest.config.*'               # Vitest設定ファイル
+      - '**/jest.config.*'                 # Jest設定ファイル
+      - 'vitest.workspace.ts'              # Vitest ワークスペース設定
+      # ソースコード（テスト対象）
+      - 'apps/*/src/**/*.ts'               # アプリのソースコード
+      - 'apps/*/src/**/*.tsx'              # アプリのReactコード
+      - 'packages/*/src/**/*.ts'           # パッケージのソースコード
+      - 'packages/*/src/**/*.tsx'          # パッケージのReactコード
+      # 共通設定
+      - 'package.json'                     # ルートパッケージ設定
+      - 'pnpm-lock.yaml'                   # 依存関係ロックファイル
   pull_request:
     types: [opened, synchronize]
     paths:
-      - '.github/workflows/test.yaml'  # 自身のワークフローファイル
-      - '**/*.ts'                     # TypeScriptファイル
-      - '**/*.tsx'                    # React TypeScriptファイル
-      - '**/*.js'                     # JavaScriptファイル
-      - '**/*.jsx'                    # React JavaScriptファイル
-      - '**/package.json'             # パッケージ設定
-      - '**/__tests__/**'             # テストファイル
-      - '**/test/**'                  # テストディレクトリ
-      - '**/vitest.config.*'          # Vitest設定ファイル
+      - '.github/workflows/test.yaml'      # 自身のワークフローファイル
+      # テスト関連ファイル
+      - '**/__tests__/**'                  # テストファイル
+      - '**/test/**'                       # テストディレクトリ
+      - '**/*.test.ts'                     # テストファイル
+      - '**/*.test.tsx'                    # Reactテストファイル
+      - '**/*.test.js'                     # JSテストファイル
+      - '**/*.test.jsx'                    # React JSテストファイル
+      - '**/*.spec.ts'                     # テストファイル
+      - '**/*.spec.tsx'                    # Reactテストファイル
+      # テスト設定
+      - '**/vitest.config.*'               # Vitest設定ファイル
+      - '**/jest.config.*'                 # Jest設定ファイル
+      - 'vitest.workspace.ts'              # Vitest ワークスペース設定
+      # ソースコード（テスト対象）
+      - 'apps/*/src/**/*.ts'               # アプリのソースコード
+      - 'apps/*/src/**/*.tsx'              # アプリのReactコード
+      - 'packages/*/src/**/*.ts'           # パッケージのソースコード
+      - 'packages/*/src/**/*.tsx'          # パッケージのReactコード
+      # 共通設定
+      - 'package.json'                     # ルートパッケージ設定
+      - 'pnpm-lock.yaml'                   # 依存関係ロックファイル
 
 jobs:
   setup:

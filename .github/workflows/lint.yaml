@@ -3,8 +3,24 @@ name: Build and Lint
 on:
   push:
     branches: ["main"]
+    paths:
+      - '.github/workflows/lint.yaml'  # 自身のワークフローファイル
+      - '**/*.ts'                      # TypeScriptファイル
+      - '**/*.tsx'                     # React TypeScriptファイル
+      - '**/*.js'                      # JavaScriptファイル
+      - '**/*.jsx'                     # React JavaScriptファイル
+      - '**/package.json'              # パッケージ設定
+      - 'biome.json'                   # Biome設定
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - '.github/workflows/lint.yaml'  # 自身のワークフローファイル
+      - '**/*.ts'                      # TypeScriptファイル
+      - '**/*.tsx'                     # React TypeScriptファイル
+      - '**/*.js'                      # JavaScriptファイル
+      - '**/*.jsx'                     # React JavaScriptファイル
+      - '**/package.json'              # パッケージ設定
+      - 'biome.json'                   # Biome設定
  
 jobs:
   setup:

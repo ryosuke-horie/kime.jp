@@ -3,8 +3,20 @@ name: Type Check
 on:
   push:
     branches: ["main"]
+    paths:
+      - '.github/workflows/typecheck.yaml'   # 自身のワークフローファイル
+      - '**/*.ts'                           # TypeScriptファイル
+      - '**/*.tsx'                          # React TypeScriptファイル
+      - '**/package.json'                   # パッケージ設定
+      - '**/tsconfig*.json'                 # TypeScript設定ファイル
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - '.github/workflows/typecheck.yaml'   # 自身のワークフローファイル
+      - '**/*.ts'                           # TypeScriptファイル
+      - '**/*.tsx'                          # React TypeScriptファイル
+      - '**/package.json'                   # パッケージ設定
+      - '**/tsconfig*.json'                 # TypeScript設定ファイル
 
 jobs:
   setup:

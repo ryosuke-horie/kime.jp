@@ -3,8 +3,28 @@ name: Test
 on:
   push:
     branches: ["main"]
+    paths:
+      - '.github/workflows/test.yaml'  # 自身のワークフローファイル
+      - '**/*.ts'                     # TypeScriptファイル
+      - '**/*.tsx'                    # React TypeScriptファイル
+      - '**/*.js'                     # JavaScriptファイル
+      - '**/*.jsx'                    # React JavaScriptファイル
+      - '**/package.json'             # パッケージ設定
+      - '**/__tests__/**'             # テストファイル
+      - '**/test/**'                  # テストディレクトリ
+      - '**/vitest.config.*'          # Vitest設定ファイル
   pull_request:
     types: [opened, synchronize]
+    paths:
+      - '.github/workflows/test.yaml'  # 自身のワークフローファイル
+      - '**/*.ts'                     # TypeScriptファイル
+      - '**/*.tsx'                    # React TypeScriptファイル
+      - '**/*.js'                     # JavaScriptファイル
+      - '**/*.jsx'                    # React JavaScriptファイル
+      - '**/package.json'             # パッケージ設定
+      - '**/__tests__/**'             # テストファイル
+      - '**/test/**'                  # テストディレクトリ
+      - '**/vitest.config.*'          # Vitest設定ファイル
 
 jobs:
   setup:

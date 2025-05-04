@@ -165,10 +165,11 @@ declare module "@hono/zod-validator" {
 	): (c: Context, next: () => Promise<void>) => Promise<void>;
 }
 
-declare module "zod-to-openapi" {
+declare module "@asteasolutions/zod-to-openapi" {
 	import type { ZodType } from "zod";
 
 	export class OpenAPIRegistry {
+		definitions: Record<string, unknown>;
 		register(name: string, schema: ZodType): void;
 		registerPath(options: {
 			method: string;
@@ -194,16 +195,20 @@ declare module "zod-to-openapi" {
 
 	export function extendZodWithOpenApi(zod: unknown): void;
 
-	export function createDocument(options: {
-		openapi: string;
-		info: {
-			title: string;
-			version: string;
-			description?: string;
-		};
-		servers?: Array<{ url: string; description?: string }>;
-		paths?: Record<string, unknown>;
-		components?: Record<string, unknown>;
-		tags?: Array<{ name: string; description?: string }>;
-	}): Record<string, unknown>;
+	export class OpenAPIGenerator {
+		constructor(definitions: Record<string, unknown>);
+		generateDocument(options: {
+			openapi: string;
+			info: {
+				title: string;
+				version: string;
+				description?: string;
+			};
+			servers?: Array<{ url: string; description?: string }>;
+			security?: Array<Record<string, string[]>>;
+			paths?: Record<string, unknown>;
+			components?: Record<string, unknown>;
+			tags?: Array<{ name: string; description?: string }>;
+		}): Record<string, unknown>;
+	}
 }

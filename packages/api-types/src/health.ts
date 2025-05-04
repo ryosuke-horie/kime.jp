@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { registry } from "./openapi/config";
 
 // ヘルスチェックレスポンススキーマ
 export const HealthCheckResponse = z.object({
@@ -7,4 +8,34 @@ export const HealthCheckResponse = z.object({
 	version: z.string().describe("APIのバージョン"),
 });
 
+// OpenAPIスキーマに登録
+registry.register("HealthCheckResponse", HealthCheckResponse);
+
 export type HealthCheckResponseType = z.infer<typeof HealthCheckResponse>;
+
+// ヘルスチェックエンドポイントの定義
+registry.registerPath({
+	method: "get",
+	path: "/health",
+	tags: ["health"],
+	summary: "APIのヘルスチェック",
+	description: "APIサーバーの状態を確認します",
+	responses: {
+		200: {
+			description: "APIサーバーが正常動作中",
+			content: {
+				"application/json": {
+					schema: registry.getRef("HealthCheckResponse"),
+				},
+			},
+		},
+		500: {
+			description: "サーバーエラー",
+			content: {
+				"application/json": {
+					schema: registry.getRef("ErrorResponse"),
+				},
+			},
+		},
+	},
+});

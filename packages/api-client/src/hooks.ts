@@ -5,14 +5,14 @@
  */
 import {
 	API_BASE_URL,
-	CreateGymRequestType,
-	CreateGymResponseType,
-	GymDetailResponseType,
-	GymListResponseType,
-	HealthCheckResponseType,
-	SuccessResponseType,
-	UpdateGymRequestType,
-} from "./client";
+	type CreateGymRequestType,
+	type CreateGymResponseType,
+	type GymDetailResponseType,
+	type GymListResponseType,
+	type HealthCheckResponseType,
+	type SuccessResponseType,
+	type UpdateGymRequestType,
+} from "@kime/api-types";
 
 /**
  * 環境設定を取得する（Next.jsアプリケーション内で実装）
@@ -20,11 +20,17 @@ import {
 const getEnvironment = (): keyof typeof API_BASE_URL => {
 	// Next.jsの環境変数に基づいて環境を判定（実際の実装はNext.jsプロジェクト内で行う）
 	// @ts-ignore - NODE_ENVはNext.jsのコンテキストで利用可能
-	if (typeof process !== 'undefined' && process.env?.NODE_ENV === "production") {
+	if (
+		typeof process !== "undefined" &&
+		process.env?.NODE_ENV === "production"
+	) {
 		return "production";
 	}
 	// @ts-ignore - NEXT_PUBLIC_USE_STAGINGはNext.jsのコンテキストで利用可能
-	if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_USE_STAGING === "true") {
+	if (
+		typeof process !== "undefined" &&
+		process.env?.NEXT_PUBLIC_USE_STAGING === "true"
+	) {
 		return "staging";
 	}
 	return "development";
@@ -49,7 +55,7 @@ const apiConfig = {
 export const useHealthCheck = () => {
 	// React QueryやSWRを使った実装
 	// 例: return useQuery<HealthCheckResponseType>(['health'], () => fetchApi('/health'));
-	
+
 	// サンプル実装として同期的に関数を返す
 	return {
 		fetchHealth: async (): Promise<HealthCheckResponseType> => {
@@ -67,7 +73,7 @@ export const useHealthCheck = () => {
 export const useGyms = () => {
 	// React QueryやSWRを使った実装
 	// 例: return useQuery<GymListResponseType>(['gyms'], () => fetchApi('/api/gyms/admin'));
-	
+
 	// サンプル実装として同期的に関数を返す
 	return {
 		fetchGyms: async (page = 1, limit = 20): Promise<GymListResponseType> => {
@@ -88,7 +94,7 @@ export const useGyms = () => {
 export const useGym = (gymId: string) => {
 	// React QueryやSWRを使った実装
 	// 例: return useQuery<GymDetailResponseType>(['gym', gymId], () => fetchApi(`/api/gyms/${gymId}`));
-	
+
 	// サンプル実装として同期的に関数を返す
 	return {
 		fetchGym: async (): Promise<GymDetailResponseType> => {
@@ -106,10 +112,12 @@ export const useGym = (gymId: string) => {
 export const useCreateGym = () => {
 	// React QueryやSWRを使った実装
 	// 例: return useMutation<CreateGymResponseType, Error, CreateGymRequestType>(...)
-	
+
 	// サンプル実装として同期的に関数を返す
 	return {
-		createGym: async (data: CreateGymRequestType): Promise<CreateGymResponseType> => {
+		createGym: async (
+			data: CreateGymRequestType,
+		): Promise<CreateGymResponseType> => {
 			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin`, {
 				method: "POST",
 				headers: apiConfig.headers,
@@ -126,15 +134,20 @@ export const useCreateGym = () => {
 export const useUpdateGym = (gymId: string) => {
 	// React QueryやSWRを使った実装
 	// 例: return useMutation<SuccessResponseType, Error, UpdateGymRequestType>(...)
-	
+
 	// サンプル実装として同期的に関数を返す
 	return {
-		updateGym: async (data: UpdateGymRequestType): Promise<SuccessResponseType> => {
-			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
-				method: "PATCH",
-				headers: apiConfig.headers,
-				body: JSON.stringify(data),
-			});
+		updateGym: async (
+			data: UpdateGymRequestType,
+		): Promise<SuccessResponseType> => {
+			const response = await fetch(
+				`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`,
+				{
+					method: "PATCH",
+					headers: apiConfig.headers,
+					body: JSON.stringify(data),
+				},
+			);
 			return response.json();
 		},
 	};
@@ -146,14 +159,17 @@ export const useUpdateGym = (gymId: string) => {
 export const useDeleteGym = (gymId: string) => {
 	// React QueryやSWRを使った実装
 	// 例: return useMutation<SuccessResponseType>(() => fetchApi(`/api/gyms/admin/${gymId}`, { method: 'DELETE' }))
-	
+
 	// サンプル実装として同期的に関数を返す
 	return {
 		deleteGym: async (): Promise<SuccessResponseType> => {
-			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
-				method: "DELETE",
-				headers: apiConfig.headers,
-			});
+			const response = await fetch(
+				`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`,
+				{
+					method: "DELETE",
+					headers: apiConfig.headers,
+				},
+			);
 			return response.json();
 		},
 	};

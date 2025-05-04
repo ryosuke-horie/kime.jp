@@ -24,16 +24,16 @@ pre-push:
       run: |
         echo "🧪 プッシュ前の検証を実行中..."
         echo "🔍 TypeScriptの型チェックを実行中..."
-        pnpm typecheck || echo "⚠️ 型チェックに一部エラーがありますが、継続します"
+        pnpm typecheck
     lint:
       run: |
         echo "🔍 リントチェックを実行中..."
-        pnpm lint || echo "⚠️ リントに一部エラーがありますが、継続します"
+        pnpm lint
     build:
       run: |
         echo "🔨 ビルド検証を実行中..."
-        pnpm build || echo "⚠️ ビルドに一部エラーがありますが、継続します"
+        pnpm build
     test:
       run: |
         echo "🧪 テストを実行中..."
-        pnpm test || echo "⚠️ テストに一部失敗がありますが、継続します"
+        pnpm test

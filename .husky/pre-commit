@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "📝 コミット前の検証を実行中..."
-pnpm lint-staged

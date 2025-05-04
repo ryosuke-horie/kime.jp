@@ -29,6 +29,10 @@ pre-push:
       run: |
         echo "🔍 リントチェックを実行中..."
         pnpm lint || echo "⚠️ リントに一部エラーがありますが、継続します"
+    build:
+      run: |
+        echo "🔨 ビルド検証を実行中..."
+        pnpm build || echo "⚠️ ビルドに一部エラーがありますが、継続します"
     test:
       run: |
         echo "🧪 テストを実行中..."

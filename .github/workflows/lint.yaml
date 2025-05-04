@@ -35,6 +35,11 @@ on:
       # 共通設定ファイル
       - 'package.json'                     # ルートパッケージ設定
       - 'pnpm-workspace.yaml'              # PNPM ワークスペース設定
+
+# 同一PRの古いジョブを自動的にキャンセルする設定
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
  
 jobs:
   setup:

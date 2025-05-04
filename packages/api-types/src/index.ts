@@ -1,8 +1,5 @@
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
-import { z } from "zod";
-
-// Zodを拡張して、OpenAPIメタデータ追加メソッドを提供
-extendZodWithOpenApi(z);
+// CommonJS環境との互換性のために型情報をエクスポート
+// ここでは重複してextendZodWithOpenApiを行わない
 
 // 共通型
 export * from "./common";

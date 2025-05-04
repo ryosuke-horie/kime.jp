@@ -3,7 +3,7 @@
  * @param config ユーザー設定
  * @returns マージされた設定オブジェクト
  */
-export const defineSharedConfig = (config: any) => {
+export const defineSharedConfig = (config: Record<string, unknown>) => {
 	// Vitestの設定をマージする
 	return {
 		test: {
@@ -18,7 +18,7 @@ export const defineSharedConfig = (config: any) => {
 			outputFile: {
 				json: "./test-results.json",
 			},
-			...(config.test || {})
+			...(config.test || {}),
 		},
 		...config,
 	};

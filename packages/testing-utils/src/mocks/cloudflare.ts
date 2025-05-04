@@ -4,7 +4,9 @@
  * Cloudflare環境のモックを作成する
  * カスタムモックを渡すことで特定のテストケース向けに挙動をカスタマイズ可能
  */
-export const createCloudflareEnvMock = (customMocks: Record<string, unknown> = {}) => {
+export const createCloudflareEnvMock = (
+	customMocks: Record<string, unknown> = {},
+) => {
 	return {
 		DB_DO: {
 			idFromName: vi.fn().mockReturnValue("test-id"),

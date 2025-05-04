@@ -1,4 +1,4 @@
-import { OpenAPIGenerator } from "zod-to-openapi";
+import { OpenApiGeneratorV3 as OpenAPIGenerator } from "@asteasolutions/zod-to-openapi";
 import { apiInfo, registry, securitySchemes, servers, tags } from "./config";
 
 /**

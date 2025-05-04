@@ -1,84 +1,14 @@
-// API URLの定義
-export const API_BASE_URL = {
-	production: "https://api.kime.jp",
-	staging: "https://api-staging.kime.jp",
-	development: "http://localhost:8787",
-};
-
-// レスポンス型
-export interface ErrorResponseType {
-	error: string;
-	details?: {
-		path: string;
-		message: string;
-	}[];
-}
-
-export interface SuccessResponseType {
-	success: boolean;
-	message?: string;
-}
-
-// ヘルスチェック
-export interface HealthCheckResponseType {
-	status: "ok";
-	version: string;
-	environment: string;
-}
-
-// ジム関連
-export interface GymDetailResponseType {
-	id: string;
-	name: string;
-	address: string;
-	phone?: string;
-	email?: string;
-	website?: string;
-	description?: string;
-	activeStatus: "active" | "inactive";
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface GymListResponseType {
-	items: GymDetailResponseType[];
-	total: number;
-	page: number;
-	pageSize: number;
-	hasMore: boolean;
-}
-
-export interface CreateGymRequestType {
-	name: string;
-	address: string;
-	phone?: string;
-	email?: string;
-	website?: string;
-	description?: string;
-}
-
-export interface CreateGymResponseType {
-	id: string;
-	name: string;
-	address: string;
-	phone?: string;
-	email?: string;
-	website?: string;
-	description?: string;
-	activeStatus: "active";
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface UpdateGymRequestType {
-	name?: string;
-	address?: string;
-	phone?: string;
-	email?: string;
-	website?: string;
-	description?: string;
-	activeStatus?: "active" | "inactive";
-}
+import {
+	API_BASE_URL,
+	type CreateGymRequestType,
+	type CreateGymResponseType,
+	type ErrorResponseType,
+	type GymDetailResponseType,
+	type GymListResponseType,
+	type HealthCheckResponseType,
+	type SuccessResponseType,
+	type UpdateGymRequestType,
+} from "@kime/api-types";
 
 /**
  * API接続用クライアントクラス
@@ -95,12 +25,9 @@ export class ApiClient {
 	 * @param env 環境設定（production/staging/development）
 	 * @param apiKey APIキー（管理者用APIなど）
 	 */
-	constructor(
-		env: keyof typeof API_BASE_URL = "development",
-		apiKey?: string,
-	) {
+	constructor(env: keyof typeof API_BASE_URL = "development", apiKey?: string) {
 		this.baseUrl = API_BASE_URL[env];
-		
+
 		if (apiKey) {
 			this.apiKey = apiKey;
 			this.headers["X-API-Key"] = apiKey;
@@ -116,10 +43,10 @@ export class ApiClient {
 	): Promise<T> {
 		const url = `${this.baseUrl}${path}`;
 		// APIキーがあれば認証ヘッダーを追加（ここで使用することでTS6133エラーを回避）
-		const headersWithAuth = this.apiKey 
-			? { ...this.headers, "Authorization": `Bearer ${this.apiKey}` }
+		const headersWithAuth = this.apiKey
+			? { ...this.headers, Authorization: `Bearer ${this.apiKey}` }
 			: this.headers;
-			
+
 		const response = await fetch(url, {
 			...options,
 			headers: {
@@ -145,10 +72,7 @@ export class ApiClient {
 	}
 
 	// ジム一覧取得（管理者用）
-	async getGyms(
-		page = 1,
-		limit = 20,
-	): Promise<GymListResponseType> {
+	async getGyms(page = 1, limit = 20): Promise<GymListResponseType> {
 		return this.fetchApi<GymListResponseType>(
 			`/api/gyms/admin?page=${page}&limit=${limit}`,
 		);
@@ -160,9 +84,7 @@ export class ApiClient {
 	}
 
 	// ジム作成（管理者用）
-	async createGym(
-		data: CreateGymRequestType,
-	): Promise<CreateGymResponseType> {
+	async createGym(data: CreateGymRequestType): Promise<CreateGymResponseType> {
 		return this.fetchApi<CreateGymResponseType>("/api/gyms/admin", {
 			method: "POST",
 			body: JSON.stringify(data),

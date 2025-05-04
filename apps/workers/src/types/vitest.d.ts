@@ -13,8 +13,12 @@ declare module "vitest" {
 		toBeTruthy(): void;
 		toBeFalsy(): void;
 		toContain(expected: unknown): void;
-		toThrow(expected?: string | RegExp | Error | Function): void;
-		toThrowError(expected?: string | RegExp | Error | Function): void;
+		toThrow(
+			expected?: string | RegExp | Error | ((...args: unknown[]) => unknown),
+		): void;
+		toThrowError(
+			expected?: string | RegExp | Error | ((...args: unknown[]) => unknown),
+		): void;
 		toHaveBeenCalled(): void;
 		toHaveBeenCalledTimes(expected: number): void;
 		toHaveBeenCalledWith(...args: unknown[]): void;
@@ -24,7 +28,7 @@ declare module "vitest" {
 		toBeGreaterThanOrEqual(expected: number): void;
 		toBeLessThan(expected: number): void;
 		toBeLessThanOrEqual(expected: number): void;
-		toBeInstanceOf(expected: Function): void;
+		toBeInstanceOf(expected: new (...args: unknown[]) => unknown): void;
 		toMatch(expected: string | RegExp): void;
 		toMatchObject(expected: object): void;
 		not: ExpectMethods<T>;
@@ -43,8 +47,8 @@ declare module "vitest" {
 			object: T,
 			method: K,
 		): jest.SpyInstance<
-			ReturnType<T[K] extends Function ? T[K] : never>,
-			Parameters<T[K] extends Function ? T[K] : never>
+			ReturnType<T[K] extends (...args: unknown[]) => unknown ? T[K] : never>,
+			Parameters<T[K] extends (...args: unknown[]) => unknown ? T[K] : never>
 		>;
 		mock<T extends string>(path: T, factory?: () => unknown): void;
 		stubGlobal<T extends keyof typeof globalThis>(

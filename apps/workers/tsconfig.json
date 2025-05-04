@@ -17,7 +17,7 @@
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts"],
 	"exclude": [
-		"src/objects/DatabaseDO.ts", 
+		"src/objects/DatabaseDO.ts",
 		"src/test/mocks.ts",
 		"src/schemas/**/*.ts",
 		"src/features/**/*.ts",

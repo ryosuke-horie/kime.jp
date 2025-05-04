@@ -1,7 +1,7 @@
 // NextConfigを直接インポートするのではなく、型のみを定義
 type NextConfig = {
 	/* config options here */
-	[key: string]: any;
+	[key: string]: unknown;
 };
 
 const nextConfig: NextConfig = {

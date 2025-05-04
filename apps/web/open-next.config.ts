@@ -1,8 +1,8 @@
 // @opennextjs/cloudflareの代わりに直接設定オブジェクトを作成
 // CloudflareConfig型を定義
 type CloudflareConfig = {
-	incrementalCache?: any;
-	[key: string]: any;
+	incrementalCache?: unknown;
+	[key: string]: unknown;
 };
 
 // 設定オブジェクトを作成

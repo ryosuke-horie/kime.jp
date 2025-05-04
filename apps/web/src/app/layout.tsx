@@ -2,7 +2,7 @@
 type Metadata = {
 	title?: string;
 	description?: string;
-	[key: string]: any;
+	[key: string]: unknown;
 };
 
 import "./globals.css";

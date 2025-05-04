@@ -1,5 +1,9 @@
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
 import { registry } from "./openapi/config";
+
+// zodをOpenAPI拡張
+extendZodWithOpenApi(z);
 
 // 共通のエラーレスポンス型
 export const ErrorResponse = z.object({

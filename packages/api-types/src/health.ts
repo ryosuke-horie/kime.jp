@@ -1,5 +1,10 @@
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
+import { ErrorResponse } from "./common";
 import { registry } from "./openapi/config";
+
+// zodをOpenAPI拡張
+extendZodWithOpenApi(z);
 
 // ヘルスチェックレスポンススキーマ
 export const HealthCheckResponse = z.object({
@@ -25,7 +30,7 @@ registry.registerPath({
 			description: "APIサーバーが正常動作中",
 			content: {
 				"application/json": {
-					schema: registry.getRef("HealthCheckResponse"),
+					schema: HealthCheckResponse,
 				},
 			},
 		},
@@ -33,7 +38,7 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponse,
 				},
 			},
 		},

@@ -52,6 +52,11 @@ on:
       - 'package.json'                     # ルートパッケージ設定
       - 'pnpm-lock.yaml'                   # 依存関係ロックファイル
 
+# 同一PRの古いジョブを自動的にキャンセルする設定
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   setup:
     name: Setup

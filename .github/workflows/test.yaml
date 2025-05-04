@@ -66,30 +66,3 @@ jobs:
           path: |
             ${{ matrix.package }}/coverage/
           retention-days: 14
-
-  upload-coverage:
-    name: Upload Combined Coverage Reports
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
-        with:
-          path: artifacts
-          pattern: coverage-reports-*
-          merge-multiple: true
-
-      - name: Combine coverage reports
-        run: |
-          mkdir -p coverage-combined
-          cp -r artifacts/* coverage-combined/ || true
-
-      - name: Upload combined coverage reports
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: coverage-reports
-          path: coverage-combined
-          retention-days: 14

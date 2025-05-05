@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function AuthError() {
+function AuthErrorContent() {
 	const searchParams = useSearchParams();
 	const error = searchParams.get("error");
 
@@ -81,5 +82,25 @@ export default function AuthError() {
 				</CardFooter>
 			</Card>
 		</div>
+	);
+}
+
+export default function AuthError() {
+	return (
+		<Suspense
+			fallback={
+				<div className="container flex items-center justify-center min-h-screen">
+					<Card className="w-full max-w-md mx-auto">
+						<CardHeader className="space-y-1 text-center">
+							<CardTitle className="text-2xl font-bold">
+								読み込み中...
+							</CardTitle>
+						</CardHeader>
+					</Card>
+				</div>
+			}
+		>
+			<AuthErrorContent />
+		</Suspense>
 	);
 }

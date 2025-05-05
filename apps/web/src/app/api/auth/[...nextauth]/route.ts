@@ -1,9 +1,18 @@
 import NextAuth from "next-auth";
+import type { AuthOptions, JWT, Session, SessionStrategy } from "next-auth";
+import type { DefaultUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";
 
-export const authOptions = {
+// 拡張されたユーザータイプ
+interface ExtendedUser extends DefaultUser {
+  id?: string;
+  role?: string;
+}
+
+// 認証設定オプション
+const authOptions: AuthOptions = {
 	// シークレットキー（本番環境では環境変数から取得）
 	secret: process.env.NEXTAUTH_SECRET || "your-development-secret-key",
 
@@ -43,8 +52,9 @@ export const authOptions = {
 				// 実際のアプリでは、ここでDBからユーザーを検証するロジックを実装
 				// この例では、特定のメールとパスワードを受け入れる単純な例
 				if (
-					credentials?.email === process.env.ADMIN_EMAIL &&
-					credentials?.password === process.env.ADMIN_PASSWORD
+					credentials &&
+					credentials.email === process.env.ADMIN_EMAIL &&
+					credentials.password === process.env.ADMIN_PASSWORD
 				) {
 					return {
 						id: "1",
@@ -60,7 +70,7 @@ export const authOptions = {
 
 	// セッション設定
 	session: {
-		strategy: "jwt",
+		strategy: "jwt" as SessionStrategy,
 		maxAge: 30 * 24 * 60 * 60, // 30日間
 	},
 
@@ -73,15 +83,16 @@ export const authOptions = {
 
 	// コールバック
 	callbacks: {
-		async session({ session, token }) {
+		async session({ session, token }: { session: Session; token: JWT }) {
 			// セッションにユーザー情報を追加
 			if (token && session.user) {
-				session.user.id = token.sub as string;
-				session.user.role = token.role as string;
+				const user = session.user as ExtendedUser;
+				user.id = token.sub as string;
+				user.role = token.role as string;
 			}
 			return session;
 		},
-		async jwt({ token, user }) {
+		async jwt({ token, user }: { token: JWT; user: ExtendedUser | undefined }) {
 			// 初回サインイン時にユーザー情報をトークンに含める
 			if (user) {
 				token.role = user.role;

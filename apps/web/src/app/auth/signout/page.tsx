@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function SignOut() {
 	const router = useRouter();

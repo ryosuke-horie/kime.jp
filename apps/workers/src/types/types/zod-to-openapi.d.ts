@@ -3,7 +3,7 @@ declare module "@asteasolutions/zod-to-openapi" {
 
 	export class OpenAPIRegistry {
 		definitions: Record<string, unknown>;
-		register(name: string, schema: ZodType): void;
+		register(name: string, schema: ZodType): ZodType;
 		registerPath(options: {
 			method: string;
 			path: string;
@@ -15,6 +15,7 @@ declare module "@asteasolutions/zod-to-openapi" {
 			requestBody?: unknown;
 			responses: Record<string, unknown>;
 		}): void;
+		// ビルドエラー対応のため一時的に修正
 		getRef(name: string): { $ref: string };
 	}
 

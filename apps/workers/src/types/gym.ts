@@ -89,6 +89,24 @@ registry.register("GymDetailResponse", GymDetailResponse);
 
 export type GymDetailResponseType = z.infer<typeof GymDetailResponse>;
 
+// テスト用エラーレスポンススキーマ定義
+const ErrorResponseSchema = {
+	type: "object",
+	properties: {
+		error: { type: "string" }
+	},
+	required: ["error"]
+};
+
+// テスト用成功レスポンススキーマ定義
+const SuccessResponseSchema = {
+	type: "object",
+	properties: {
+		message: { type: "string" }
+	},
+	required: ["message"]
+};
+
 // ジム一覧取得エンドポイント（管理者用）
 registry.registerPath({
 	method: "get",
@@ -118,7 +136,7 @@ registry.registerPath({
 			description: "ジム一覧の取得成功",
 			content: {
 				"application/json": {
-					schema: registry.getRef("GymListResponse"),
+					schema: GymListResponse,
 				},
 			},
 		},
@@ -126,7 +144,7 @@ registry.registerPath({
 			description: "認証エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -134,7 +152,7 @@ registry.registerPath({
 			description: "権限エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -142,7 +160,7 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -161,7 +179,7 @@ registry.registerPath({
 		description: "ジム情報",
 		content: {
 			"application/json": {
-				schema: registry.getRef("CreateGymRequest"),
+				schema: CreateGymRequest,
 			},
 		},
 		required: true,
@@ -171,7 +189,7 @@ registry.registerPath({
 			description: "ジム登録成功",
 			content: {
 				"application/json": {
-					schema: registry.getRef("CreateGymResponse"),
+					schema: CreateGymResponse,
 				},
 			},
 		},
@@ -179,7 +197,7 @@ registry.registerPath({
 			description: "入力エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -187,7 +205,7 @@ registry.registerPath({
 			description: "認証エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -195,7 +213,7 @@ registry.registerPath({
 			description: "権限エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -203,7 +221,7 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -231,7 +249,7 @@ registry.registerPath({
 			description: "ジム詳細の取得成功",
 			content: {
 				"application/json": {
-					schema: registry.getRef("GymDetailResponse"),
+					schema: GymDetailResponse,
 				},
 			},
 		},
@@ -239,7 +257,7 @@ registry.registerPath({
 			description: "ジムが見つかりません",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -247,7 +265,7 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -275,7 +293,7 @@ registry.registerPath({
 		description: "更新するジム情報",
 		content: {
 			"application/json": {
-				schema: registry.getRef("UpdateGymRequest"),
+				schema: UpdateGymRequest,
 			},
 		},
 		required: true,
@@ -285,7 +303,7 @@ registry.registerPath({
 			description: "ジム情報の更新成功",
 			content: {
 				"application/json": {
-					schema: registry.getRef("SuccessResponse"),
+					schema: SuccessResponseSchema,
 				},
 			},
 		},
@@ -293,7 +311,7 @@ registry.registerPath({
 			description: "入力エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -301,7 +319,7 @@ registry.registerPath({
 			description: "認証エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -309,7 +327,7 @@ registry.registerPath({
 			description: "権限エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -317,7 +335,7 @@ registry.registerPath({
 			description: "ジムが見つかりません",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -325,7 +343,7 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -354,7 +372,7 @@ registry.registerPath({
 			description: "ジムの削除成功",
 			content: {
 				"application/json": {
-					schema: registry.getRef("SuccessResponse"),
+					schema: SuccessResponseSchema,
 				},
 			},
 		},
@@ -362,7 +380,7 @@ registry.registerPath({
 			description: "認証エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -370,7 +388,7 @@ registry.registerPath({
 			description: "権限エラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -378,7 +396,7 @@ registry.registerPath({
 			description: "ジムが見つかりません",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},
@@ -386,7 +404,7 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					schema: ErrorResponseSchema,
 				},
 			},
 		},

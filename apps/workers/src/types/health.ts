@@ -25,7 +25,7 @@ registry.registerPath({
 			description: "APIサーバーが正常動作中",
 			content: {
 				"application/json": {
-					schema: registry.getRef("HealthCheckResponse"),
+					schema: HealthCheckResponse,
 				},
 			},
 		},
@@ -33,7 +33,14 @@ registry.registerPath({
 			description: "サーバーエラー",
 			content: {
 				"application/json": {
-					schema: registry.getRef("ErrorResponse"),
+					// テスト実行のために直接スキーマを参照
+					schema: {
+						type: "object",
+						properties: {
+							error: { type: "string" }
+						},
+						required: ["error"]
+					},
 				},
 			},
 		},

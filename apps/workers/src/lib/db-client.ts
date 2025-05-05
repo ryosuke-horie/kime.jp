@@ -1,5 +1,5 @@
-import * as schema from "../db";
 import { drizzle } from "drizzle-orm/d1";
+import * as schema from "../db";
 
 /**
  * D1データベースのDrizzleクライアントを初期化する

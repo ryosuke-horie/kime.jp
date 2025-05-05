@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useState } from "react";
-import { z } from "zod";
 import ConfirmationStep from "./steps/ConfirmationStep";
 import DateSelectionStep from "./steps/DateSelectionStep";
 import PersonalInfoStep from "./steps/PersonalInfoStep";
@@ -119,7 +118,7 @@ export default function ReservationWizard() {
 					<div
 						className="bg-primary h-2 rounded-full"
 						style={{ width: `${progress}%` }}
-					></div>
+					/>
 				</div>
 			</div>
 		);
@@ -137,7 +136,7 @@ export default function ReservationWizard() {
 						戻る
 					</Button>
 				) : (
-					<div></div> // 最初のステップでは「戻る」ボタンを表示しない代わりの空要素
+					<div /> // 最初のステップでは「戻る」ボタンを表示しない代わりの空要素
 				)}
 				<Button onClick={nextStep} disabled={isNextButtonDisabled()}>
 					{getNextButtonText()}

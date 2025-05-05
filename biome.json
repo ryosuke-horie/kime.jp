@@ -15,8 +15,8 @@
 			"*/node_modules",
 			"*/cloudflare-env.d.ts",
 			"*/worker-configuration.d.ts",
-            "apps/web/src/components/ui/**/*",
-            "apps/web/src/hooks/use-mobile.ts"
+			"apps/web/src/components/ui/**/*",
+			"apps/web/src/hooks/use-mobile.ts"
 		]
 	},
 	"formatter": {
@@ -34,9 +34,7 @@
 				"noExplicitAny": "error"
 			}
 		},
-		"ignore": [
-			"**/worker-configuration.d.ts"
-		]
+		"ignore": ["**/worker-configuration.d.ts"]
 	},
 	"javascript": {
 		"formatter": {

@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default function ReservationCompletePage({
 	searchParams,
 }: {
-	searchParams: { bookingId?: string };
+	searchParams: { bookingId?: string } | {}
 }) {
-	const bookingId = searchParams.bookingId || "unknown";
+	const bookingId = 'bookingId' in searchParams ? searchParams.bookingId || "unknown" : "unknown";
 
 	return (
 		<div className="container mx-auto py-6 px-4 max-w-3xl">

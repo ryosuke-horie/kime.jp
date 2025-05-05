@@ -17,7 +17,7 @@ type ConfirmationStepProps = {
 
 export default function ConfirmationStep({
 	formData,
-	updateFormData,
+	// updateFormData, // 未使用
 }: ConfirmationStepProps) {
 	const router = useRouter();
 	const [isSubmitting, setIsSubmitting] = useState(false);

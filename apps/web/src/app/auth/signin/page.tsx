@@ -16,9 +16,9 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
-export default function SignIn() {
+function SignInContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const callbackUrl = searchParams.get("callbackUrl") || "/staff/dashboard";
@@ -208,5 +208,21 @@ export default function SignIn() {
 				</CardFooter>
 			</Card>
 		</div>
+	);
+}
+
+export default function SignIn() {
+	return (
+		<Suspense fallback={
+			<div className="container flex items-center justify-center min-h-screen">
+				<Card className="w-full max-w-md mx-auto">
+					<CardHeader className="space-y-1 text-center">
+						<CardTitle className="text-2xl font-bold">読み込み中...</CardTitle>
+					</CardHeader>
+				</Card>
+			</div>
+		}>
+			<SignInContent />
+		</Suspense>
 	);
 }

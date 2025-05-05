@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import type { AuthOptions, Session, SessionStrategy } from "next-auth";
-import type { JWT } from "next-auth/jwt";
 import type { User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import LineProvider from "next-auth/providers/line";

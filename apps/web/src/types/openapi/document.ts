@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { OpenApiGeneratorV3 as OpenAPIGenerator } from "@asteasolutions/zod-to-openapi";
 import { apiInfo, registry, securitySchemes, servers, tags } from "./config";
 

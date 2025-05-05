@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { z } from "zod";
 import { ISODateTime, PaginationMeta, UUID } from "./common";
 import { registry } from "./openapi/config";

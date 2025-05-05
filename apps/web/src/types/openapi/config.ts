@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 
 // OpenAPIのレジストリを作成

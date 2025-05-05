@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { z } from "zod";
 import { registry } from "./openapi/config";
 

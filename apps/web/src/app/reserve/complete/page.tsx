@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 	description: "格闘技ジムの予約が完了しました",
 };
 
-type Props = {
-	params: {};
-	searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export default function ReservationCompletePage({ searchParams }: Props) {
-	const bookingId = typeof searchParams.bookingId === 'string' ? searchParams.bookingId : "unknown";
+// Next.js 15のPagePropsはここで対応
+export default function ReservationCompletePage({ 
+	searchParams
+}: { 
+	searchParams?: Record<string, string | string[] | undefined>
+}) {
+	const bookingId = searchParams && typeof searchParams.bookingId === 'string' ? searchParams.bookingId : "unknown";
 
 	return (
 		<div className="container mx-auto py-6 px-4 max-w-3xl">

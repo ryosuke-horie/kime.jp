@@ -1,2 +1,2 @@
-// @kime/api-typesパッケージからすべてをエクスポート
-export * from "@kime/api-types";
+// 型定義をエクスポート
+export * from "../types";

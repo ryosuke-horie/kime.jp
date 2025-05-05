@@ -1,4 +1,4 @@
-import * as schema from "@kime/db";
+import * as schema from "../db";
 import { drizzle } from "drizzle-orm/d1";
 
 /**

@@ -9,12 +9,13 @@ export const metadata: Metadata = {
 	description: "格闘技ジムの予約が完了しました",
 };
 
-export default function ReservationCompletePage({
-	searchParams,
-}: {
-	searchParams: { bookingId?: string } | {}
-}) {
-	const bookingId = 'bookingId' in searchParams ? searchParams.bookingId || "unknown" : "unknown";
+type Props = {
+	params: {};
+	searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default function ReservationCompletePage({ searchParams }: Props) {
+	const bookingId = typeof searchParams.bookingId === 'string' ? searchParams.bookingId : "unknown";
 
 	return (
 		<div className="container mx-auto py-6 px-4 max-w-3xl">

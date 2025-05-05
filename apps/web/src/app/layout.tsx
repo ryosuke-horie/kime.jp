@@ -1,11 +1,6 @@
-// Next.jsの型定義
-type Metadata = {
-	title?: string;
-	description?: string;
-	[key: string]: unknown;
-};
-
 import "./globals.css";
+import AuthProvider from "@/contexts/auth-provider";
+import type { Metadata } from "next";
 
 const geistSans = {
 	variable: "--font-geist-sans",
@@ -34,7 +29,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				{children}
+				<AuthProvider>{children}</AuthProvider>
 			</body>
 		</html>
 	);

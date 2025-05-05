@@ -6,7 +6,6 @@ on:
     paths:
       - '.github/workflows/web.yaml'      # 自身のワークフローファイル
       - 'apps/web/**'                     # webアプリのソースコード全体
-      - 'packages/**'                     # 依存するパッケージ（すべて含む）
       - 'biome.json'                      # Biome設定
       - 'lefthook.yml'                    # Lefthook設定
       - 'config/biome/**'                 # Biome設定ディレクトリ
@@ -18,7 +17,6 @@ on:
     paths:
       - '.github/workflows/web.yaml'      # 自身のワークフローファイル
       - 'apps/web/**'                     # webアプリのソースコード全体
-      - 'packages/**'                     # 依存するパッケージ（すべて含む）
       - 'biome.json'                      # Biome設定
       - 'lefthook.yml'                    # Lefthook設定
       - 'config/biome/**'                 # Biome設定ディレクトリ

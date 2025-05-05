@@ -8,7 +8,7 @@ import {
 	type HealthCheckResponseType,
 	type SuccessResponseType,
 	type UpdateGymRequestType,
-} from "../api-types";
+} from "../types";
 
 /**
  * API接続用クライアントクラス

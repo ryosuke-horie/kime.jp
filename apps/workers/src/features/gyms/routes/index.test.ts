@@ -57,46 +57,46 @@ describe("Gym Router", () => {
 
 		// モック環境の準備
 		mockEnv = createCloudflareEnvMock();
-		
+
 		// モックのDO取得メソッドを上書き
 		vi.mock("../../../lib/do-client", () => ({
 			getDatabaseClient: vi.fn().mockImplementation(() => ({
 				getOne: vi.fn().mockResolvedValue({
 					success: true,
-					data: { 
-						id: "123e4567-e89b-12d3-a456-426614174000", 
+					data: {
+						id: "123e4567-e89b-12d3-a456-426614174000",
 						name: "Test Gym",
-						gymId: "123e4567-e89b-12d3-a456-426614174000", 
+						gymId: "123e4567-e89b-12d3-a456-426614174000",
 						timezone: "Asia/Tokyo",
 						ownerEmail: "test@example.com",
 						plan: "basic",
 						createdAt: "2023-01-01T00:00:00Z",
-						updatedAt: "2023-01-01T00:00:00Z"
+						updatedAt: "2023-01-01T00:00:00Z",
 					},
 				}),
 				list: vi.fn().mockResolvedValue({
 					success: true,
 					data: [
-						{ 
-							id: "item1", 
+						{
+							id: "item1",
 							name: "Test Gym 1",
-							gymId: "123e4567-e89b-12d3-a456-426614174000", 
+							gymId: "123e4567-e89b-12d3-a456-426614174000",
 							timezone: "Asia/Tokyo",
 							ownerEmail: "test1@example.com",
 							plan: "basic",
 							createdAt: "2023-01-01T00:00:00Z",
-							updatedAt: "2023-01-01T00:00:00Z"
+							updatedAt: "2023-01-01T00:00:00Z",
 						},
-						{ 
-							id: "item2", 
+						{
+							id: "item2",
 							name: "Test Gym 2",
-							gymId: "123e4567-e89b-12d3-a456-426614174001", 
+							gymId: "123e4567-e89b-12d3-a456-426614174001",
 							timezone: "Asia/Tokyo",
 							ownerEmail: "test2@example.com",
 							plan: "premium",
 							createdAt: "2023-01-02T00:00:00Z",
-							updatedAt: "2023-01-02T00:00:00Z"
-						}
+							updatedAt: "2023-01-02T00:00:00Z",
+						},
 					],
 				}),
 				create: vi.fn().mockResolvedValue({
@@ -115,11 +115,14 @@ describe("Gym Router", () => {
 
 	it("GET /gyms/:gymId should return gym details", async () => {
 		// リクエスト実行 - UUIDフォーマットを使用
-		const res = await app.request("/gyms/123e4567-e89b-12d3-a456-426614174000", {
-			method: "GET",
-			// @ts-expect-error Honoのテストリクエストの型定義問題
-			env: mockEnv,
-		});
+		const res = await app.request(
+			"/gyms/123e4567-e89b-12d3-a456-426614174000",
+			{
+				method: "GET",
+				// @ts-expect-error Honoのテストリクエストの型定義問題
+				env: mockEnv,
+			},
+		);
 
 		// レスポンス検証
 		expect(res.status).toBe(200);

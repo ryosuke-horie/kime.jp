@@ -1,8 +1,8 @@
 // Vitestのセットアップファイル
 // テスト環境の共通設定を行います
 
-import { afterAll, beforeAll, vi } from "vitest";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import { afterAll, beforeAll, vi } from "vitest";
 import { z } from "zod";
 
 // Zodを拡張して、OpenAPIメタデータ追加メソッドを提供

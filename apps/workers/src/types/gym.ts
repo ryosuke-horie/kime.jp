@@ -93,18 +93,18 @@ export type GymDetailResponseType = z.infer<typeof GymDetailResponse>;
 const ErrorResponseSchema = {
 	type: "object",
 	properties: {
-		error: { type: "string" }
+		error: { type: "string" },
 	},
-	required: ["error"]
+	required: ["error"],
 };
 
 // テスト用成功レスポンススキーマ定義
 const SuccessResponseSchema = {
 	type: "object",
 	properties: {
-		message: { type: "string" }
+		message: { type: "string" },
 	},
-	required: ["message"]
+	required: ["message"],
 };
 
 // ジム一覧取得エンドポイント（管理者用）

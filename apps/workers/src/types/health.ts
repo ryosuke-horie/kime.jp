@@ -37,9 +37,9 @@ registry.registerPath({
 					schema: {
 						type: "object",
 						properties: {
-							error: { type: "string" }
+							error: { type: "string" },
 						},
-						required: ["error"]
+						required: ["error"],
 					},
 				},
 			},

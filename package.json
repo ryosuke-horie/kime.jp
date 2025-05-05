@@ -2,7 +2,7 @@
 	"name": "kime-monorepo",
 	"private": true,
 	"scripts": {
-		"build": "pnpm --filter @kime/api-types build && turbo run build",
+		"build": "turbo run build",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
 		"format": "turbo run format",
@@ -11,7 +11,7 @@
 		"test:watch": "vitest -w",
 		"test:coverage": "turbo run test:coverage",
 		"test:ui": "vitest --ui",
-		"typecheck": "pnpm --filter @kime/api-types build && turbo run typecheck",
+		"typecheck": "turbo run typecheck",
 		"prepare": "lefthook install",
 		"clean": "find . -name '.turbo' -type d -prune -exec rm -rf {} \\; && find . -name '.vitest-cache' -type d -prune -exec rm -rf {} \\; && find . -name 'dist' -type d -prune -exec rm -rf {} \\;"
 	},

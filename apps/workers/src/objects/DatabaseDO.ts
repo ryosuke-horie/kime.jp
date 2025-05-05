@@ -1,6 +1,6 @@
 // @ts-nocheck - このファイルは別途リファクタリング予定
-import * as schema from "@kime/db";
-import type { NewBooking, NewClass, NewGym, NewMember } from "@kime/db";
+import * as schema from "../db";
+import type { NewBooking, NewClass, NewGym, NewMember } from "../db";
 
 // ステータス型の定義（後でスキーマから正確な型をインポートする予定）
 type MemberStatus = string;

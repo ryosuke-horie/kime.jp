@@ -21,6 +21,7 @@ updates:
         patterns:
           - "@biomejs/*"
           - "turbo"
+          - "lefthook"
     labels:
       - "dependencies"
       - "root"
@@ -52,6 +53,20 @@ updates:
           - "vitest*"
           - "@vitest/*"
           - "@vitejs/*"
+          - "happy-dom"
+      # UI関連パッケージをグループ化
+      ui-deps:
+        patterns:
+          - "@radix-ui/*"
+          - "class-variance-authority"
+          - "clsx"
+          - "tailwind*"
+          - "next-themes"
+      # OpenAPI関連パッケージをグループ化
+      openapi-deps:
+        patterns:
+          - "@asteasolutions/zod-to-openapi"
+          - "zod"
     labels:
       - "dependencies"
       - "web"
@@ -83,13 +98,20 @@ updates:
           - "@hono/*"
           - "zod*"
           - "@asteasolutions/zod-to-openapi"  # OpenAPI + Zod統合
-          - "@hono/swagger-ui"               # Swagger UI連携
-          - "@hono/zod-validator"            # Zod検証連携
+          - "@hono/swagger-ui"                # Swagger UI連携
+          - "@hono/zod-validator"             # Zod検証連携
       # テスト関連パッケージをグループ化
       test-deps:
         patterns:
           - "vitest*"
           - "@vitest/*"
+      # データベース関連パッケージをグループ化
+      db-deps:
+        patterns:
+          - "drizzle*"
+          - "drizzle-orm"
+          - "drizzle-kit"
+          - "drizzle-zod"
     labels:
       - "dependencies"
       - "workers"
@@ -97,94 +119,6 @@ updates:
       - "ryosuke-horie"
     commit-message:
       prefix: "chore(deps-workers)"
-      include: "scope"
-
-  # DBパッケージの依存関係を管理
-  - package-ecosystem: "npm"
-    directory: "/packages/db"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 3
-    groups:
-      # データベース関連パッケージをグループ化
-      db-deps:
-        patterns:
-          - "drizzle*"
-    labels:
-      - "dependencies"
-      - "db"
-    reviewers:
-      - "ryosuke-horie"
-    commit-message:
-      prefix: "chore(deps-db)"
-      include: "scope"
-
-  # テストユーティリティパッケージの依存関係を管理
-  - package-ecosystem: "npm"
-    directory: "/packages/testing-utils"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 3
-    labels:
-      - "dependencies"
-      - "testing-utils"
-    reviewers:
-      - "ryosuke-horie"
-    commit-message:
-      prefix: "chore(deps-testing)"
-      include: "scope"
-      
-  # API型定義パッケージの依存関係を管理
-  - package-ecosystem: "npm"
-    directory: "/packages/api-types"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 3
-    groups:
-      # OpenAPI関連パッケージをグループ化
-      openapi-deps:
-        patterns:
-          - "@asteasolutions/zod-to-openapi"
-          - "zod"
-    labels:
-      - "dependencies"
-      - "api-types"
-    reviewers:
-      - "ryosuke-horie"
-    commit-message:
-      prefix: "chore(deps-api-types)"
-      include: "scope"
-      
-  # APIクライアントパッケージの依存関係を管理
-  - package-ecosystem: "npm"
-    directory: "/packages/api-client"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 3
-    groups:
-      # API関連パッケージをグループ化
-      api-deps:
-        patterns:
-          - "zod"
-    labels:
-      - "dependencies"
-      - "api-client"
-    reviewers:
-      - "ryosuke-horie"
-    commit-message:
-      prefix: "chore(deps-api-client)"
       include: "scope"
     
   # GitHub Actionsの依存関係を管理

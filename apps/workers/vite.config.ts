@@ -8,7 +8,7 @@ export default defineConfig((env: ConfigEnv) => {
 	const commonConfig = {
 		resolve: {
 			alias: {
-				"@kime/db": resolve(__dirname, "../../packages/db/src/index.ts"),
+				"@kime/db": resolve(__dirname, "./src/db/index.ts"),
 			},
 		},
 	};

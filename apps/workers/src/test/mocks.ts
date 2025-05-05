@@ -159,15 +159,45 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 export const mockDOClient = vi.fn().mockImplementation(() => ({
 	getOne: vi.fn().mockResolvedValue({
 		success: true,
-		data: { id: "test-id", name: "Test Item" },
+		data: {
+			id: "test-id",
+			name: "Test Item",
+			gymId: "123e4567-e89b-12d3-a456-426614174000",
+			timezone: "Asia/Tokyo",
+			ownerEmail: "test@example.com",
+			plan: "basic",
+			createdAt: "2023-01-01T00:00:00Z",
+			updatedAt: "2023-01-01T00:00:00Z",
+		},
 	}),
 	list: vi.fn().mockResolvedValue({
 		success: true,
-		data: [{ id: "item1" }, { id: "item2" }],
+		data: [
+			{
+				id: "item1",
+				name: "Test Gym 1",
+				gymId: "123e4567-e89b-12d3-a456-426614174000",
+				timezone: "Asia/Tokyo",
+				ownerEmail: "test1@example.com",
+				plan: "basic",
+				createdAt: "2023-01-01T00:00:00Z",
+				updatedAt: "2023-01-01T00:00:00Z",
+			},
+			{
+				id: "item2",
+				name: "Test Gym 2",
+				gymId: "123e4567-e89b-12d3-a456-426614174001",
+				timezone: "Asia/Tokyo",
+				ownerEmail: "test2@example.com",
+				plan: "premium",
+				createdAt: "2023-01-02T00:00:00Z",
+				updatedAt: "2023-01-02T00:00:00Z",
+			},
+		],
 	}),
 	create: vi.fn().mockResolvedValue({
 		success: true,
-		id: "new-id",
+		id: "new-gym-id",
 	}),
 	update: vi.fn().mockResolvedValue({
 		success: true,

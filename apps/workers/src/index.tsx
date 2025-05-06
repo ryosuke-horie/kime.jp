@@ -54,12 +54,11 @@ api.route("/bookings", bookingRouter);
 // APIルーターをメインアプリにマウント
 app.route("/api", api);
 
+// Durable Objectsを明示的にエクスポート
+export { DatabaseDO, ClassLocker };
+
 // Workerエクスポート
 export default {
 	// Fetch ハンドラー
 	fetch: app.fetch,
-
-	// Durable Objects
-	DatabaseDO,
-	ClassLocker,
 };

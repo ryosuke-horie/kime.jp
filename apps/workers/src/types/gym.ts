@@ -8,10 +8,7 @@ export const Gym = z.object({
 	name: z.string().min(1).max(100).describe("ジム名"),
 	timezone: z.string().default("Asia/Tokyo").describe("タイムゾーン"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
-	plan: z
-		.enum(["basic", "premium", "enterprise"])
-		.default("basic")
-		.describe("契約プラン"),
+	plan: z.enum(["basic", "premium", "enterprise"]).default("basic").describe("契約プラン"),
 	createdAt: ISODateTime.describe("作成日時"),
 	updatedAt: ISODateTime.describe("更新日時"),
 });
@@ -26,10 +23,7 @@ export const CreateGymRequest = z.object({
 	name: z.string().min(1).max(100).describe("ジム名"),
 	timezone: z.string().optional().describe("タイムゾーン"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
-	plan: z
-		.enum(["basic", "premium", "enterprise"])
-		.optional()
-		.describe("契約プラン"),
+	plan: z.enum(["basic", "premium", "enterprise"]).optional().describe("契約プラン"),
 });
 
 // OpenAPIスキーマに登録
@@ -52,15 +46,8 @@ export type CreateGymResponseType = z.infer<typeof CreateGymResponse>;
 export const UpdateGymRequest = z.object({
 	name: z.string().min(1).max(100).optional().describe("ジム名"),
 	timezone: z.string().optional().describe("タイムゾーン"),
-	ownerEmail: z
-		.string()
-		.email()
-		.optional()
-		.describe("オーナーのメールアドレス"),
-	plan: z
-		.enum(["basic", "premium", "enterprise"])
-		.optional()
-		.describe("契約プラン"),
+	ownerEmail: z.string().email().optional().describe("オーナーのメールアドレス"),
+	plan: z.enum(["basic", "premium", "enterprise"]).optional().describe("契約プラン"),
 });
 
 // OpenAPIスキーマに登録

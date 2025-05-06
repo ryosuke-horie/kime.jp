@@ -28,21 +28,8 @@ export const ISODateTime = z
 
 // ページネーションパラメータ
 export const PaginationParams = z.object({
-	page: z
-		.number()
-		.int()
-		.min(1)
-		.optional()
-		.default(1)
-		.describe("ページ番号（1始まり）"),
-	limit: z
-		.number()
-		.int()
-		.min(1)
-		.max(100)
-		.optional()
-		.default(20)
-		.describe("1ページあたりの件数"),
+	page: z.number().int().min(1).optional().default(1).describe("ページ番号（1始まり）"),
+	limit: z.number().int().min(1).max(100).optional().default(20).describe("1ページあたりの件数"),
 });
 
 // OpenAPIスキーマに登録

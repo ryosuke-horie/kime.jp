@@ -39,9 +39,7 @@ export default function SignOut() {
 			<Card className="w-full max-w-md mx-auto">
 				<CardHeader className="space-y-1 text-center">
 					<CardTitle className="text-2xl font-bold">ログアウト</CardTitle>
-					<CardDescription>
-						管理システムからログアウトしますか？
-					</CardDescription>
+					<CardDescription>管理システムからログアウトしますか？</CardDescription>
 				</CardHeader>
 
 				<CardContent className="flex flex-col items-center p-6">
@@ -54,11 +52,7 @@ export default function SignOut() {
 					<Button variant="outline" onClick={handleCancel} disabled={isLoading}>
 						キャンセル
 					</Button>
-					<Button
-						variant="destructive"
-						onClick={handleSignOut}
-						disabled={isLoading}
-					>
+					<Button variant="destructive" onClick={handleSignOut} disabled={isLoading}>
 						{isLoading ? "ログアウト中..." : "ログアウト"}
 					</Button>
 				</CardFooter>

@@ -20,17 +20,11 @@ import {
 const getEnvironment = (): keyof typeof API_BASE_URL => {
 	// Next.jsの環境変数に基づいて環境を判定（実際の実装はNext.jsプロジェクト内で行う）
 	// @ts-ignore - NODE_ENVはNext.jsのコンテキストで利用可能
-	if (
-		typeof process !== "undefined" &&
-		process.env?.NODE_ENV === "production"
-	) {
+	if (typeof process !== "undefined" && process.env?.NODE_ENV === "production") {
 		return "production";
 	}
 	// @ts-ignore - NEXT_PUBLIC_USE_STAGINGはNext.jsのコンテキストで利用可能
-	if (
-		typeof process !== "undefined" &&
-		process.env?.NEXT_PUBLIC_USE_STAGING === "true"
-	) {
+	if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_USE_STAGING === "true") {
 		return "staging";
 	}
 	return "development";
@@ -115,9 +109,7 @@ export const useCreateGym = () => {
 
 	// サンプル実装として同期的に関数を返す
 	return {
-		createGym: async (
-			data: CreateGymRequestType,
-		): Promise<CreateGymResponseType> => {
+		createGym: async (data: CreateGymRequestType): Promise<CreateGymResponseType> => {
 			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin`, {
 				method: "POST",
 				headers: apiConfig.headers,
@@ -137,17 +129,12 @@ export const useUpdateGym = (gymId: string) => {
 
 	// サンプル実装として同期的に関数を返す
 	return {
-		updateGym: async (
-			data: UpdateGymRequestType,
-		): Promise<SuccessResponseType> => {
-			const response = await fetch(
-				`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`,
-				{
-					method: "PATCH",
-					headers: apiConfig.headers,
-					body: JSON.stringify(data),
-				},
-			);
+		updateGym: async (data: UpdateGymRequestType): Promise<SuccessResponseType> => {
+			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
+				method: "PATCH",
+				headers: apiConfig.headers,
+				body: JSON.stringify(data),
+			});
 			return response.json();
 		},
 	};
@@ -163,13 +150,10 @@ export const useDeleteGym = (gymId: string) => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		deleteGym: async (): Promise<SuccessResponseType> => {
-			const response = await fetch(
-				`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`,
-				{
-					method: "DELETE",
-					headers: apiConfig.headers,
-				},
-			);
+			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
+				method: "DELETE",
+				headers: apiConfig.headers,
+			});
 			return response.json();
 		},
 	};

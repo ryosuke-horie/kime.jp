@@ -1,20 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import {
-	CalendarCheck,
-	CalendarDays,
-	Clipboard,
-	Clock,
-	Users,
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CalendarCheck, CalendarDays, Clipboard, Clock, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
@@ -58,9 +46,7 @@ export default function Dashboard() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">15:00</div>
-						<p className="text-xs text-muted-foreground">
-							総合格闘技（予約: 6/8）
-						</p>
+						<p className="text-xs text-muted-foreground">総合格闘技（予約: 6/8）</p>
 					</CardContent>
 				</Card>
 			</div>
@@ -97,9 +83,7 @@ export default function Dashboard() {
 							<li className="flex justify-between items-center border-b pb-2">
 								<div>
 									<div className="font-medium">山田 太郎</div>
-									<div className="text-sm text-muted-foreground">
-										ボクシング入門
-									</div>
+									<div className="text-sm text-muted-foreground">ボクシング入門</div>
 								</div>
 								<div className="text-right">
 									<div className="text-sm">今日 10:00-11:00</div>
@@ -109,9 +93,7 @@ export default function Dashboard() {
 							<li className="flex justify-between items-center border-b pb-2">
 								<div>
 									<div className="font-medium">鈴木 花子</div>
-									<div className="text-sm text-muted-foreground">
-										キックボクシング
-									</div>
+									<div className="text-sm text-muted-foreground">キックボクシング</div>
 								</div>
 								<div className="text-right">
 									<div className="text-sm">今日 12:00-13:00</div>
@@ -121,9 +103,7 @@ export default function Dashboard() {
 							<li className="flex justify-between items-center border-b pb-2">
 								<div>
 									<div className="font-medium">佐藤 健</div>
-									<div className="text-sm text-muted-foreground">
-										総合格闘技
-									</div>
+									<div className="text-sm text-muted-foreground">総合格闘技</div>
 								</div>
 								<div className="text-right">
 									<div className="text-sm">今日 15:00-16:30</div>

@@ -30,14 +30,8 @@ export type NewStaff = InferModel<typeof schema.staff, "insert">;
 export type NewClassStaff = InferModel<typeof schema.classStaff, "insert">;
 export type NewShift = InferModel<typeof schema.shifts, "insert">;
 export type NewConsent = InferModel<typeof schema.consents, "insert">;
-export type NewAiConversation = InferModel<
-	typeof schema.aiConversations,
-	"insert"
->;
+export type NewAiConversation = InferModel<typeof schema.aiConversations, "insert">;
 export type NewAiMessage = InferModel<typeof schema.aiMessages, "insert">;
 export type NewAiOutcome = InferModel<typeof schema.aiOutcomes, "insert">;
-export type NewSuspensionPolicy = InferModel<
-	typeof schema.suspensionPolicies,
-	"insert"
->;
+export type NewSuspensionPolicy = InferModel<typeof schema.suspensionPolicies, "insert">;
 export type NewPayment = InferModel<typeof schema.payments, "insert">;

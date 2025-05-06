@@ -9,11 +9,7 @@ import {
 	GymListResponse,
 	UpdateGymRequest,
 } from "../../../schemas";
-import {
-	validateBody,
-	validateParam,
-	validatedJson,
-} from "../../../utils/validator";
+import { validateBody, validateParam, validatedJson } from "../../../utils/validator";
 
 // Gymルーター
 export const gymRouter = new Hono<{ Bindings: Env }>();
@@ -21,10 +17,7 @@ export const gymRouter = new Hono<{ Bindings: Env }>();
 // 開発用テストエンドポイントは削除
 
 // 管理者用ルート
-const adminRouter = new Hono<{ Bindings: Env }>().use(
-	"*",
-	adminOnlyMiddleware(),
-);
+const adminRouter = new Hono<{ Bindings: Env }>().use("*", adminOnlyMiddleware());
 
 // クエリパラメータのスキーマ
 const GymListQuerySchema = z.object({

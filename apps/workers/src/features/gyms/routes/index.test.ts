@@ -115,14 +115,11 @@ describe("Gym Router", () => {
 
 	it("GET /gyms/:gymId should return gym details", async () => {
 		// リクエスト実行 - UUIDフォーマットを使用
-		const res = await app.request(
-			"/gyms/123e4567-e89b-12d3-a456-426614174000",
-			{
-				method: "GET",
-				// @ts-expect-error Honoのテストリクエストの型定義問題
-				env: mockEnv,
-			},
-		);
+		const res = await app.request("/gyms/123e4567-e89b-12d3-a456-426614174000", {
+			method: "GET",
+			// @ts-expect-error Honoのテストリクエストの型定義問題
+			env: mockEnv,
+		});
 
 		// レスポンス検証
 		expect(res.status).toBe(200);

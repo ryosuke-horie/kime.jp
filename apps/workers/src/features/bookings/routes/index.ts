@@ -7,10 +7,7 @@ import { adminOnlyMiddleware } from "../../../middlewares/auth";
 export const bookingRouter = new Hono<{ Bindings: Env }>();
 
 // 管理者用ルート
-const adminRouter = new Hono<{ Bindings: Env }>().use(
-	"*",
-	adminOnlyMiddleware(),
-);
+const adminRouter = new Hono<{ Bindings: Env }>().use("*", adminOnlyMiddleware());
 
 // 予約一覧取得
 bookingRouter.get("/", async (c) => {
@@ -26,10 +23,7 @@ bookingRouter.get("/", async (c) => {
 	if (classId) params.class_id = classId;
 	if (gymId) params.gym_id = gymId;
 
-	const result = await dbClient.list(
-		"bookings",
-		Object.keys(params).length > 0 ? params : {},
-	);
+	const result = await dbClient.list("bookings", Object.keys(params).length > 0 ? params : {});
 
 	if (!result.success) {
 		return c.json({ error: result.error }, 500);

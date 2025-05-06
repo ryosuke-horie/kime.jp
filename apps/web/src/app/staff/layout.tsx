@@ -2,14 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-	BarChart3,
-	CalendarDays,
-	Home,
-	LogOut,
-	Settings,
-	Users,
-} from "lucide-react";
+import { BarChart3, CalendarDays, Home, LogOut, Settings, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";

@@ -7,10 +7,7 @@ import { adminOnlyMiddleware } from "../../../middlewares/auth";
 export const classRouter = new Hono<{ Bindings: Env }>();
 
 // 管理者用ルート
-const adminRouter = new Hono<{ Bindings: Env }>().use(
-	"*",
-	adminOnlyMiddleware(),
-);
+const adminRouter = new Hono<{ Bindings: Env }>().use("*", adminOnlyMiddleware());
 
 // クラス一覧取得
 classRouter.get("/", async (c) => {
@@ -38,13 +35,7 @@ adminRouter.post("/", async (c) => {
 	const data = await c.req.json();
 
 	// バリデーション
-	if (
-		!data.gymId ||
-		!data.title ||
-		!data.startsAt ||
-		!data.endsAt ||
-		!data.capacity
-	) {
+	if (!data.gymId || !data.title || !data.startsAt || !data.endsAt || !data.capacity) {
 		return c.json(
 			{
 				error: "ジムID、タイトル、開始時間、終了時間、定員は必須です",

@@ -13,12 +13,8 @@ declare module "vitest" {
 		toBeTruthy(): void;
 		toBeFalsy(): void;
 		toContain(expected: unknown): void;
-		toThrow(
-			expected?: string | RegExp | Error | ((...args: unknown[]) => unknown),
-		): void;
-		toThrowError(
-			expected?: string | RegExp | Error | ((...args: unknown[]) => unknown),
-		): void;
+		toThrow(expected?: string | RegExp | Error | ((...args: unknown[]) => unknown)): void;
+		toThrowError(expected?: string | RegExp | Error | ((...args: unknown[]) => unknown)): void;
 		toHaveBeenCalled(): void;
 		toHaveBeenCalledTimes(expected: number): void;
 		toHaveBeenCalledWith(...args: unknown[]): void;
@@ -51,10 +47,7 @@ declare module "vitest" {
 			Parameters<T[K] extends (...args: unknown[]) => unknown ? T[K] : never>
 		>;
 		mock<T extends string>(path: T, factory?: () => unknown): void;
-		stubGlobal<T extends keyof typeof globalThis>(
-			name: T,
-			value: unknown,
-		): void;
+		stubGlobal<T extends keyof typeof globalThis>(name: T, value: unknown): void;
 		restoreAllMocks(): void;
 		resetAllMocks(): void;
 		clearAllMocks(): void;
@@ -86,8 +79,7 @@ declare namespace jest {
 		};
 	}
 
-	export interface SpyInstance<T = unknown, Y extends unknown[] = unknown[]>
-		extends Mock<T, Y> {
+	export interface SpyInstance<T = unknown, Y extends unknown[] = unknown[]> extends Mock<T, Y> {
 		mockRestore(): void;
 	}
 }

@@ -28,17 +28,14 @@ function AuthErrorContent() {
 		OAuthCreateAccount: "OAuth認証でアカウントを作成できませんでした",
 		EmailCreateAccount: "メールアドレスでアカウントを作成できませんでした",
 		Callback: "認証コールバック中にエラーが発生しました",
-		OAuthAccountNotLinked:
-			"このメールアドレスは別の認証方法に関連付けられています",
+		OAuthAccountNotLinked: "このメールアドレスは別の認証方法に関連付けられています",
 		EmailSignin: "メール送信中にエラーが発生しました",
 		CredentialsSignin: "ログイン情報が正しくありません",
 		SessionRequired: "このページにアクセスするにはログインが必要です",
 	};
 
 	const errorMessage =
-		error && error in errorMessages
-			? errorMessages[error]
-			: errorMessages.Default;
+		error && error in errorMessages ? errorMessages[error] : errorMessages.Default;
 
 	return (
 		<div className="container flex items-center justify-center min-h-screen py-12">
@@ -92,9 +89,7 @@ export default function AuthError() {
 				<div className="container flex items-center justify-center min-h-screen">
 					<Card className="w-full max-w-md mx-auto">
 						<CardHeader className="space-y-1 text-center">
-							<CardTitle className="text-2xl font-bold">
-								読み込み中...
-							</CardTitle>
+							<CardTitle className="text-2xl font-bold">読み込み中...</CardTitle>
 						</CardHeader>
 					</Card>
 				</div>

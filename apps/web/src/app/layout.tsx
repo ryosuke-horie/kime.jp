@@ -26,9 +26,7 @@ export default function RootLayout({
 	return (
 		// lang属性を日本語に変更し、light強制のためのclassを追加
 		<html lang="ja" className="light">
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<AuthProvider>{children}</AuthProvider>
 			</body>
 		</html>

@@ -38,31 +38,19 @@ declare module "hono" {
 		): Hono<E, S, BasePath>;
 		use(
 			path: string,
-			middleware: (
-				c: Context<E, S>,
-				next: () => Promise<void>,
-			) => Promise<void> | void,
+			middleware: (c: Context<E, S>, next: () => Promise<void>) => Promise<void> | void,
 		): Hono<E, S, BasePath>;
 		use(
-			middleware: (
-				c: Context<E, S>,
-				next: () => Promise<void>,
-			) => Promise<void> | void,
+			middleware: (c: Context<E, S>, next: () => Promise<void>) => Promise<void> | void,
 		): Hono<E, S, BasePath>;
 		onError(
 			handler: (err: Error, c: Context<E, S>) => Response | Promise<Response>,
 		): Hono<E, S, BasePath>;
-		notFound(
-			handler: (c: Context<E, S>) => Response | Promise<Response>,
-		): Hono<E, S, BasePath>;
+		notFound(handler: (c: Context<E, S>) => Response | Promise<Response>): Hono<E, S, BasePath>;
 		basePath<SubPath extends string>(
 			path: SubPath,
 		): Hono<E, S, BasePath extends "" ? SubPath : `${BasePath}${SubPath}`>;
-		fetch(
-			request: Request,
-			env?: E,
-			executionCtx?: ExecutionContext,
-		): Promise<Response>;
+		fetch(request: Request, env?: E, executionCtx?: ExecutionContext): Promise<Response>;
 		request(path: string, options?: RequestInit): Promise<Response>;
 	}
 
@@ -95,10 +83,7 @@ declare module "hono" {
 		params: Record<string, string>;
 		query: Record<string, string>;
 		data: Record<string, unknown>;
-		render: (
-			view: string,
-			params?: Record<string, unknown>,
-		) => Promise<Response>;
+		render: (view: string, params?: Record<string, unknown>) => Promise<Response>;
 		error: (status: number, message?: string) => Response;
 	}
 
@@ -126,18 +111,12 @@ declare module "hono/cors" {
 
 declare module "hono/logger" {
 	import type { Context } from "hono";
-	export function logger(): (
-		c: Context,
-		next: () => Promise<void>,
-	) => Promise<void>;
+	export function logger(): (c: Context, next: () => Promise<void>) => Promise<void>;
 }
 
 declare module "hono/pretty-json" {
 	import type { Context } from "hono";
-	export function prettyJSON(): (
-		c: Context,
-		next: () => Promise<void>,
-	) => Promise<void>;
+	export function prettyJSON(): (c: Context, next: () => Promise<void>) => Promise<void>;
 }
 
 declare module "@hono/swagger-ui" {

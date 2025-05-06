@@ -37,10 +37,7 @@ export class ApiClient {
 	/**
 	 * APIを呼び出す汎用メソッド
 	 */
-	private async fetchApi<T>(
-		path: string,
-		options: RequestInit = {},
-	): Promise<T> {
+	private async fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> {
 		const url = `${this.baseUrl}${path}`;
 		// APIキーがあれば認証ヘッダーを追加（ここで使用することでTS6133エラーを回避）
 		const headersWithAuth = this.apiKey
@@ -73,9 +70,7 @@ export class ApiClient {
 
 	// ジム一覧取得（管理者用）
 	async getGyms(page = 1, limit = 20): Promise<GymListResponseType> {
-		return this.fetchApi<GymListResponseType>(
-			`/api/gyms/admin?page=${page}&limit=${limit}`,
-		);
+		return this.fetchApi<GymListResponseType>(`/api/gyms/admin?page=${page}&limit=${limit}`);
 	}
 
 	// ジム詳細取得
@@ -92,10 +87,7 @@ export class ApiClient {
 	}
 
 	// ジム更新（管理者用）
-	async updateGym(
-		gymId: string,
-		data: UpdateGymRequestType,
-	): Promise<SuccessResponseType> {
+	async updateGym(gymId: string, data: UpdateGymRequestType): Promise<SuccessResponseType> {
 		return this.fetchApi<SuccessResponseType>(`/api/gyms/admin/${gymId}`, {
 			method: "PATCH",
 			body: JSON.stringify(data),

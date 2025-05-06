@@ -43,22 +43,16 @@ export class DatabaseDO {
 
 		// ルートパスはDOの状態を返す
 		if (path.length === 0) {
-			return new Response(
-				JSON.stringify({ status: "ok", type: "DatabaseDO" }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ status: "ok", type: "DatabaseDO" }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		const action = path[0];
 
 		// リクエストボディをJSONとして解析（必要な場合）
 		let body = null;
-		if (
-			["create", "update", "transaction"].includes(action) &&
-			request.method !== "GET"
-		) {
+		if (["create", "update", "transaction"].includes(action) && request.method !== "GET") {
 			try {
 				body = await request.json();
 			} catch (e) {
@@ -89,13 +83,10 @@ export class DatabaseDO {
 				// 予約の整合性確保のための特殊なエンドポイント
 				return this.handleBooking(body);
 			default:
-				return new Response(
-					JSON.stringify({ error: "Method not implemented" }),
-					{
-						status: 501,
-						headers: { "Content-Type": "application/json" },
-					},
-				);
+				return new Response(JSON.stringify({ error: "Method not implemented" }), {
+					status: 501,
+					headers: { "Content-Type": "application/json" },
+				});
 		}
 	}
 
@@ -106,13 +97,10 @@ export class DatabaseDO {
 			const sqlQuery = url.searchParams.get("sql");
 
 			if (!sqlQuery) {
-				return new Response(
-					JSON.stringify({ error: "SQL query is required" }),
-					{
-						status: 400,
-						headers: { "Content-Type": "application/json" },
-					},
-				);
+				return new Response(JSON.stringify({ error: "SQL query is required" }), {
+					status: 400,
+					headers: { "Content-Type": "application/json" },
+				});
 			}
 
 			// executeメソッドがないため、run/queryメソッドを使用
@@ -123,8 +111,7 @@ export class DatabaseDO {
 				headers: { "Content-Type": "application/json" },
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -137,13 +124,10 @@ export class DatabaseDO {
 		queries?: string[];
 	}): Promise<Response> {
 		if (!body || !Array.isArray(body.queries)) {
-			return new Response(
-				JSON.stringify({ error: "Transaction requires 'queries' array" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Transaction requires 'queries' array" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		try {
@@ -164,8 +148,7 @@ export class DatabaseDO {
 				headers: { "Content-Type": "application/json" },
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -176,13 +159,10 @@ export class DatabaseDO {
 	// 単一レコード取得ハンドラ
 	private async handleGet(table: string, id: string): Promise<Response> {
 		if (!table || !id) {
-			return new Response(
-				JSON.stringify({ error: "Table and ID are required" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Table and ID are required" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		try {
@@ -191,11 +171,7 @@ export class DatabaseDO {
 			// テーブルに応じたクエリを実行
 			switch (table) {
 				case "gyms":
-					result = await this.db
-						?.select()
-						.from(schema.gyms)
-						.where(eq(schema.gyms.gymId, id))
-						.get();
+					result = await this.db?.select().from(schema.gyms).where(eq(schema.gyms.gymId, id)).get();
 					break;
 				case "members":
 					result = await this.db
@@ -237,8 +213,7 @@ export class DatabaseDO {
 				headers: { "Content-Type": "application/json" },
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -266,12 +241,7 @@ export class DatabaseDO {
 			// テーブルに応じたクエリを実行
 			switch (table) {
 				case "gyms":
-					results = await this.db
-						?.select()
-						.from(schema.gyms)
-						.limit(limit)
-						.offset(offset)
-						.all();
+					results = await this.db?.select().from(schema.gyms).limit(limit).offset(offset).all();
 					break;
 				case "members":
 					if (gymId) {
@@ -339,8 +309,7 @@ export class DatabaseDO {
 				headers: { "Content-Type": "application/json" },
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -349,18 +318,12 @@ export class DatabaseDO {
 	}
 
 	// レコード作成ハンドラ
-	private async handleCreate(
-		table: string,
-		data: Record<string, unknown>,
-	): Promise<Response> {
+	private async handleCreate(table: string, data: Record<string, unknown>): Promise<Response> {
 		if (!table || !data) {
-			return new Response(
-				JSON.stringify({ error: "Table and data are required" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Table and data are required" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		try {
@@ -383,9 +346,7 @@ export class DatabaseDO {
 					break;
 				}
 				case "members": {
-					const memberId = !data.memberId
-						? generateUUID()
-						: String(data.memberId);
+					const memberId = !data.memberId ? generateUUID() : String(data.memberId);
 					// Drizzle型定義に合わせてデータをキャスト
 					const memberData: NewMember = {
 						memberId,
@@ -393,16 +354,10 @@ export class DatabaseDO {
 						name: String(data.name),
 						email: data.email ? String(data.email) : undefined,
 						phone: data.phone ? String(data.phone) : undefined,
-						status: data.status
-							? (String(data.status) as MemberStatus)
-							: undefined,
+						status: data.status ? (String(data.status) as MemberStatus) : undefined,
 						joinedAt: data.joinedAt ? String(data.joinedAt) : undefined,
-						policyVersion: data.policyVersion
-							? String(data.policyVersion)
-							: undefined,
-						policySignedAt: data.policySignedAt
-							? String(data.policySignedAt)
-							: undefined,
+						policyVersion: data.policyVersion ? String(data.policyVersion) : undefined,
+						policySignedAt: data.policySignedAt ? String(data.policySignedAt) : undefined,
 						createdAt: data.createdAt ? String(data.createdAt) : undefined,
 						updatedAt: data.updatedAt ? String(data.updatedAt) : undefined,
 					};
@@ -436,9 +391,7 @@ export class DatabaseDO {
 						gymId: String(data.gymId),
 						classId: String(data.classId),
 						memberId: String(data.memberId),
-						status: data.status
-							? (String(data.status) as BookingStatus)
-							: undefined,
+						status: data.status ? (String(data.status) as BookingStatus) : undefined,
 						bookedAt: data.bookedAt ? String(data.bookedAt) : undefined,
 					};
 					await this.db?.insert(schema.bookings).values(bookingData);
@@ -463,8 +416,7 @@ export class DatabaseDO {
 				},
 			);
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -479,41 +431,26 @@ export class DatabaseDO {
 		data: Record<string, unknown>,
 	): Promise<Response> {
 		if (!table || !id || !data) {
-			return new Response(
-				JSON.stringify({ error: "Table, ID and data are required" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Table, ID and data are required" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		try {
 			// 更新処理
 			switch (table) {
 				case "gyms":
-					await this.db
-						?.update(schema.gyms)
-						.set(data)
-						.where(eq(schema.gyms.gymId, id));
+					await this.db?.update(schema.gyms).set(data).where(eq(schema.gyms.gymId, id));
 					break;
 				case "members":
-					await this.db
-						?.update(schema.members)
-						.set(data)
-						.where(eq(schema.members.memberId, id));
+					await this.db?.update(schema.members).set(data).where(eq(schema.members.memberId, id));
 					break;
 				case "classes":
-					await this.db
-						?.update(schema.classes)
-						.set(data)
-						.where(eq(schema.classes.classId, id));
+					await this.db?.update(schema.classes).set(data).where(eq(schema.classes.classId, id));
 					break;
 				case "bookings":
-					await this.db
-						?.update(schema.bookings)
-						.set(data)
-						.where(eq(schema.bookings.bookingId, id));
+					await this.db?.update(schema.bookings).set(data).where(eq(schema.bookings.bookingId, id));
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
@@ -527,8 +464,7 @@ export class DatabaseDO {
 				headers: { "Content-Type": "application/json" },
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -539,13 +475,10 @@ export class DatabaseDO {
 	// レコード削除ハンドラ
 	private async handleDelete(table: string, id: string): Promise<Response> {
 		if (!table || !id) {
-			return new Response(
-				JSON.stringify({ error: "Table and ID are required" }),
-				{
-					status: 400,
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ error: "Table and ID are required" }), {
+				status: 400,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		try {
@@ -555,19 +488,13 @@ export class DatabaseDO {
 					await this.db?.delete(schema.gyms).where(eq(schema.gyms.gymId, id));
 					break;
 				case "members":
-					await this.db
-						?.delete(schema.members)
-						.where(eq(schema.members.memberId, id));
+					await this.db?.delete(schema.members).where(eq(schema.members.memberId, id));
 					break;
 				case "classes":
-					await this.db
-						?.delete(schema.classes)
-						.where(eq(schema.classes.classId, id));
+					await this.db?.delete(schema.classes).where(eq(schema.classes.classId, id));
 					break;
 				case "bookings":
-					await this.db
-						?.delete(schema.bookings)
-						.where(eq(schema.bookings.bookingId, id));
+					await this.db?.delete(schema.bookings).where(eq(schema.bookings.bookingId, id));
 					break;
 				// 他のテーブルも同様に追加可能
 				default:
@@ -581,8 +508,7 @@ export class DatabaseDO {
 				headers: { "Content-Type": "application/json" },
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },
@@ -632,23 +558,17 @@ export class DatabaseDO {
 					})
 					.from(schema.bookings)
 					.where(
-						and(
-							eq(schema.bookings.classId, data.classId),
-							eq(schema.bookings.status, "reserved"),
-						),
+						and(eq(schema.bookings.classId, data.classId), eq(schema.bookings.status, "reserved")),
 					)
 					.get();
 
 				const bookingsCount = bookingsResult?.count || 0;
 
 				if (bookingsCount >= classData.capacity) {
-					return new Response(
-						JSON.stringify({ error: "Class is fully booked" }),
-						{
-							status: 409,
-							headers: { "Content-Type": "application/json" },
-						},
-					);
+					return new Response(JSON.stringify({ error: "Class is fully booked" }), {
+						status: 409,
+						headers: { "Content-Type": "application/json" },
+					});
 				}
 
 				// 3. 既存予約の確認（二重予約防止）
@@ -694,8 +614,7 @@ export class DatabaseDO {
 				});
 			});
 		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : String(error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
 			return new Response(JSON.stringify({ error: errorMessage }), {
 				status: 500,
 				headers: { "Content-Type": "application/json" },

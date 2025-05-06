@@ -26,10 +26,7 @@ export function getDatabaseClient(env: Env, id = "default") {
 
 	return {
 		// DBの単一レコード取得
-		async getOne<T = Record<string, unknown>>(
-			table: string,
-			id: string,
-		): Promise<DBResponse<T>> {
+		async getOne<T = Record<string, unknown>>(table: string, id: string): Promise<DBResponse<T>> {
 			const url = new URL(`/get/${table}/${id}`, "http://internal.do");
 			const response = await doDatabaseObj.fetch(urlToRequest(url));
 			return (await response.json()) as DBResponse<T>;

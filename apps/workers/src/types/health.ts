@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { registry } from "./openapi/config";
+import { registry } from "./registry-mock";
 
 // ヘルスチェックレスポンススキーマ
 export const HealthCheckResponse = z.object({

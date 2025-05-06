@@ -1,4 +1,3 @@
-import { swaggerUI } from "@hono/swagger-ui";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -7,7 +6,6 @@ import type { Env } from "./env";
 import { authMiddleware } from "./middlewares/auth";
 import { ClassLocker } from "./objects/ClassLocker";
 import { DatabaseDO } from "./objects/DatabaseDO";
-import { openApiDocument } from "./schemas";
 
 import authRouter from "./features/auth/routes";
 import bookingRouter from "./features/bookings/routes";
@@ -39,19 +37,7 @@ app.get("/health", (c) => {
 	});
 });
 
-// Swagger UIを追加
-app.get(
-	"/docs",
-	swaggerUI({
-		url: "/api-docs",
-		title: "Kime API ドキュメント",
-	}),
-);
-
-// OpenAPIドキュメントを提供するエンドポイント
-app.get("/api-docs", (c) => {
-	return c.json(openApiDocument);
-});
+// Swagger UIとOpenAPIドキュメントは削除
 
 // APIエンドポイント
 const api = new Hono<{ Bindings: Env }>();

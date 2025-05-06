@@ -213,15 +213,17 @@ function SignInContent() {
 
 export default function SignIn() {
 	return (
-		<Suspense fallback={
-			<div className="container flex items-center justify-center min-h-screen">
-				<Card className="w-full max-w-md mx-auto">
-					<CardHeader className="space-y-1 text-center">
-						<CardTitle className="text-2xl font-bold">読み込み中...</CardTitle>
-					</CardHeader>
-				</Card>
-			</div>
-		}>
+		<Suspense
+			fallback={
+				<div className="container flex items-center justify-center min-h-screen">
+					<Card className="w-full max-w-md mx-auto">
+						<CardHeader className="space-y-1 text-center">
+							<CardTitle className="text-2xl font-bold">読み込み中...</CardTitle>
+						</CardHeader>
+					</Card>
+				</div>
+			}
+		>
 			<SignInContent />
 		</Suspense>
 	);

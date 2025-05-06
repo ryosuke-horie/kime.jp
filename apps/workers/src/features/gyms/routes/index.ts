@@ -108,7 +108,7 @@ adminRouter.post("/create", validateBody(CreateGymAccountRequest), async (c) => 
 		});
 
 		if (!gymResult.success) {
-			return c.json({ error: "ジムの作成に失敗しました: " + gymResult.error }, 500);
+			return c.json({ error: `ジムの作成に失敗しました: ${gymResult.error}` }, 500);
 		}
 
 		// 3. 管理者アカウントを作成
@@ -129,7 +129,7 @@ adminRouter.post("/create", validateBody(CreateGymAccountRequest), async (c) => 
 		if (!adminResult.success) {
 			// 管理者アカウント作成に失敗した場合、作成したジムを削除（ロールバック相当）
 			await dbClient.delete("gyms", gymId);
-			return c.json({ error: "管理者アカウントの作成に失敗しました: " + adminResult.error }, 500);
+			return c.json({ error: `管理者アカウントの作成に失敗しました: ${adminResult.error}` }, 500);
 		}
 
 		// 4. ジムと管理者アカウントの関連付け
@@ -145,7 +145,7 @@ adminRouter.post("/create", validateBody(CreateGymAccountRequest), async (c) => 
 			await dbClient.delete("admin_accounts", adminId);
 			await dbClient.delete("gyms", gymId);
 			return c.json(
-				{ error: "アカウントとジムの関連付けに失敗しました: " + relationResult.error },
+				{ error: `アカウントとジムの関連付けに失敗しました: ${relationResult.error}` },
 				500,
 			);
 		}

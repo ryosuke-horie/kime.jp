@@ -1,12 +1,41 @@
 "use client";
 
+import { ApiClient } from "@/api/client";
+import { useAuth } from "@/api/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { AdminInfo } from "@/types/admin";
 import { CalendarCheck, CalendarDays, Clipboard, Clock, Users } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-	const { data: session } = useSession();
+	const { session, isAuthenticated } = useAuth();
+	const [adminInfo, setAdminInfo] = useState<AdminInfo | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	// APIクライアントを初期化
+	useEffect(() => {
+		if (isAuthenticated) {
+			setIsLoading(true);
+			const apiClient = new ApiClient();
+
+			// 管理者情報を取得
+			apiClient
+				.getMe()
+				.then((data) => {
+					setAdminInfo(data);
+					setError(null);
+				})
+				.catch((err) => {
+					console.error("管理者情報の取得に失敗しました:", err);
+					setError("管理者情報の取得に失敗しました");
+				})
+				.finally(() => {
+					setIsLoading(false);
+				});
+		}
+	}, [isAuthenticated]);
 
 	return (
 		<div className="space-y-6">
@@ -15,6 +44,11 @@ export default function Dashboard() {
 				<p className="text-muted-foreground mt-2">
 					ジム管理システムへようこそ、{session?.user?.name || "管理者"}さん
 				</p>
+				{isLoading && <p className="text-sm text-muted-foreground">管理者情報を読み込み中...</p>}
+				{error && <p className="text-sm text-red-500">{error}</p>}
+				{adminInfo && (
+					<p className="text-sm text-green-600">API認証成功: {adminInfo.role || "スタッフ"} 権限</p>
+				)}
 			</div>
 
 			{/* ダッシュボードカード */}

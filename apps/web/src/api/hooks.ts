@@ -3,6 +3,7 @@
  * 実際の実装はNext.jsプロジェクト内で React Query や SWR を用いて行います。
  * このファイルはサンプル実装として、APIを型安全に呼び出すためのフックの作り方を示しています。
  */
+import { useSession } from "next-auth/react";
 import {
 	API_BASE_URL,
 	type CreateGymRequestType,
@@ -13,6 +14,8 @@ import {
 	type SuccessResponseType,
 	type UpdateGymRequestType,
 } from "../types";
+import type { AdminInfo } from "../types/admin";
+import { getAuthToken } from "../utils/auth";
 
 /**
  * 環境設定を取得する（Next.jsアプリケーション内で実装）
@@ -38,6 +41,48 @@ const apiConfig = {
 	headers: {
 		"Content-Type": "application/json",
 	},
+};
+
+/**
+ * NextAuthのセッションから認証ヘッダーを取得する
+ * @returns Authorization ヘッダーを持つオブジェクト、または空オブジェクト
+ */
+const useAuthHeaders = () => {
+	const { data: session } = useSession();
+
+	// 認証済みなら認証ヘッダーを生成
+	if (session) {
+		// 実際の実装で管理しやすいようPromiseを返さないバージョンも用意
+		return {
+			Authorization: `Bearer ${session.user.id}_simulated_token`,
+		};
+	}
+
+	return {};
+};
+
+/**
+ * 認証済みAPIリクエストを実行する関数
+ * @param url リクエスト先URL
+ * @param options リクエストオプション
+ * @returns レスポンス
+ */
+const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+	// 認証トークンを取得
+	const token = await getAuthToken();
+
+	// ヘッダーを構築
+	const headers = {
+		...apiConfig.headers,
+		...(token ? { Authorization: `Bearer ${token}` } : {}),
+		...options.headers,
+	};
+
+	// リクエスト実行
+	return fetch(url, {
+		...options,
+		headers,
+	});
 };
 
 // 以下はReact QueryやSWRを使った実装サンプル
@@ -71,11 +116,8 @@ export const useGyms = () => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		fetchGyms: async (page = 1, limit = 20): Promise<GymListResponseType> => {
-			const response = await fetch(
+			const response = await fetchWithAuth(
 				`${apiConfig.baseUrl}/api/gyms/admin?page=${page}&limit=${limit}`,
-				{
-					headers: apiConfig.headers,
-				},
 			);
 			return response.json();
 		},
@@ -92,9 +134,7 @@ export const useGym = (gymId: string) => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		fetchGym: async (): Promise<GymDetailResponseType> => {
-			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/${gymId}`, {
-				headers: apiConfig.headers,
-			});
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/${gymId}`);
 			return response.json();
 		},
 	};
@@ -110,9 +150,8 @@ export const useCreateGym = () => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		createGym: async (data: CreateGymRequestType): Promise<CreateGymResponseType> => {
-			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin`, {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/admin`, {
 				method: "POST",
-				headers: apiConfig.headers,
 				body: JSON.stringify(data),
 			});
 			return response.json();
@@ -130,9 +169,8 @@ export const useUpdateGym = (gymId: string) => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		updateGym: async (data: UpdateGymRequestType): Promise<SuccessResponseType> => {
-			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
 				method: "PATCH",
-				headers: apiConfig.headers,
 				body: JSON.stringify(data),
 			});
 			return response.json();
@@ -150,11 +188,31 @@ export const useDeleteGym = (gymId: string) => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		deleteGym: async (): Promise<SuccessResponseType> => {
-			const response = await fetch(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
 				method: "DELETE",
-				headers: apiConfig.headers,
 			});
 			return response.json();
 		},
+	};
+};
+
+/**
+ * 認証関連APIフック
+ */
+export const useAuth = () => {
+	const { data: session } = useSession();
+
+	return {
+		// 自分の管理者情報取得
+		fetchMe: async (): Promise<AdminInfo> => {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/auth/me`);
+			return response.json();
+		},
+
+		// 現在のセッション情報
+		session,
+
+		// ログイン済みかどうか
+		isAuthenticated: !!session,
 	};
 };

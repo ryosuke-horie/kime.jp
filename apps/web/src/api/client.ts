@@ -9,6 +9,8 @@ import {
 	type SuccessResponseType,
 	type UpdateGymRequestType,
 } from "../types";
+import type { AdminInfo } from "../types/admin";
+import { getAuthToken } from "../utils/auth";
 
 /**
  * API接続用クライアントクラス
@@ -19,14 +21,17 @@ export class ApiClient {
 	private headers: Record<string, string> = {
 		"Content-Type": "application/json",
 	};
+	private useSession: boolean;
 
 	/**
 	 * APIクライアントを初期化
 	 * @param env 環境設定（production/staging/development）
 	 * @param apiKey APIキー（管理者用APIなど）
+	 * @param useSession NextAuthセッショントークンを使用するかどうか
 	 */
-	constructor(env: keyof typeof API_BASE_URL = "development", apiKey?: string) {
+	constructor(env: keyof typeof API_BASE_URL = "development", apiKey?: string, useSession = true) {
 		this.baseUrl = API_BASE_URL[env];
+		this.useSession = useSession;
 
 		if (apiKey) {
 			this.apiKey = apiKey;
@@ -39,10 +44,19 @@ export class ApiClient {
 	 */
 	private async fetchApi<T>(path: string, options: RequestInit = {}): Promise<T> {
 		const url = `${this.baseUrl}${path}`;
-		// APIキーがあれば認証ヘッダーを追加（ここで使用することでTS6133エラーを回避）
-		const headersWithAuth = this.apiKey
-			? { ...this.headers, Authorization: `Bearer ${this.apiKey}` }
-			: this.headers;
+		let headersWithAuth = { ...this.headers };
+
+		// APIキーまたはセッショントークンによる認証
+		if (this.apiKey) {
+			// APIキーを優先
+			headersWithAuth = { ...headersWithAuth, Authorization: `Bearer ${this.apiKey}` };
+		} else if (this.useSession) {
+			// NextAuthセッショントークンを取得
+			const token = await getAuthToken();
+			if (token) {
+				headersWithAuth = { ...headersWithAuth, Authorization: `Bearer ${token}` };
+			}
+		}
 
 		const response = await fetch(url, {
 			...options,
@@ -99,5 +113,10 @@ export class ApiClient {
 		return this.fetchApi<SuccessResponseType>(`/api/gyms/admin/${gymId}`, {
 			method: "DELETE",
 		});
+	}
+
+	// 管理者情報取得（認証済みユーザー）
+	async getMe(): Promise<AdminInfo> {
+		return this.fetchApi<AdminInfo>("/api/auth/me");
 	}
 }

@@ -120,3 +120,19 @@ export async function generateToken(
 	// トークンを組み立てる
 	return `${headerBase64}.${payloadBase64}.${signatureBase64}`;
 }
+
+/**
+ * パスワードをハッシュ化する
+ * @param password プレーンテキストのパスワード
+ * @returns ハッシュ化されたパスワード
+ */
+export async function hashPassword(password: string): Promise<string> {
+	// 実際の実装ではbcryptなどのライブラリを使用してハッシュ化する
+	// ここではデモ実装として簡易的なハッシュ化処理を行う
+	const encoder = new TextEncoder();
+	const data = encoder.encode(password);
+	const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+	return hashHex;
+}

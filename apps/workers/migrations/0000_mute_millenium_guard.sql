@@ -1,3 +1,42 @@
+CREATE TABLE `admin_accounts` (
+	`admin_id` text PRIMARY KEY NOT NULL,
+	`email` text NOT NULL,
+	`name` text NOT NULL,
+	`role` text DEFAULT 'staff' NOT NULL,
+	`password_hash` text,
+	`is_active` integer DEFAULT 1 NOT NULL,
+	`last_login_at` text,
+	`created_at` text DEFAULT 'CURRENT_TIMESTAMP',
+	`updated_at` text DEFAULT 'CURRENT_TIMESTAMP'
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `admin_accounts_email_unique` ON `admin_accounts` (`email`);--> statement-breakpoint
+CREATE TABLE `admin_gym_relationships` (
+	`admin_id` text NOT NULL,
+	`gym_id` text NOT NULL,
+	`role` text DEFAULT 'staff' NOT NULL,
+	`created_at` text DEFAULT 'CURRENT_TIMESTAMP',
+	PRIMARY KEY(`admin_id`, `gym_id`),
+	FOREIGN KEY (`admin_id`) REFERENCES `admin_accounts`(`admin_id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`gym_id`) REFERENCES `gyms`(`gym_id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `admin_oauth_accounts` (
+	`oauth_id` text PRIMARY KEY NOT NULL,
+	`admin_id` text NOT NULL,
+	`provider` text NOT NULL,
+	`provider_account_id` text NOT NULL,
+	`refresh_token` text,
+	`access_token` text,
+	`expires_at` integer,
+	`token_type` text,
+	`scope` text,
+	`id_token` text,
+	`created_at` text DEFAULT 'CURRENT_TIMESTAMP',
+	`updated_at` text DEFAULT 'CURRENT_TIMESTAMP',
+	FOREIGN KEY (`admin_id`) REFERENCES `admin_accounts`(`admin_id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `ai_conversations` (
 	`conversation_id` text PRIMARY KEY NOT NULL,
 	`gym_id` text NOT NULL,
@@ -94,9 +133,8 @@ CREATE TABLE `consents` (
 CREATE TABLE `gyms` (
 	`gym_id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
-	`timezone` text DEFAULT 'Asia/Tokyo',
 	`owner_email` text NOT NULL,
-	`plan` text DEFAULT 'basic' NOT NULL,
+	`phone_number` text,
 	`created_at` text DEFAULT 'CURRENT_TIMESTAMP',
 	`updated_at` text DEFAULT 'CURRENT_TIMESTAMP'
 );
@@ -132,6 +170,7 @@ CREATE TABLE `payments` (
 	FOREIGN KEY (`member_id`) REFERENCES `members`(`member_id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `payments_stripe_payment_intent_unique` ON `payments` (`stripe_payment_intent`);--> statement-breakpoint
 CREATE TABLE `shifts` (
 	`shift_id` text PRIMARY KEY NOT NULL,
 	`gym_id` text NOT NULL,
@@ -163,5 +202,3 @@ CREATE TABLE `suspension_policies` (
 	`updated_at` text DEFAULT 'CURRENT_TIMESTAMP',
 	FOREIGN KEY (`gym_id`) REFERENCES `gyms`(`gym_id`) ON UPDATE no action ON DELETE no action
 );
---> statement-breakpoint
-CREATE UNIQUE INDEX `payments_stripe_payment_intent_unique` ON `payments` (`stripe_payment_intent`);

@@ -4,7 +4,7 @@ export default {
 	schema: "./src/db/schema.ts",
 	out: "./migrations",
 	dialect: "sqlite",
-	driver: "d1",
+	driver: "d1-http",
 	dbCredentials: {
 		wranglerConfigPath: "./wrangler.toml",
 		dbName: "kime_mvp",

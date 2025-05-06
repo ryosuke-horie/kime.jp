@@ -62,11 +62,6 @@ updates:
           - "clsx"
           - "tailwind*"
           - "next-themes"
-      # OpenAPI関連パッケージをグループ化
-      openapi-deps:
-        patterns:
-          - "@asteasolutions/zod-to-openapi"
-          - "zod"
       # Auth.js（Next-Auth）関連パッケージをグループ化
       auth-deps:
         patterns:
@@ -103,9 +98,8 @@ updates:
           - "hono*"
           - "@hono/*"
           - "zod*"
-          - "@asteasolutions/zod-to-openapi"  # OpenAPI + Zod統合
-          - "@hono/swagger-ui"                # Swagger UI連携
-          - "@hono/zod-validator"             # Zod検証連携
+          - "@hono/swagger-ui"
+          - "@hono/zod-validator"
       # テスト関連パッケージをグループ化
       test-deps:
         patterns:

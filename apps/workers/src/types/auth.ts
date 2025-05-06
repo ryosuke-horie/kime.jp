@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ErrorResponse, ISODateTime, UUID } from "./common";
-import { registry } from "./openapi/config";
 
 // 管理者アカウントのロール
 export const AdminRole = z.enum(["admin", "staff"]).describe("管理者ロール");
@@ -27,7 +26,6 @@ export const AdminAccount = z.object({
 	updatedAt: ISODateTime.optional(),
 });
 
-registry.register("AdminAccount", AdminAccount);
 export type AdminAccountType = z.infer<typeof AdminAccount>;
 
 // 管理者登録リクエスト
@@ -38,7 +36,6 @@ export const CreateAdminRequest = z.object({
 	role: AdminRole.optional().default("staff"),
 });
 
-registry.register("CreateAdminRequest", CreateAdminRequest);
 export type CreateAdminRequestType = z.infer<typeof CreateAdminRequest>;
 
 // 管理者ログインリクエスト
@@ -47,7 +44,6 @@ export const AdminLoginRequest = z.object({
 	password: z.string().describe("パスワード"),
 });
 
-registry.register("AdminLoginRequest", AdminLoginRequest);
 export type AdminLoginRequestType = z.infer<typeof AdminLoginRequest>;
 
 // ログインレスポンス
@@ -56,7 +52,6 @@ export const LoginResponse = z.object({
 	admin: AdminAccount,
 });
 
-registry.register("LoginResponse", LoginResponse);
 export type LoginResponseType = z.infer<typeof LoginResponse>;
 
 // OAuth登録リクエスト
@@ -73,7 +68,6 @@ export const OAuthRegisterRequest = z.object({
 	idToken: z.string().optional().describe("IDトークン"),
 });
 
-registry.register("OAuthRegisterRequest", OAuthRegisterRequest);
 export type OAuthRegisterRequestType = z.infer<typeof OAuthRegisterRequest>;
 
 // ジム管理者の関連付けリクエスト
@@ -83,7 +77,6 @@ export const AdminGymLinkRequest = z.object({
 	role: GymAdminRole.optional().default("staff"),
 });
 
-registry.register("AdminGymLinkRequest", AdminGymLinkRequest);
 export type AdminGymLinkRequestType = z.infer<typeof AdminGymLinkRequest>;
 
 // トークン検証エラー
@@ -91,5 +84,4 @@ export const TokenVerificationError = ErrorResponse.extend({
 	code: z.enum(["invalid_token", "expired_token", "missing_token"]).describe("エラーコード"),
 });
 
-registry.register("TokenVerificationError", TokenVerificationError);
 export type TokenVerificationErrorType = z.infer<typeof TokenVerificationError>;

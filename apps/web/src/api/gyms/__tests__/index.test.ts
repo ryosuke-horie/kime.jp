@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiClient } from "../../client";
 import {
 	type CreateGymAccountRequest,
-	type CreateGymAccountResponse,
 	GymApiClient,
 } from "../index";
 

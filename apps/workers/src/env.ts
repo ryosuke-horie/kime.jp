@@ -56,4 +56,9 @@ export interface Env {
 	// Durable Object名前空間
 	DB_DO: DurableObjectNamespace;
 	CLASS_LOCKER: DurableObjectNamespace;
+
+	// 認証関連の環境変数
+	JWT_SECRET?: string;
+	NODE_ENV?: string;
+	SKIP_AUTH?: string;
 }

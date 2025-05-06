@@ -9,6 +9,7 @@ import { ClassLocker } from "./objects/ClassLocker";
 import { DatabaseDO } from "./objects/DatabaseDO";
 import { openApiDocument } from "./schemas";
 
+import authRouter from "./features/auth/routes";
 import bookingRouter from "./features/bookings/routes";
 import classRouter from "./features/classes/routes";
 // 各機能のルーターをインポート
@@ -56,6 +57,7 @@ app.get("/api-docs", (c) => {
 const api = new Hono<{ Bindings: Env }>();
 
 // 各機能のルーターをマウント
+api.route("/auth", authRouter);
 api.route("/gyms", gymRouter);
 api.route("/members", memberRouter);
 api.route("/classes", classRouter);

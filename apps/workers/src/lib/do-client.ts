@@ -45,6 +45,57 @@ export function getDatabaseClient(env: Env, id = "default") {
 			return (await response.json()) as DBResponse<T>;
 		},
 
+		// 条件付きクエリ（新規追加）
+		async queryOne<T = Record<string, unknown>>(
+			table: string,
+			conditions: Record<string, unknown>,
+		): Promise<DBResponse<T>> {
+			const url = new URL(`/query/${table}`, "http://internal.do");
+			const response = await doDatabaseObj.fetch(
+				urlToRequest(url, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ conditions, limit: 1 }),
+				}),
+			);
+			const result = (await response.json()) as DBResponse<T[]>;
+
+			// 結果がある場合は最初の要素を返す
+			if (result.success && result.data && Array.isArray(result.data) && result.data.length > 0) {
+				return {
+					success: true,
+					data: result.data[0] as T,
+				};
+			}
+
+			return {
+				success: result.success,
+				error: result.error || "No data found",
+			};
+		},
+
+		// 条件付きクエリ（複数件、新規追加）
+		async queryMany<T = Record<string, unknown>[]>(
+			table: string,
+			conditions: Record<string, unknown>,
+			limit?: number,
+			offset?: number,
+		): Promise<DBResponse<T>> {
+			const url = new URL(`/query/${table}`, "http://internal.do");
+			const response = await doDatabaseObj.fetch(
+				urlToRequest(url, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ conditions, limit, offset }),
+				}),
+			);
+			return (await response.json()) as DBResponse<T>;
+		},
+
 		// DBのレコード作成
 		async create<T = Record<string, unknown>>(
 			table: string,

@@ -5,7 +5,8 @@ import { useAuth } from "@/api/hooks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminInfo } from "@/types/admin";
-import { CalendarCheck, CalendarDays, Clipboard, Clock, Users } from "lucide-react";
+import { Building, CalendarCheck, CalendarDays, Clipboard, Clock, Users } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
@@ -99,10 +100,12 @@ export default function Dashboard() {
 					<Users className="h-6 w-6" />
 					<span>会員管理</span>
 				</Button>
-				<Button className="flex flex-col items-center justify-center h-24 space-y-2">
-					<Clipboard className="h-6 w-6" />
-					<span>レポート</span>
-				</Button>
+				<Link href="/staff/gyms/create" className="block">
+					<Button className="flex flex-col items-center justify-center h-24 space-y-2 w-full">
+						<Building className="h-6 w-6" />
+						<span>ジム登録</span>
+					</Button>
+				</Link>
 			</div>
 
 			{/* 最近の予約（仮データ） */}

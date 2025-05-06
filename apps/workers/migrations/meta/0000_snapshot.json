@@ -1,1471 +1,1361 @@
 {
-  "version": "6",
-  "dialect": "sqlite",
-  "id": "1260d4b1-f406-443b-9a7f-4ad2b71a18b8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "tables": {
-    "admin_accounts": {
-      "name": "admin_accounts",
-      "columns": {
-        "admin_id": {
-          "name": "admin_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'staff'"
-        },
-        "password_hash": {
-          "name": "password_hash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1
-        },
-        "last_login_at": {
-          "name": "last_login_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {
-        "admin_accounts_email_unique": {
-          "name": "admin_accounts_email_unique",
-          "columns": [
-            "email"
-          ],
-          "isUnique": true
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "admin_gym_relationships": {
-      "name": "admin_gym_relationships",
-      "columns": {
-        "admin_id": {
-          "name": "admin_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'staff'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "admin_gym_relationships_admin_id_admin_accounts_admin_id_fk": {
-          "name": "admin_gym_relationships_admin_id_admin_accounts_admin_id_fk",
-          "tableFrom": "admin_gym_relationships",
-          "tableTo": "admin_accounts",
-          "columnsFrom": [
-            "admin_id"
-          ],
-          "columnsTo": [
-            "admin_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "admin_gym_relationships_gym_id_gyms_gym_id_fk": {
-          "name": "admin_gym_relationships_gym_id_gyms_gym_id_fk",
-          "tableFrom": "admin_gym_relationships",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "admin_gym_relationships_admin_id_gym_id_pk": {
-          "columns": [
-            "admin_id",
-            "gym_id"
-          ],
-          "name": "admin_gym_relationships_admin_id_gym_id_pk"
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "admin_oauth_accounts": {
-      "name": "admin_oauth_accounts",
-      "columns": {
-        "oauth_id": {
-          "name": "oauth_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "admin_id": {
-          "name": "admin_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "provider": {
-          "name": "provider",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "provider_account_id": {
-          "name": "provider_account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "refresh_token": {
-          "name": "refresh_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "access_token": {
-          "name": "access_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "token_type": {
-          "name": "token_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "scope": {
-          "name": "scope",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "id_token": {
-          "name": "id_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "admin_oauth_accounts_admin_id_admin_accounts_admin_id_fk": {
-          "name": "admin_oauth_accounts_admin_id_admin_accounts_admin_id_fk",
-          "tableFrom": "admin_oauth_accounts",
-          "tableTo": "admin_accounts",
-          "columnsFrom": [
-            "admin_id"
-          ],
-          "columnsTo": [
-            "admin_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "ai_conversations": {
-      "name": "ai_conversations",
-      "columns": {
-        "conversation_id": {
-          "name": "conversation_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "booking_id": {
-          "name": "booking_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "started_at": {
-          "name": "started_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "last_msg_at": {
-          "name": "last_msg_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "ai_conversations_gym_id_gyms_gym_id_fk": {
-          "name": "ai_conversations_gym_id_gyms_gym_id_fk",
-          "tableFrom": "ai_conversations",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "ai_conversations_member_id_members_member_id_fk": {
-          "name": "ai_conversations_member_id_members_member_id_fk",
-          "tableFrom": "ai_conversations",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "member_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "ai_conversations_booking_id_bookings_booking_id_fk": {
-          "name": "ai_conversations_booking_id_bookings_booking_id_fk",
-          "tableFrom": "ai_conversations",
-          "tableTo": "bookings",
-          "columnsFrom": [
-            "booking_id"
-          ],
-          "columnsTo": [
-            "booking_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "ai_messages": {
-      "name": "ai_messages",
-      "columns": {
-        "msg_id": {
-          "name": "msg_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "conversation_id": {
-          "name": "conversation_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "sender": {
-          "name": "sender",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "staff_id": {
-          "name": "staff_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "channel": {
-          "name": "channel",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "ai_model": {
-          "name": "ai_model",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "tokens_in": {
-          "name": "tokens_in",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "tokens_out": {
-          "name": "tokens_out",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "confidence": {
-          "name": "confidence",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "sent_at": {
-          "name": "sent_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "ai_messages_conversation_id_ai_conversations_conversation_id_fk": {
-          "name": "ai_messages_conversation_id_ai_conversations_conversation_id_fk",
-          "tableFrom": "ai_messages",
-          "tableTo": "ai_conversations",
-          "columnsFrom": [
-            "conversation_id"
-          ],
-          "columnsTo": [
-            "conversation_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "ai_messages_staff_id_staff_staff_id_fk": {
-          "name": "ai_messages_staff_id_staff_staff_id_fk",
-          "tableFrom": "ai_messages",
-          "tableTo": "staff",
-          "columnsFrom": [
-            "staff_id"
-          ],
-          "columnsTo": [
-            "staff_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "ai_outcomes": {
-      "name": "ai_outcomes",
-      "columns": {
-        "outcome_id": {
-          "name": "outcome_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "msg_id": {
-          "name": "msg_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "auto_replied": {
-          "name": "auto_replied",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": 0
-        },
-        "escalated": {
-          "name": "escalated",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": 0
-        },
-        "override_by_staff": {
-          "name": "override_by_staff",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": 0
-        },
-        "reason": {
-          "name": "reason",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "latency_ms": {
-          "name": "latency_ms",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "ai_outcomes_msg_id_ai_messages_msg_id_fk": {
-          "name": "ai_outcomes_msg_id_ai_messages_msg_id_fk",
-          "tableFrom": "ai_outcomes",
-          "tableTo": "ai_messages",
-          "columnsFrom": [
-            "msg_id"
-          ],
-          "columnsTo": [
-            "msg_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "bookings": {
-      "name": "bookings",
-      "columns": {
-        "booking_id": {
-          "name": "booking_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "class_id": {
-          "name": "class_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'reserved'"
-        },
-        "booked_at": {
-          "name": "booked_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "bookings_gym_id_gyms_gym_id_fk": {
-          "name": "bookings_gym_id_gyms_gym_id_fk",
-          "tableFrom": "bookings",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "bookings_class_id_classes_class_id_fk": {
-          "name": "bookings_class_id_classes_class_id_fk",
-          "tableFrom": "bookings",
-          "tableTo": "classes",
-          "columnsFrom": [
-            "class_id"
-          ],
-          "columnsTo": [
-            "class_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "bookings_member_id_members_member_id_fk": {
-          "name": "bookings_member_id_members_member_id_fk",
-          "tableFrom": "bookings",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "member_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "checkins": {
-      "name": "checkins",
-      "columns": {
-        "checkin_id": {
-          "name": "checkin_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "scanned_at": {
-          "name": "scanned_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "source": {
-          "name": "source",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "checkins_gym_id_gyms_gym_id_fk": {
-          "name": "checkins_gym_id_gyms_gym_id_fk",
-          "tableFrom": "checkins",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "checkins_member_id_members_member_id_fk": {
-          "name": "checkins_member_id_members_member_id_fk",
-          "tableFrom": "checkins",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "member_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "class_staff": {
-      "name": "class_staff",
-      "columns": {
-        "class_id": {
-          "name": "class_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "staff_id": {
-          "name": "staff_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "class_staff_class_id_classes_class_id_fk": {
-          "name": "class_staff_class_id_classes_class_id_fk",
-          "tableFrom": "class_staff",
-          "tableTo": "classes",
-          "columnsFrom": [
-            "class_id"
-          ],
-          "columnsTo": [
-            "class_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "class_staff_staff_id_staff_staff_id_fk": {
-          "name": "class_staff_staff_id_staff_staff_id_fk",
-          "tableFrom": "class_staff",
-          "tableTo": "staff",
-          "columnsFrom": [
-            "staff_id"
-          ],
-          "columnsTo": [
-            "staff_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "class_staff_class_id_staff_id_pk": {
-          "columns": [
-            "class_id",
-            "staff_id"
-          ],
-          "name": "class_staff_class_id_staff_id_pk"
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "classes": {
-      "name": "classes",
-      "columns": {
-        "class_id": {
-          "name": "class_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "starts_at": {
-          "name": "starts_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "ends_at": {
-          "name": "ends_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "capacity": {
-          "name": "capacity",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "instructor": {
-          "name": "instructor",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "classes_gym_id_gyms_gym_id_fk": {
-          "name": "classes_gym_id_gyms_gym_id_fk",
-          "tableFrom": "classes",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "consents": {
-      "name": "consents",
-      "columns": {
-        "consent_id": {
-          "name": "consent_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "document_type": {
-          "name": "document_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "version": {
-          "name": "version",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "signed_at": {
-          "name": "signed_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "signature_hash": {
-          "name": "signature_hash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "consents_member_id_members_member_id_fk": {
-          "name": "consents_member_id_members_member_id_fk",
-          "tableFrom": "consents",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "member_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "gyms": {
-      "name": "gyms",
-      "columns": {
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "owner_email": {
-          "name": "owner_email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "phone_number": {
-          "name": "phone_number",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "members": {
-      "name": "members",
-      "columns": {
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "phone": {
-          "name": "phone",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'active'"
-        },
-        "joined_at": {
-          "name": "joined_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "policy_version": {
-          "name": "policy_version",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "policy_signed_at": {
-          "name": "policy_signed_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "members_gym_id_gyms_gym_id_fk": {
-          "name": "members_gym_id_gyms_gym_id_fk",
-          "tableFrom": "members",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "payments": {
-      "name": "payments",
-      "columns": {
-        "order_id": {
-          "name": "order_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "stripe_session_id": {
-          "name": "stripe_session_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "stripe_payment_intent": {
-          "name": "stripe_payment_intent",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "amount": {
-          "name": "amount",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "currency": {
-          "name": "currency",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'JPY'"
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'pending'"
-        },
-        "paid_at": {
-          "name": "paid_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {
-        "payments_stripe_payment_intent_unique": {
-          "name": "payments_stripe_payment_intent_unique",
-          "columns": [
-            "stripe_payment_intent"
-          ],
-          "isUnique": true
-        }
-      },
-      "foreignKeys": {
-        "payments_gym_id_gyms_gym_id_fk": {
-          "name": "payments_gym_id_gyms_gym_id_fk",
-          "tableFrom": "payments",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "payments_member_id_members_member_id_fk": {
-          "name": "payments_member_id_members_member_id_fk",
-          "tableFrom": "payments",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "member_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "shifts": {
-      "name": "shifts",
-      "columns": {
-        "shift_id": {
-          "name": "shift_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "staff_id": {
-          "name": "staff_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "starts_at": {
-          "name": "starts_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "ends_at": {
-          "name": "ends_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "shifts_gym_id_gyms_gym_id_fk": {
-          "name": "shifts_gym_id_gyms_gym_id_fk",
-          "tableFrom": "shifts",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "shifts_staff_id_staff_staff_id_fk": {
-          "name": "shifts_staff_id_staff_staff_id_fk",
-          "tableFrom": "shifts",
-          "tableTo": "staff",
-          "columnsFrom": [
-            "staff_id"
-          ],
-          "columnsTo": [
-            "staff_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "staff": {
-      "name": "staff",
-      "columns": {
-        "staff_id": {
-          "name": "staff_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'reception'"
-        },
-        "active": {
-          "name": "active",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "staff_gym_id_gyms_gym_id_fk": {
-          "name": "staff_gym_id_gyms_gym_id_fk",
-          "tableFrom": "staff",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "suspension_policies": {
-      "name": "suspension_policies",
-      "columns": {
-        "gym_id": {
-          "name": "gym_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "fee_type": {
-          "name": "fee_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'free'"
-        },
-        "fee_value": {
-          "name": "fee_value",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "min_term_months": {
-          "name": "min_term_months",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": 1
-        },
-        "note": {
-          "name": "note",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'CURRENT_TIMESTAMP'"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "suspension_policies_gym_id_gyms_gym_id_fk": {
-          "name": "suspension_policies_gym_id_gyms_gym_id_fk",
-          "tableFrom": "suspension_policies",
-          "tableTo": "gyms",
-          "columnsFrom": [
-            "gym_id"
-          ],
-          "columnsTo": [
-            "gym_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    }
-  },
-  "views": {},
-  "enums": {},
-  "_meta": {
-    "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
-    "indexes": {}
-  }
+	"version": "6",
+	"dialect": "sqlite",
+	"id": "1260d4b1-f406-443b-9a7f-4ad2b71a18b8",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"tables": {
+		"admin_accounts": {
+			"name": "admin_accounts",
+			"columns": {
+				"admin_id": {
+					"name": "admin_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"role": {
+					"name": "role",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'staff'"
+				},
+				"password_hash": {
+					"name": "password_hash",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"is_active": {
+					"name": "is_active",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": 1
+				},
+				"last_login_at": {
+					"name": "last_login_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {
+				"admin_accounts_email_unique": {
+					"name": "admin_accounts_email_unique",
+					"columns": ["email"],
+					"isUnique": true
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"admin_gym_relationships": {
+			"name": "admin_gym_relationships",
+			"columns": {
+				"admin_id": {
+					"name": "admin_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"role": {
+					"name": "role",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'staff'"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"admin_gym_relationships_admin_id_admin_accounts_admin_id_fk": {
+					"name": "admin_gym_relationships_admin_id_admin_accounts_admin_id_fk",
+					"tableFrom": "admin_gym_relationships",
+					"tableTo": "admin_accounts",
+					"columnsFrom": ["admin_id"],
+					"columnsTo": ["admin_id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"admin_gym_relationships_gym_id_gyms_gym_id_fk": {
+					"name": "admin_gym_relationships_gym_id_gyms_gym_id_fk",
+					"tableFrom": "admin_gym_relationships",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"admin_gym_relationships_admin_id_gym_id_pk": {
+					"columns": ["admin_id", "gym_id"],
+					"name": "admin_gym_relationships_admin_id_gym_id_pk"
+				}
+			},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"admin_oauth_accounts": {
+			"name": "admin_oauth_accounts",
+			"columns": {
+				"oauth_id": {
+					"name": "oauth_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"admin_id": {
+					"name": "admin_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"provider": {
+					"name": "provider",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"provider_account_id": {
+					"name": "provider_account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"refresh_token": {
+					"name": "refresh_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"access_token": {
+					"name": "access_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"expires_at": {
+					"name": "expires_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"token_type": {
+					"name": "token_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"scope": {
+					"name": "scope",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"id_token": {
+					"name": "id_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"admin_oauth_accounts_admin_id_admin_accounts_admin_id_fk": {
+					"name": "admin_oauth_accounts_admin_id_admin_accounts_admin_id_fk",
+					"tableFrom": "admin_oauth_accounts",
+					"tableTo": "admin_accounts",
+					"columnsFrom": ["admin_id"],
+					"columnsTo": ["admin_id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"ai_conversations": {
+			"name": "ai_conversations",
+			"columns": {
+				"conversation_id": {
+					"name": "conversation_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"booking_id": {
+					"name": "booking_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"started_at": {
+					"name": "started_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"last_msg_at": {
+					"name": "last_msg_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"ai_conversations_gym_id_gyms_gym_id_fk": {
+					"name": "ai_conversations_gym_id_gyms_gym_id_fk",
+					"tableFrom": "ai_conversations",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"ai_conversations_member_id_members_member_id_fk": {
+					"name": "ai_conversations_member_id_members_member_id_fk",
+					"tableFrom": "ai_conversations",
+					"tableTo": "members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["member_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"ai_conversations_booking_id_bookings_booking_id_fk": {
+					"name": "ai_conversations_booking_id_bookings_booking_id_fk",
+					"tableFrom": "ai_conversations",
+					"tableTo": "bookings",
+					"columnsFrom": ["booking_id"],
+					"columnsTo": ["booking_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"ai_messages": {
+			"name": "ai_messages",
+			"columns": {
+				"msg_id": {
+					"name": "msg_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"conversation_id": {
+					"name": "conversation_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"sender": {
+					"name": "sender",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"staff_id": {
+					"name": "staff_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"channel": {
+					"name": "channel",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"content": {
+					"name": "content",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"ai_model": {
+					"name": "ai_model",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"tokens_in": {
+					"name": "tokens_in",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"tokens_out": {
+					"name": "tokens_out",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"confidence": {
+					"name": "confidence",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"sent_at": {
+					"name": "sent_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"ai_messages_conversation_id_ai_conversations_conversation_id_fk": {
+					"name": "ai_messages_conversation_id_ai_conversations_conversation_id_fk",
+					"tableFrom": "ai_messages",
+					"tableTo": "ai_conversations",
+					"columnsFrom": ["conversation_id"],
+					"columnsTo": ["conversation_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"ai_messages_staff_id_staff_staff_id_fk": {
+					"name": "ai_messages_staff_id_staff_staff_id_fk",
+					"tableFrom": "ai_messages",
+					"tableTo": "staff",
+					"columnsFrom": ["staff_id"],
+					"columnsTo": ["staff_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"ai_outcomes": {
+			"name": "ai_outcomes",
+			"columns": {
+				"outcome_id": {
+					"name": "outcome_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"msg_id": {
+					"name": "msg_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"auto_replied": {
+					"name": "auto_replied",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": 0
+				},
+				"escalated": {
+					"name": "escalated",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": 0
+				},
+				"override_by_staff": {
+					"name": "override_by_staff",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": 0
+				},
+				"reason": {
+					"name": "reason",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"latency_ms": {
+					"name": "latency_ms",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"ai_outcomes_msg_id_ai_messages_msg_id_fk": {
+					"name": "ai_outcomes_msg_id_ai_messages_msg_id_fk",
+					"tableFrom": "ai_outcomes",
+					"tableTo": "ai_messages",
+					"columnsFrom": ["msg_id"],
+					"columnsTo": ["msg_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"bookings": {
+			"name": "bookings",
+			"columns": {
+				"booking_id": {
+					"name": "booking_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"class_id": {
+					"name": "class_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'reserved'"
+				},
+				"booked_at": {
+					"name": "booked_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"bookings_gym_id_gyms_gym_id_fk": {
+					"name": "bookings_gym_id_gyms_gym_id_fk",
+					"tableFrom": "bookings",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"bookings_class_id_classes_class_id_fk": {
+					"name": "bookings_class_id_classes_class_id_fk",
+					"tableFrom": "bookings",
+					"tableTo": "classes",
+					"columnsFrom": ["class_id"],
+					"columnsTo": ["class_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"bookings_member_id_members_member_id_fk": {
+					"name": "bookings_member_id_members_member_id_fk",
+					"tableFrom": "bookings",
+					"tableTo": "members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["member_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"checkins": {
+			"name": "checkins",
+			"columns": {
+				"checkin_id": {
+					"name": "checkin_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"scanned_at": {
+					"name": "scanned_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"source": {
+					"name": "source",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"checkins_gym_id_gyms_gym_id_fk": {
+					"name": "checkins_gym_id_gyms_gym_id_fk",
+					"tableFrom": "checkins",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"checkins_member_id_members_member_id_fk": {
+					"name": "checkins_member_id_members_member_id_fk",
+					"tableFrom": "checkins",
+					"tableTo": "members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["member_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"class_staff": {
+			"name": "class_staff",
+			"columns": {
+				"class_id": {
+					"name": "class_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"staff_id": {
+					"name": "staff_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"class_staff_class_id_classes_class_id_fk": {
+					"name": "class_staff_class_id_classes_class_id_fk",
+					"tableFrom": "class_staff",
+					"tableTo": "classes",
+					"columnsFrom": ["class_id"],
+					"columnsTo": ["class_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"class_staff_staff_id_staff_staff_id_fk": {
+					"name": "class_staff_staff_id_staff_staff_id_fk",
+					"tableFrom": "class_staff",
+					"tableTo": "staff",
+					"columnsFrom": ["staff_id"],
+					"columnsTo": ["staff_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"class_staff_class_id_staff_id_pk": {
+					"columns": ["class_id", "staff_id"],
+					"name": "class_staff_class_id_staff_id_pk"
+				}
+			},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"classes": {
+			"name": "classes",
+			"columns": {
+				"class_id": {
+					"name": "class_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"title": {
+					"name": "title",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"starts_at": {
+					"name": "starts_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"ends_at": {
+					"name": "ends_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"capacity": {
+					"name": "capacity",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"instructor": {
+					"name": "instructor",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"classes_gym_id_gyms_gym_id_fk": {
+					"name": "classes_gym_id_gyms_gym_id_fk",
+					"tableFrom": "classes",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"consents": {
+			"name": "consents",
+			"columns": {
+				"consent_id": {
+					"name": "consent_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"document_type": {
+					"name": "document_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"version": {
+					"name": "version",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"signed_at": {
+					"name": "signed_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"signature_hash": {
+					"name": "signature_hash",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"consents_member_id_members_member_id_fk": {
+					"name": "consents_member_id_members_member_id_fk",
+					"tableFrom": "consents",
+					"tableTo": "members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["member_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"gyms": {
+			"name": "gyms",
+			"columns": {
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"owner_email": {
+					"name": "owner_email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"phone_number": {
+					"name": "phone_number",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"members": {
+			"name": "members",
+			"columns": {
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"phone": {
+					"name": "phone",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'active'"
+				},
+				"joined_at": {
+					"name": "joined_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"policy_version": {
+					"name": "policy_version",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"policy_signed_at": {
+					"name": "policy_signed_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"members_gym_id_gyms_gym_id_fk": {
+					"name": "members_gym_id_gyms_gym_id_fk",
+					"tableFrom": "members",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"payments": {
+			"name": "payments",
+			"columns": {
+				"order_id": {
+					"name": "order_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"stripe_session_id": {
+					"name": "stripe_session_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"stripe_payment_intent": {
+					"name": "stripe_payment_intent",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"amount": {
+					"name": "amount",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"currency": {
+					"name": "currency",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'JPY'"
+				},
+				"status": {
+					"name": "status",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'pending'"
+				},
+				"paid_at": {
+					"name": "paid_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {
+				"payments_stripe_payment_intent_unique": {
+					"name": "payments_stripe_payment_intent_unique",
+					"columns": ["stripe_payment_intent"],
+					"isUnique": true
+				}
+			},
+			"foreignKeys": {
+				"payments_gym_id_gyms_gym_id_fk": {
+					"name": "payments_gym_id_gyms_gym_id_fk",
+					"tableFrom": "payments",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"payments_member_id_members_member_id_fk": {
+					"name": "payments_member_id_members_member_id_fk",
+					"tableFrom": "payments",
+					"tableTo": "members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["member_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"shifts": {
+			"name": "shifts",
+			"columns": {
+				"shift_id": {
+					"name": "shift_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"staff_id": {
+					"name": "staff_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"starts_at": {
+					"name": "starts_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"ends_at": {
+					"name": "ends_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"shifts_gym_id_gyms_gym_id_fk": {
+					"name": "shifts_gym_id_gyms_gym_id_fk",
+					"tableFrom": "shifts",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"shifts_staff_id_staff_staff_id_fk": {
+					"name": "shifts_staff_id_staff_staff_id_fk",
+					"tableFrom": "shifts",
+					"tableTo": "staff",
+					"columnsFrom": ["staff_id"],
+					"columnsTo": ["staff_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"staff": {
+			"name": "staff",
+			"columns": {
+				"staff_id": {
+					"name": "staff_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"role": {
+					"name": "role",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'reception'"
+				},
+				"active": {
+					"name": "active",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": 1
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"staff_gym_id_gyms_gym_id_fk": {
+					"name": "staff_gym_id_gyms_gym_id_fk",
+					"tableFrom": "staff",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"suspension_policies": {
+			"name": "suspension_policies",
+			"columns": {
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"fee_type": {
+					"name": "fee_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'free'"
+				},
+				"fee_value": {
+					"name": "fee_value",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"min_term_months": {
+					"name": "min_term_months",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": 1
+				},
+				"note": {
+					"name": "note",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"suspension_policies_gym_id_gyms_gym_id_fk": {
+					"name": "suspension_policies_gym_id_gyms_gym_id_fk",
+					"tableFrom": "suspension_policies",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		}
+	},
+	"views": {},
+	"enums": {},
+	"_meta": {
+		"schemas": {},
+		"tables": {},
+		"columns": {}
+	},
+	"internal": {
+		"indexes": {}
+	}
 }

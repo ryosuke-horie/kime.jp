@@ -8,6 +8,7 @@ export const Gym = z.object({
 	name: z.string().min(1).max(100).describe("ジム名"),
 	timezone: z.string().default("Asia/Tokyo").describe("タイムゾーン"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
+	phoneNumber: z.string().optional().describe("電話番号"),
 	plan: z.enum(["basic", "premium", "enterprise"]).default("basic").describe("契約プラン"),
 	createdAt: ISODateTime.describe("作成日時"),
 	updatedAt: ISODateTime.describe("更新日時"),
@@ -23,6 +24,7 @@ export const CreateGymRequest = z.object({
 	name: z.string().min(1).max(100).describe("ジム名"),
 	timezone: z.string().optional().describe("タイムゾーン"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
+	phoneNumber: z.string().optional().describe("電話番号"),
 	plan: z.enum(["basic", "premium", "enterprise"]).optional().describe("契約プラン"),
 });
 
@@ -30,6 +32,35 @@ export const CreateGymRequest = z.object({
 registry.register("CreateGymRequest", CreateGymRequest);
 
 export type CreateGymRequestType = z.infer<typeof CreateGymRequest>;
+
+// ジムアカウント発行リクエスト
+export const CreateGymAccountRequest = z.object({
+	// ジム情報
+	name: z.string().min(1).max(100).describe("ジム名"),
+	phoneNumber: z.string().describe("電話番号"),
+
+	// オーナー情報
+	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
+	ownerName: z.string().min(1).describe("オーナー名"),
+	password: z.string().min(8).describe("パスワード"),
+});
+
+// OpenAPIスキーマに登録
+registry.register("CreateGymAccountRequest", CreateGymAccountRequest);
+
+export type CreateGymAccountRequestType = z.infer<typeof CreateGymAccountRequest>;
+
+// ジムアカウント発行レスポンス
+export const CreateGymAccountResponse = z.object({
+	message: z.string().describe("成功メッセージ"),
+	gymId: UUID.describe("作成されたジムのID"),
+	ownerId: UUID.describe("作成されたオーナーのID"),
+});
+
+// OpenAPIスキーマに登録
+registry.register("CreateGymAccountResponse", CreateGymAccountResponse);
+
+export type CreateGymAccountResponseType = z.infer<typeof CreateGymAccountResponse>;
 
 // ジム作成レスポンス
 export const CreateGymResponse = z.object({
@@ -47,6 +78,7 @@ export const UpdateGymRequest = z.object({
 	name: z.string().min(1).max(100).optional().describe("ジム名"),
 	timezone: z.string().optional().describe("タイムゾーン"),
 	ownerEmail: z.string().email().optional().describe("オーナーのメールアドレス"),
+	phoneNumber: z.string().optional().describe("電話番号"),
 	plan: z.enum(["basic", "premium", "enterprise"]).optional().describe("契約プラン"),
 });
 
@@ -177,6 +209,67 @@ registry.registerPath({
 			content: {
 				"application/json": {
 					schema: CreateGymResponse,
+				},
+			},
+		},
+		400: {
+			description: "入力エラー",
+			content: {
+				"application/json": {
+					schema: ErrorResponseSchema,
+				},
+			},
+		},
+		401: {
+			description: "認証エラー",
+			content: {
+				"application/json": {
+					schema: ErrorResponseSchema,
+				},
+			},
+		},
+		403: {
+			description: "権限エラー",
+			content: {
+				"application/json": {
+					schema: ErrorResponseSchema,
+				},
+			},
+		},
+		500: {
+			description: "サーバーエラー",
+			content: {
+				"application/json": {
+					schema: ErrorResponseSchema,
+				},
+			},
+		},
+	},
+});
+
+// ジムアカウント発行エンドポイント（管理者用）
+registry.registerPath({
+	method: "post",
+	path: "/api/gyms/create",
+	tags: ["gyms"],
+	summary: "ジムアカウント発行（管理者用）",
+	description: "新しいジムを登録し、オーナーアカウントを作成します（管理者権限が必要）",
+	security: [{ apiKey: [] }],
+	requestBody: {
+		description: "ジム情報とオーナー情報",
+		content: {
+			"application/json": {
+				schema: CreateGymAccountRequest,
+			},
+		},
+		required: true,
+	},
+	responses: {
+		201: {
+			description: "ジムアカウント発行成功",
+			content: {
+				"application/json": {
+					schema: CreateGymAccountResponse,
 				},
 			},
 		},

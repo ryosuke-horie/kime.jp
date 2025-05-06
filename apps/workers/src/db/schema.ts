@@ -8,6 +8,7 @@ export const gyms = sqliteTable("gyms", {
 	name: text("name").notNull(),
 	timezone: text("timezone").default("Asia/Tokyo"),
 	ownerEmail: text("owner_email").notNull(),
+	phoneNumber: text("phone_number"),
 	plan: text("plan").notNull().default("basic"),
 	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 	updatedAt: text("updated_at").default("CURRENT_TIMESTAMP"),

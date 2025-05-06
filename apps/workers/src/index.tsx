@@ -5,8 +5,6 @@ import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 import type { Env } from "./env";
 import { authMiddleware } from "./middlewares/auth";
-import { ClassLocker } from "./objects/ClassLocker";
-import { DatabaseDO } from "./objects/DatabaseDO";
 import { openApiDocument } from "./schemas";
 
 import authRouter from "./features/auth/routes";
@@ -72,8 +70,4 @@ app.route("/api", api);
 export default {
 	// Fetch ハンドラー
 	fetch: app.fetch,
-
-	// Durable Objects
-	DatabaseDO,
-	ClassLocker,
 };

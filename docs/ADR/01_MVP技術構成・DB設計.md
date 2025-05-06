@@ -27,10 +27,10 @@
 |--------------|-----------|------|
 | エッジ実行環境 | **Cloudflare Workers（有料版）** | LINE とブラウザへの低遅延、基本料金 $5 |
 | メイン DB | **Cloudflare D1（SQLite）** | 5 GB／月・50 M 書き込み無料枠、SQL & FK 対応 |
-| ホットスポット直列化 | **Durable Objects** | 帯域制限・Stripe Webhook の ACID 保証 |
 | キャッシュ & バックアップ | KV / R2 | 低コスト、ポリシー版キャッシュ＆バックアップ |
 | フロントエンド | Next.js 15 app‑router | フロントエンド |
 
+> **更新 (2025-05-06)**: 当初は「ホットスポット直列化」にDurable Objectsを使用していましたが、直接D1を使用する構成に移行しました。これにより、コード複雑性の低減とレイテンシ改善が期待できます。
 ### 2.2 データモデル（SQLite→Postgres 互換）
 
 > 全テーブルは `TEXT` UUID 主キー、将来の多店舗対応に備えて `gym_id` を保持し、`created_at / updated_at` を共通列とする。
@@ -46,7 +46,9 @@
 
 ### 2.3 予約整合性
 
-`ClassLocker` Durable Object が D1 で `BEGIN…COMMIT` を実行し、`bookings` に `ON CONFLICT DO NOTHING` で挿入。これにより二重予約を防止。他の読み取りは直接 Workers から行う。
+D1の`BEGIN…COMMIT`トランザクションを使用し、`bookings`テーブルに`ON CONFLICT DO NOTHING`で挿入。これにより二重予約を防止。すべてのデータアクセスはWorkers内で直接D1クライアントを通じて行う。
+
+> **更新 (2025-05-06)**: 以前は`ClassLocker` Durable Objectを使用していましたが、D1のネイティブトランザクションに移行し、アーキテクチャをシンプル化しました。
 
 ### 2.4 規約・同意管理
 
@@ -74,6 +76,7 @@
 * **1,000 円未満の OpEx** で UX & 監査要件を満たす
 * Postgres 互換スキーマ → Neon / Supabase へ DSN 切替のみで移行可能
 * AI ログ構造化により改善ループとコスト分析が容易
+* **追加 (2025-05-06)**: Durable Objectsの削除によるコード簡素化とレイテンシ改善
 
 ### 負の効果 / トレードオフ
 * D1 書き込み上限 50 M。会員 150 名超で移行が必要

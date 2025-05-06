@@ -23,5 +23,8 @@
 		"lefthook": "^1.11.12",
 		"turbo": "latest"
 	},
-	"packageManager": "pnpm@10.9.0"
+	"packageManager": "pnpm@10.9.0",
+	"dependencies": {
+		"@asteasolutions/zod-to-openapi": "^7.3.0"
+	}
 }

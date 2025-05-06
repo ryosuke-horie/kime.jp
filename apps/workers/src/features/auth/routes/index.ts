@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import type { Env } from "../../../env";
-import { getDatabaseClient } from "../../../lib/do-client";
+import { getDatabaseClient } from "../../../lib/clients";
 import {
 	AdminAccount,
 	AdminLoginRequest,

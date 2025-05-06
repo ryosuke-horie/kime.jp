@@ -7,13 +7,17 @@ import { gymRouter } from "./index";
 // APIレスポンス型定義
 interface GymResponse {
 	gym?: {
-		id: string;
+		gymId: string;
 		name: string;
+		timezone?: string;
+		ownerEmail?: string;
 		[key: string]: unknown;
 	};
 	gyms?: Array<{
-		id: string;
+		gymId: string;
 		name: string;
+		timezone?: string;
+		ownerEmail?: string;
 		[key: string]: unknown;
 	}>;
 	message?: string;
@@ -22,16 +26,34 @@ interface GymResponse {
 	[key: string]: unknown;
 }
 
-// DO Clientモック
-vi.mock("../../../lib/do-client", () => ({
+// データベースクライアントモック
+vi.mock("../../../lib/clients", () => ({
 	getDatabaseClient: vi.fn().mockImplementation(() => ({
 		getOne: vi.fn().mockResolvedValue({
 			success: true,
-			data: { id: "gym1", name: "Test Gym" },
+			data: {
+				gymId: "123e4567-e89b-12d3-a456-426614174000",
+				name: "Test Gym",
+				timezone: "Asia/Tokyo",
+				ownerEmail: "test@example.com",
+				plan: "basic",
+				createdAt: "2023-01-01T00:00:00Z",
+				updatedAt: "2023-01-01T00:00:00Z",
+			},
 		}),
 		list: vi.fn().mockResolvedValue({
 			success: true,
-			data: [{ id: "gym1", name: "Test Gym" }],
+			data: [
+				{
+					gymId: "123e4567-e89b-12d3-a456-426614174000",
+					name: "Test Gym",
+					timezone: "Asia/Tokyo",
+					ownerEmail: "test@example.com",
+					plan: "basic",
+					createdAt: "2023-01-01T00:00:00Z",
+					updatedAt: "2023-01-01T00:00:00Z",
+				},
+			],
 		}),
 		create: vi.fn().mockResolvedValue({
 			success: true,
@@ -58,59 +80,7 @@ describe("Gym Router", () => {
 		// モック環境の準備
 		mockEnv = createCloudflareEnvMock();
 
-		// モックのDO取得メソッドを上書き
-		vi.mock("../../../lib/do-client", () => ({
-			getDatabaseClient: vi.fn().mockImplementation(() => ({
-				getOne: vi.fn().mockResolvedValue({
-					success: true,
-					data: {
-						id: "123e4567-e89b-12d3-a456-426614174000",
-						name: "Test Gym",
-						gymId: "123e4567-e89b-12d3-a456-426614174000",
-						timezone: "Asia/Tokyo",
-						ownerEmail: "test@example.com",
-						plan: "basic",
-						createdAt: "2023-01-01T00:00:00Z",
-						updatedAt: "2023-01-01T00:00:00Z",
-					},
-				}),
-				list: vi.fn().mockResolvedValue({
-					success: true,
-					data: [
-						{
-							id: "item1",
-							name: "Test Gym 1",
-							gymId: "123e4567-e89b-12d3-a456-426614174000",
-							timezone: "Asia/Tokyo",
-							ownerEmail: "test1@example.com",
-							plan: "basic",
-							createdAt: "2023-01-01T00:00:00Z",
-							updatedAt: "2023-01-01T00:00:00Z",
-						},
-						{
-							id: "item2",
-							name: "Test Gym 2",
-							gymId: "123e4567-e89b-12d3-a456-426614174001",
-							timezone: "Asia/Tokyo",
-							ownerEmail: "test2@example.com",
-							plan: "premium",
-							createdAt: "2023-01-02T00:00:00Z",
-							updatedAt: "2023-01-02T00:00:00Z",
-						},
-					],
-				}),
-				create: vi.fn().mockResolvedValue({
-					success: true,
-					id: "new-gym-id",
-				}),
-				update: vi.fn().mockResolvedValue({
-					success: true,
-				}),
-				delete: vi.fn().mockResolvedValue({
-					success: true,
-				}),
-			})),
-		}));
+		// テスト用の共通モックを設定する
 	});
 
 	it("GET /gyms/:gymId should return gym details", async () => {
@@ -125,7 +95,7 @@ describe("Gym Router", () => {
 		expect(res.status).toBe(200);
 		const data = (await res.json()) as GymResponse;
 		expect(data).toHaveProperty("gym");
-		expect(data.gym).toHaveProperty("id");
+		expect(data.gym).toHaveProperty("gymId");
 	});
 
 	// テスト簡略化のため管理者用エンドポイントのテストはスキップ
@@ -147,7 +117,7 @@ describe("Gym Router", () => {
 		expect(data).toHaveProperty("gyms");
 		expect(Array.isArray(data.gyms)).toBe(true);
 		if (data.gyms && data.gyms.length > 0) {
-			expect(data.gyms[0]).toHaveProperty("id");
+			expect(data.gyms[0]).toHaveProperty("gymId");
 		}
 	});
 

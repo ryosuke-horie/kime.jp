@@ -66,9 +66,10 @@ declare module "@hono/vite-build/cloudflare-workers" {
 		minify?: boolean;
 		external?: string[];
 	}
-	export default function honoCloudflareWorkersPlugin(
-		options?: HonoPluginOptions,
-	): { name: string; [key: string]: unknown };
+	export default function honoCloudflareWorkersPlugin(options?: HonoPluginOptions): {
+		name: string;
+		[key: string]: unknown;
+	};
 }
 
 declare module "vitest/config" {

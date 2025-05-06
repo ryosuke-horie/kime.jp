@@ -67,6 +67,12 @@ updates:
         patterns:
           - "@asteasolutions/zod-to-openapi"
           - "zod"
+      # Auth.js（Next-Auth）関連パッケージをグループ化
+      auth-deps:
+        patterns:
+          - "next-auth"
+          - "@auth/*"
+          - "jose"  # JWTライブラリ
     labels:
       - "dependencies"
       - "web"

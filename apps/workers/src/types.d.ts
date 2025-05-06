@@ -76,9 +76,7 @@ interface DurableObjectStorage {
 	delete(key: string): Promise<boolean>;
 	delete(keys: string[]): Promise<number>;
 	deleteAll(): Promise<void>;
-	transaction<T>(
-		closure: (txn: DurableObjectTransaction) => Promise<T>,
-	): Promise<T>;
+	transaction<T>(closure: (txn: DurableObjectTransaction) => Promise<T>): Promise<T>;
 }
 
 interface DurableObjectTransaction {

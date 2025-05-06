@@ -7,10 +7,7 @@ import { adminOnlyMiddleware } from "../../../middlewares/auth";
 export const memberRouter = new Hono<{ Bindings: Env }>();
 
 // 管理者用ルート
-const adminRouter = new Hono<{ Bindings: Env }>().use(
-	"*",
-	adminOnlyMiddleware(),
-);
+const adminRouter = new Hono<{ Bindings: Env }>().use("*", adminOnlyMiddleware());
 
 // 会員一覧取得（管理者用）
 adminRouter.get("/", async (c) => {

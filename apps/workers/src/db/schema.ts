@@ -1,9 +1,4 @@
-import {
-	integer,
-	primaryKey,
-	sqliteTable,
-	text,
-} from "drizzle-orm/sqlite-core";
+import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 // ----------------------------------------------------------
 // gyms - ジム情報
@@ -139,6 +134,61 @@ export const shifts = sqliteTable("shifts", {
 	endsAt: text("ends_at").notNull(),
 	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 });
+
+// ----------------------------------------------------------
+// admin_accounts - 管理者アカウント（外部認証サポート）
+// ----------------------------------------------------------
+export const adminAccounts = sqliteTable("admin_accounts", {
+	adminId: text("admin_id").primaryKey(),
+	email: text("email").notNull().unique(),
+	name: text("name").notNull(),
+	role: text("role", { enum: ["admin", "staff"] })
+		.notNull()
+		.default("staff"),
+	passwordHash: text("password_hash"),
+	isActive: integer("is_active").notNull().default(1),
+	lastLoginAt: text("last_login_at"),
+	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+	updatedAt: text("updated_at").default("CURRENT_TIMESTAMP"),
+});
+
+export const adminOauthAccounts = sqliteTable("admin_oauth_accounts", {
+	oauthId: text("oauth_id").primaryKey(),
+	adminId: text("admin_id")
+		.notNull()
+		.references(() => adminAccounts.adminId, { onDelete: "cascade" }),
+	provider: text("provider", { enum: ["google", "line"] }).notNull(),
+	providerAccountId: text("provider_account_id").notNull(),
+	refreshToken: text("refresh_token"),
+	accessToken: text("access_token"),
+	expiresAt: integer("expires_at"),
+	tokenType: text("token_type"),
+	scope: text("scope"),
+	idToken: text("id_token"),
+	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+	updatedAt: text("updated_at").default("CURRENT_TIMESTAMP"),
+});
+
+export const adminGymRelationships = sqliteTable(
+	"admin_gym_relationships",
+	{
+		adminId: text("admin_id")
+			.notNull()
+			.references(() => adminAccounts.adminId, { onDelete: "cascade" }),
+		gymId: text("gym_id")
+			.notNull()
+			.references(() => gyms.gymId, { onDelete: "cascade" }),
+		role: text("role", { enum: ["owner", "manager", "staff"] })
+			.notNull()
+			.default("staff"),
+		createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
+	},
+	(table) => {
+		return {
+			pk: primaryKey(table.adminId, table.gymId),
+		};
+	},
+);
 
 // ----------------------------------------------------------
 // consents - 法的同意

@@ -15,12 +15,9 @@ export class ClassLocker {
 
 		// ルートパスはDOの状態を返す
 		if (path.length === 0) {
-			return new Response(
-				JSON.stringify({ status: "ok", type: "ClassLocker" }),
-				{
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ status: "ok", type: "ClassLocker" }), {
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		// 主な操作: lock, unlock, check
@@ -52,13 +49,10 @@ export class ClassLocker {
 	// クラスをロック（予約処理中）
 	private async lockClass(classId: string): Promise<Response> {
 		if (this.locks.get(classId)) {
-			return new Response(
-				JSON.stringify({ locked: true, message: "Class is already locked" }),
-				{
-					status: 409, // Conflict
-					headers: { "Content-Type": "application/json" },
-				},
-			);
+			return new Response(JSON.stringify({ locked: true, message: "Class is already locked" }), {
+				status: 409, // Conflict
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 
 		this.locks.set(classId, true);

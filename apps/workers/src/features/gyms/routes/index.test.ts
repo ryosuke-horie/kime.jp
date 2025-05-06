@@ -23,7 +23,7 @@ interface GymResponse {
 }
 
 // DO Clientモック
-vi.mock("../../../lib/do-client", () => ({
+vi.mock("../../../lib/clients", () => ({
 	getDatabaseClient: vi.fn().mockImplementation(() => ({
 		getOne: vi.fn().mockResolvedValue({
 			success: true,
@@ -59,7 +59,7 @@ describe("Gym Router", () => {
 		mockEnv = createCloudflareEnvMock();
 
 		// モックのDO取得メソッドを上書き
-		vi.mock("../../../lib/do-client", () => ({
+		vi.mock("../../../lib/clients", () => ({
 			getDatabaseClient: vi.fn().mockImplementation(() => ({
 				getOne: vi.fn().mockResolvedValue({
 					success: true,

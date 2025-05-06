@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Env } from "../../../env";
-import { bookClass, getDatabaseClient } from "../../../lib/do-client";
+import { bookClass, getDatabaseClient } from "../../../lib/clients";
 import { adminOnlyMiddleware } from "../../../middlewares/auth";
 
 // Bookingルーター

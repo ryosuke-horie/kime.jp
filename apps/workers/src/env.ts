@@ -29,33 +29,12 @@ export interface D1ExecResult {
 	duration: number;
 }
 
-// Cloudflare WorkersのDurable Object名前空間型
-export interface DurableObjectNamespace {
-	idFromName: (name: string) => DurableObjectId;
-	idFromString: (id: string) => DurableObjectId;
-	newUniqueId: () => DurableObjectId;
-	jurisdiction: (jurisdiction: string) => {
-		get: (id: DurableObjectId) => DurableObject;
-	};
-	get: (id: DurableObjectId) => DurableObject;
-}
-
-export interface DurableObjectId {
-	toString: () => string;
-}
-
-export interface DurableObject {
-	fetch: (request: Request) => Promise<Response>;
-}
+// Durable Object関連の型定義は削除（D1を直接使用する方針に変更）
 
 // 環境変数型定義
 export interface Env {
 	// D1データベース
 	DB: D1Database;
-
-	// Durable Object名前空間
-	DB_DO: DurableObjectNamespace;
-	CLASS_LOCKER: DurableObjectNamespace;
 
 	// 認証関連の環境変数
 	JWT_SECRET?: string;

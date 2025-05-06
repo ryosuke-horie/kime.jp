@@ -8,17 +8,7 @@ binding = "DB"
 database_name = "kime_mvp"
 database_id = "7a7157a9-65bd-4cbf-82ec-bee523f661ab"
 
-# Durable Objects
-[durable_objects]
-bindings = [
-  { name = "DB_DO", class_name = "DatabaseDO" },
-  { name = "CLASS_LOCKER", class_name = "ClassLocker" }
-]
-
-# Durable Objects Migrations
-[[migrations]]
-tag = "v1" 
-new_classes = ["DatabaseDO", "ClassLocker"]
+# Durable Objects - 削除済み（D1を直接利用する方針に変更）
 
 # Preview/Production設定
 [env.preview]

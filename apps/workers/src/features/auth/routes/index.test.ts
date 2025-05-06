@@ -23,7 +23,7 @@ interface AuthResponse {
 }
 
 // DOクライアントのモック
-vi.mock("../../../lib/do-client", () => ({
+vi.mock("../../../lib/clients", () => ({
 	getDatabaseClient: vi.fn().mockImplementation(() => ({
 		getOne: vi.fn().mockResolvedValue({
 			success: true,

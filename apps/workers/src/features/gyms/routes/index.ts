@@ -83,7 +83,7 @@ adminRouter.post("/", validateBody(CreateGymRequest), async (c) => {
 	);
 });
 
-// ジムアカウント発行 - /api/gyms/create
+// ジムアカウント発行 - /api/gyms/admin/create
 adminRouter.post("/create", validateBody(CreateGymAccountRequest), async (c) => {
 	const data = c.req.valid("json");
 	const dbClient = getDatabaseClient(c.env);

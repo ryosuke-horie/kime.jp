@@ -13,8 +13,13 @@ export default function StaffLayout({ children }: PropsWithChildren) {
 	const { data: session, status } = useSession();
 
 	// 認証チェック
+	// 注意: クライアントサイドでのリダイレクトは、コンポーネントのマウント・アンマウントの
+	// タイミングや状態変化によって予期しないタイミングで実行される可能性があります。
+	// 理想的には、この認証ロジックをミドルウェアとしてサーバーサイドに移行することを検討すべきです。
+	// middleware.tsでNextAuth対応のミドルウェアを実装することで、より信頼性の高い認証フローを実現できます。
 	useEffect(() => {
 		if (status === "unauthenticated") {
+			// 未認証状態が確定した場合のみリダイレクト
 			redirect("/auth/signin?callbackUrl=/staff/dashboard");
 		}
 	}, [status]);

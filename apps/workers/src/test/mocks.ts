@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 import type { D1Database, D1PreparedStatement, Env } from "../env";
+import { Database } from "../lib/database";
 
 /**
  * Cloudflare環境のモックを作成する
@@ -31,138 +32,23 @@ export const createCloudflareEnvMock = (customMocks = {}): Env => {
 		// D1データベース
 		DB: mockD1,
 
-		// DatabaseDO
-		DB_DO: {
-			idFromName: vi.fn().mockReturnValue({ toString: () => "test-id" }),
-			idFromString: vi.fn().mockReturnValue({ toString: () => "test-id" }),
-			newUniqueId: vi.fn().mockReturnValue({ toString: () => "unique-id" }),
-			jurisdiction: vi.fn().mockImplementation((_j: string) => {
-				return { get: vi.fn() };
-			}),
-			get: vi.fn().mockReturnValue({
-				fetch: vi.fn().mockImplementation(async (url) => {
-					// URLに基づいてレスポンスを分岐
-					const urlObj = new URL(url);
-					const path = urlObj.pathname;
-
-					if (path.includes("/get/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-								data: { id: "test-id", name: "Test Item" },
-							}),
-						);
-					}
-
-					if (path.includes("/list/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-								data: [{ id: "item1" }, { id: "item2" }],
-							}),
-						);
-					}
-
-					if (path.includes("/create/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-								id: "new-id",
-							}),
-						);
-					}
-
-					if (path.includes("/update/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-							}),
-						);
-					}
-
-					if (path.includes("/delete/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-							}),
-						);
-					}
-
-					// デフォルトレスポンス
-					return new Response(
-						JSON.stringify({
-							success: false,
-							error: "Not implemented in mock",
-						}),
-						{ status: 500 },
-					);
-				}),
-			}),
-		},
-		// ClassLockerDO
-		CLASS_LOCKER: {
-			idFromName: vi.fn().mockReturnValue({ toString: () => "test-id" }),
-			idFromString: vi.fn().mockReturnValue({ toString: () => "test-id" }),
-			newUniqueId: vi.fn().mockReturnValue({ toString: () => "unique-id" }),
-			jurisdiction: vi.fn().mockImplementation((_j: string) => {
-				return { get: vi.fn() };
-			}),
-			get: vi.fn().mockReturnValue({
-				fetch: vi.fn().mockImplementation(async (url) => {
-					const urlObj = new URL(url);
-					const path = urlObj.pathname;
-
-					if (path.includes("/lock/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-								locked: true,
-							}),
-						);
-					}
-
-					if (path.includes("/unlock/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-								locked: false,
-							}),
-						);
-					}
-
-					if (path.includes("/check/")) {
-						return new Response(
-							JSON.stringify({
-								success: true,
-								locked: false,
-							}),
-						);
-					}
-
-					return new Response(
-						JSON.stringify({
-							success: false,
-							error: "Not implemented in mock",
-						}),
-						{ status: 500 },
-					);
-				}),
-			}),
-		},
+		// 環境変数
+		JWT_SECRET: "test-secret-key",
+		NODE_ENV: "test",
+		SKIP_AUTH: "true",
 		...customMocks,
 	};
 };
 
 /**
- * Durable Objectクライアントのモック
+ * データベースクライアントのモック
  */
-export const mockDOClient = vi.fn().mockImplementation(() => ({
+export const mockDatabaseClient = vi.fn().mockImplementation(() => ({
 	getOne: vi.fn().mockResolvedValue({
 		success: true,
 		data: {
-			id: "test-id",
-			name: "Test Item",
 			gymId: "123e4567-e89b-12d3-a456-426614174000",
+			name: "Test Item",
 			timezone: "Asia/Tokyo",
 			ownerEmail: "test@example.com",
 			plan: "basic",
@@ -174,9 +60,8 @@ export const mockDOClient = vi.fn().mockImplementation(() => ({
 		success: true,
 		data: [
 			{
-				id: "item1",
-				name: "Test Gym 1",
 				gymId: "123e4567-e89b-12d3-a456-426614174000",
+				name: "Test Gym 1",
 				timezone: "Asia/Tokyo",
 				ownerEmail: "test1@example.com",
 				plan: "basic",
@@ -184,9 +69,8 @@ export const mockDOClient = vi.fn().mockImplementation(() => ({
 				updatedAt: "2023-01-01T00:00:00Z",
 			},
 			{
-				id: "item2",
-				name: "Test Gym 2",
 				gymId: "123e4567-e89b-12d3-a456-426614174001",
+				name: "Test Gym 2",
 				timezone: "Asia/Tokyo",
 				ownerEmail: "test2@example.com",
 				plan: "premium",
@@ -206,10 +90,77 @@ export const mockDOClient = vi.fn().mockImplementation(() => ({
 		success: true,
 	}),
 	transaction: vi.fn().mockResolvedValue({
-		success: true,
+		success: false,
+		error: "Transaction not supported in D1",
 	}),
 	query: vi.fn().mockResolvedValue({
 		success: true,
 		data: [],
+	}),
+	queryOne: vi.fn().mockResolvedValue({
+		success: false,
+		error: "queryOne not supported in direct D1 client",
+	}),
+	queryMany: vi.fn().mockResolvedValue({
+		success: false,
+		error: "queryMany not supported in direct D1 client",
+	}),
+}));
+
+/**
+ * データベースのモック
+ */
+export const mockDatabase = vi.fn().mockImplementation(() => ({
+	getOne: vi.fn().mockResolvedValue({
+		success: true,
+		data: {
+			gymId: "test-id",
+			name: "Test Item",
+			timezone: "Asia/Tokyo",
+			ownerEmail: "test@example.com",
+			plan: "basic",
+			createdAt: "2023-01-01T00:00:00Z",
+			updatedAt: "2023-01-01T00:00:00Z",
+		},
+	}),
+	list: vi.fn().mockResolvedValue({
+		success: true,
+		data: [
+			{
+				gymId: "item1",
+				name: "Test Item 1",
+				timezone: "Asia/Tokyo",
+				ownerEmail: "test1@example.com",
+				plan: "basic",
+				createdAt: "2023-01-01T00:00:00Z",
+				updatedAt: "2023-01-01T00:00:00Z",
+			},
+			{
+				gymId: "item2",
+				name: "Test Item 2",
+				timezone: "Asia/Tokyo",
+				ownerEmail: "test2@example.com",
+				plan: "premium",
+				createdAt: "2023-01-02T00:00:00Z",
+				updatedAt: "2023-01-02T00:00:00Z",
+			},
+		],
+	}),
+	create: vi.fn().mockResolvedValue({
+		success: true,
+		id: "new-id",
+	}),
+	update: vi.fn().mockResolvedValue({
+		success: true,
+	}),
+	delete: vi.fn().mockResolvedValue({
+		success: true,
+	}),
+	bookClass: vi.fn().mockResolvedValue({
+		success: true,
+		bookingId: "booking-id",
+	}),
+	getClient: vi.fn().mockReturnValue({
+		execute: vi.fn().mockResolvedValue([]),
 	}),
 }));

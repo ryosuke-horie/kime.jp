@@ -8,9 +8,9 @@ import { Database, getDatabase } from "./database";
 export function getDatabaseClient(env: Env) {
 	const db = getDatabase(env);
 	return {
-		getOne: (table: string, id: string) => db.getOne(table as any, id),
+		getOne: (table: string, id: string) => db.getOne(table as keyof typeof schema, id),
 		list: (table: string, params: Record<string, string> = {}) => {
-			return db.list(table as any, {
+			return db.list(table as keyof typeof schema, {
 				gymId: params.gym_id,
 				limit: params.limit ? Number.parseInt(params.limit) : undefined,
 				offset: params.offset ? Number.parseInt(params.offset) : undefined,

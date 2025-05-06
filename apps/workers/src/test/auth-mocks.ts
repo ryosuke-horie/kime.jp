@@ -5,7 +5,8 @@ import type { Context, Next } from "hono";
  */
 import { vi } from "vitest";
 import type { Env } from "../env";
-import type { D1Database, D1PreparedStatement, DurableObjectNamespace } from "../env";
+import type { D1Database } from "../env";
+import type { Database } from "../lib/database";
 import type { AppContext } from "../middlewares/auth";
 import type { AdminAccountType } from "../types/auth";
 
@@ -78,6 +79,95 @@ export function createMockAdmin(role: "admin" | "staff" = "admin"): AdminAccount
 }
 
 /**
+ * データベースモックを作成する
+ */
+export function createMockDatabase(): Database {
+	// @ts-ignore - 型を簡略化するためにignoreを使用
+	return {
+		getOne: vi.fn().mockResolvedValue({
+			success: true,
+			data: {
+				gymId: "gym1",
+				name: "Test Gym",
+				timezone: "Asia/Tokyo",
+				ownerEmail: "owner@example.com",
+				plan: "basic",
+				createdAt: "2023-01-01T00:00:00Z",
+				updatedAt: "2023-01-01T00:00:00Z",
+			},
+		}),
+		list: vi.fn().mockResolvedValue({
+			success: true,
+			data: [
+				{
+					gymId: "gym1",
+					name: "Test Gym",
+					timezone: "Asia/Tokyo",
+					ownerEmail: "owner@example.com",
+					plan: "basic",
+					createdAt: "2023-01-01T00:00:00Z",
+					updatedAt: "2023-01-01T00:00:00Z",
+				},
+			],
+		}),
+		create: vi.fn().mockResolvedValue({ success: true, id: "new-id" }),
+		update: vi.fn().mockResolvedValue({ success: true }),
+		delete: vi.fn().mockResolvedValue({ success: true }),
+		bookClass: vi.fn().mockResolvedValue({ success: true, bookingId: "booking1" }),
+		getClient: vi.fn().mockReturnValue({
+			execute: vi.fn().mockResolvedValue([]),
+		}),
+	};
+}
+
+/**
+ * データベースクライアントモックを作成する
+ */
+export function createMockDatabaseClient() {
+	// @ts-ignore - 型を簡略化するためにignoreを使用
+	return {
+		getOne: vi.fn().mockImplementation((table, id) => {
+			if (table === "gyms" && id === "gym1") {
+				return Promise.resolve({
+					success: true,
+					data: {
+						gymId: "gym1",
+						name: "Test Gym",
+						timezone: "Asia/Tokyo",
+						ownerEmail: "owner@example.com",
+						plan: "basic",
+						createdAt: "2023-01-01T00:00:00Z",
+						updatedAt: "2023-01-01T00:00:00Z",
+					},
+				});
+			}
+			return Promise.resolve({ success: false, error: "Not found" });
+		}),
+		list: vi.fn().mockResolvedValue({
+			success: true,
+			data: [
+				{
+					gymId: "gym1",
+					name: "Test Gym",
+					timezone: "Asia/Tokyo",
+					ownerEmail: "owner@example.com",
+					plan: "basic",
+					createdAt: "2023-01-01T00:00:00Z",
+					updatedAt: "2023-01-01T00:00:00Z",
+				},
+			],
+		}),
+		create: vi.fn().mockResolvedValue({ success: true, id: "new-id" }),
+		update: vi.fn().mockResolvedValue({ success: true }),
+		delete: vi.fn().mockResolvedValue({ success: true }),
+		query: vi.fn().mockResolvedValue({ success: true, data: [] }),
+		queryOne: vi.fn().mockResolvedValue({ success: false, error: "Not supported" }),
+		queryMany: vi.fn().mockResolvedValue({ success: false, error: "Not supported" }),
+		transaction: vi.fn().mockResolvedValue({ success: false, error: "Not supported" }),
+	};
+}
+
+/**
  * 認証ミドルウェアテスト用のコンテキストとリクエストオブジェクトをモック
  * @param options モック設定オプション
  * @returns モックコンテキスト、nextミドルウェア、内部変数
@@ -105,8 +195,6 @@ export function createMockAuthContext(
 		JWT_SECRET: "test-secret-key",
 		SKIP_AUTH: "false",
 		DB: {} as D1Database,
-		DB_DO: {} as DurableObjectNamespace,
-		CLASS_LOCKER: {} as DurableObjectNamespace,
 		...env,
 	} as Env;
 

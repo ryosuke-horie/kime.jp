@@ -23,11 +23,11 @@ export class Database {
 		id: string,
 	): Promise<{
 		success: boolean;
-		data?: any;
+		data?: Record<string, unknown>;
 		error?: string;
 	}> {
 		try {
-			let result;
+			let result: Record<string, unknown> | undefined;
 
 			// テーブルに応じたクエリを実行
 			switch (table) {
@@ -83,7 +83,7 @@ export class Database {
 		} = {},
 	): Promise<{
 		success: boolean;
-		data?: any[];
+		data?: Record<string, unknown>[];
 		error?: string;
 	}> {
 		try {
@@ -253,25 +253,25 @@ export class Database {
 				case "gyms":
 					await this.db
 						.update(schema.gyms)
-						.set(data as any)
+						.set(data as Partial<typeof schema.gyms.$inferInsert>)
 						.where(eq(schema.gyms.gymId, id));
 					break;
 				case "members":
 					await this.db
 						.update(schema.members)
-						.set(data as any)
+						.set(data as Partial<typeof schema.members.$inferInsert>)
 						.where(eq(schema.members.memberId, id));
 					break;
 				case "classes":
 					await this.db
 						.update(schema.classes)
-						.set(data as any)
+						.set(data as Partial<typeof schema.classes.$inferInsert>)
 						.where(eq(schema.classes.classId, id));
 					break;
 				case "bookings":
 					await this.db
 						.update(schema.bookings)
-						.set(data as any)
+						.set(data as Partial<typeof schema.bookings.$inferInsert>)
 						.where(eq(schema.bookings.bookingId, id));
 					break;
 				// 他のテーブルも同様に追加可能

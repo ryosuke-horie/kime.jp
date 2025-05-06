@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiClient } from "../../client";
-import {
-	type CreateGymAccountRequest,
-	GymApiClient,
-} from "../index";
+import { type CreateGymAccountRequest, GymApiClient } from "../index";
 
 // モックの型
 interface MockResponse {

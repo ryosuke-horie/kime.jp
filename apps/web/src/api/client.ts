@@ -119,4 +119,17 @@ export class ApiClient {
 	async getMe(): Promise<AdminInfo> {
 		return this.fetchApi<AdminInfo>("/api/auth/me");
 	}
+
+	/**
+	 * 汎用POSTリクエスト
+	 * @param path エンドポイントパス
+	 * @param data リクエストボディ
+	 * @returns レスポンス
+	 */
+	async post<T>(path: string, data: unknown): Promise<T> {
+		return this.fetchApi<T>(path, {
+			method: "POST",
+			body: JSON.stringify(data),
+		});
+	}
 }

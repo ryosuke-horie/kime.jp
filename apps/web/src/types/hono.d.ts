@@ -143,4 +143,3 @@ declare module "@hono/zod-validator" {
 		},
 	): (c: Context, next: () => Promise<void>) => Promise<void>;
 }
-

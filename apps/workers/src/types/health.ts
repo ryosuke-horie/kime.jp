@@ -7,6 +7,4 @@ export const HealthCheckResponse = z.object({
 	version: z.string().describe("APIのバージョン"),
 });
 
-
 export type HealthCheckResponseType = z.infer<typeof HealthCheckResponse>;
-

@@ -1,4 +1,4 @@
-// @ts-nocheck - このファイルは別途リファクタリング予定
+// DatabaseDO - D1データベースへのアクセスを管理するDurable Object
 import * as schema from "../db";
 import type { NewBooking, NewClass, NewGym, NewMember } from "../db";
 
@@ -94,6 +94,51 @@ export class DatabaseDO {
 	private async handleQuery(request: Request): Promise<Response> {
 		try {
 			const url = new URL(request.url);
+
+			// POST メソッドの場合はテーブルのQueryをチェック
+			if (request.method === "POST") {
+				// テーブル名をパスから取得
+				const path = url.pathname.split("/").filter(Boolean);
+				if (path.length >= 2 && path[0] === "query") {
+					const table = path[1];
+					try {
+						const body = await request.json();
+
+						// 特定のテーブル用のクエリ対応
+						switch (table) {
+							case "admin_accounts": {
+								// adminAccounts テーブルに対する条件付きクエリ
+								const conditions = body.conditions || {};
+								const result = await this.db?.query.adminAccounts.findFirst({
+									where: (fields, operators) => {
+										const whereClauses = [];
+
+										if (conditions.email) {
+											whereClauses.push(operators.eq(fields.email, conditions.email));
+										}
+
+										// その他の条件があれば追加
+
+										return whereClauses.length ? operators.and(...whereClauses) : undefined;
+									},
+								});
+
+								return new Response(
+									JSON.stringify({
+										success: !!result,
+										data: result || null,
+									}),
+									{ headers: { "Content-Type": "application/json" } },
+								);
+							}
+						}
+					} catch (e) {
+						console.error("Query JSON parsing error:", e);
+					}
+				}
+			}
+
+			// 通常のSQLクエリ処理
 			const sqlQuery = url.searchParams.get("sql");
 
 			if (!sqlQuery) {
@@ -396,6 +441,34 @@ export class DatabaseDO {
 					};
 					await this.db?.insert(schema.bookings).values(bookingData);
 					data.bookingId = bookingId; // レスポンス用に保存
+					break;
+				}
+				case "admin_accounts": {
+					const adminId = !data.adminId ? generateUUID() : String(data.adminId);
+					// adminAccountsテーブル用のデータ作成
+					const adminData = {
+						adminId,
+						email: String(data.email),
+						name: String(data.name),
+						role: data.role ? String(data.role) : undefined,
+						passwordHash: data.passwordHash ? String(data.passwordHash) : undefined,
+						isActive: data.isActive !== undefined ? Number(data.isActive) : 1,
+						lastLoginAt: data.lastLoginAt ? String(data.lastLoginAt) : undefined,
+						createdAt: data.createdAt ? String(data.createdAt) : undefined,
+						updatedAt: data.updatedAt ? String(data.updatedAt) : undefined,
+					};
+					await this.db?.insert(schema.adminAccounts).values(adminData);
+					data.adminId = adminId; // レスポンス用に保存
+					break;
+				}
+				case "admin_gym_relationships": {
+					const relationData = {
+						adminId: String(data.adminId),
+						gymId: String(data.gymId),
+						role: data.role ? String(data.role) : "staff",
+						createdAt: data.createdAt ? String(data.createdAt) : undefined,
+					};
+					await this.db?.insert(schema.adminGymRelationships).values(relationData);
 					break;
 				}
 				// 他のテーブルも同様に追加可能

@@ -18,4 +18,3 @@ export const API_BASE_URL = {
 	staging: "https://api-staging.kime.jp",
 	development: "http://localhost:8787",
 };
-

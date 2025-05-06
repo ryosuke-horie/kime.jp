@@ -5,14 +5,12 @@ export const ErrorResponse = z.object({
 	error: z.string().describe("エラーメッセージ"),
 });
 
-
 export type ErrorResponseType = z.infer<typeof ErrorResponse>;
 
 // 成功レスポンスの基本型
 export const SuccessResponse = z.object({
 	message: z.string().describe("成功メッセージ"),
 });
-
 
 export type SuccessResponseType = z.infer<typeof SuccessResponse>;
 
@@ -35,7 +33,6 @@ export const PaginationParams = z.object({
 	limit: z.number().int().min(1).max(100).optional().default(20).describe("1ページあたりの件数"),
 });
 
-
 export type PaginationParamsType = z.infer<typeof PaginationParams>;
 
 // ページネーション結果のメタデータ
@@ -45,6 +42,5 @@ export const PaginationMeta = z.object({
 	limit: z.number().int().describe("1ページあたりの件数"),
 	totalPages: z.number().int().describe("総ページ数"),
 });
-
 
 export type PaginationMetaType = z.infer<typeof PaginationMeta>;

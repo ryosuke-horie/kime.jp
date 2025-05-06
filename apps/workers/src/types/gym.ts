@@ -11,7 +11,6 @@ export const Gym = z.object({
 	updatedAt: ISODateTime.describe("更新日時"),
 });
 
-
 export type GymType = z.infer<typeof Gym>;
 
 // ジム作成リクエスト
@@ -20,7 +19,6 @@ export const CreateGymRequest = z.object({
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
 	phoneNumber: z.string().optional().describe("電話番号"),
 });
-
 
 export type CreateGymRequestType = z.infer<typeof CreateGymRequest>;
 
@@ -36,7 +34,6 @@ export const CreateGymAccountRequest = z.object({
 	password: z.string().min(8).describe("パスワード"),
 });
 
-
 export type CreateGymAccountRequestType = z.infer<typeof CreateGymAccountRequest>;
 
 // ジムアカウント発行レスポンス
@@ -46,7 +43,6 @@ export const CreateGymAccountResponse = z.object({
 	ownerId: UUID.describe("作成されたオーナーのID"),
 });
 
-
 export type CreateGymAccountResponseType = z.infer<typeof CreateGymAccountResponse>;
 
 // ジム作成レスポンス
@@ -54,7 +50,6 @@ export const CreateGymResponse = z.object({
 	message: z.string().describe("成功メッセージ"),
 	gymId: UUID.describe("作成されたジムのID"),
 });
-
 
 export type CreateGymResponseType = z.infer<typeof CreateGymResponse>;
 
@@ -65,7 +60,6 @@ export const UpdateGymRequest = z.object({
 	phoneNumber: z.string().optional().describe("電話番号"),
 });
 
-
 export type UpdateGymRequestType = z.infer<typeof UpdateGymRequest>;
 
 // ジム一覧レスポンス
@@ -74,14 +68,12 @@ export const GymListResponse = z.object({
 	meta: PaginationMeta.optional().describe("ページネーション情報"),
 });
 
-
 export type GymListResponseType = z.infer<typeof GymListResponse>;
 
 // ジム詳細レスポンス
 export const GymDetailResponse = z.object({
 	gym: Gym.describe("ジム情報"),
 });
-
 
 export type GymDetailResponseType = z.infer<typeof GymDetailResponse>;
 
@@ -102,9 +94,3 @@ const SuccessResponseSchema = {
 	},
 	required: ["message"],
 };
-
-
-
-
-
-

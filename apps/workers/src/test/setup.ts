@@ -1,13 +1,11 @@
 // Vitestのセットアップファイル
 // テスト環境の共通設定を行います
 
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { afterAll, beforeAll, vi } from "vitest";
 import { z } from "zod";
 
-// Zodを拡張して、OpenAPIメタデータ追加メソッドを提供
-// テスト実行前に確実に実行する
-extendZodWithOpenApi(z);
+// OpenAPI拡張の削除
+// OpenAPIを使用せずにZodのみを使用するように変更
 
 // readFileSyncの代替実装を提供
 vi.mock("node:fs", () => ({

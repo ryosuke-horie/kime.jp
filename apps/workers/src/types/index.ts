@@ -13,6 +13,9 @@ export * from "./health";
 // ジム関連
 export * from "./gym";
 
+// 認証関連
+export * from "./auth";
+
 // API URL設定
 export const API_BASE_URL = {
 	production: "https://api.kime.jp",

@@ -1,7 +1,18 @@
 "use client";
 
 import type { Session } from "next-auth";
+import type { User } from "next-auth";
 import { getSession } from "next-auth/react";
+
+// next-authの型を拡張した型を定義
+interface ExtendedUser extends User {
+	id: string;
+	role?: string | null;
+}
+
+interface ExtendedSession extends Session {
+	user: ExtendedUser;
+}
 
 /**
  * NextAuthセッションからトークンを取得する
@@ -18,7 +29,7 @@ export async function getAuthToken(): Promise<string | null> {
 	// Next.jsはサーバーでJWTを生成し、クライアントにはセッションオブジェクトのみ提供される
 	// ここではsessionオブジェクト自体をトークンとして使用する代替案
 	// 実際の実装ではNextAuthの内部トークンにアクセスする方法が必要
-	return createSimulatedToken(session);
+	return createSimulatedToken(session as ExtendedSession);
 }
 
 /**
@@ -27,13 +38,13 @@ export async function getAuthToken(): Promise<string | null> {
  * @param session NextAuthのセッション情報
  * @returns 生成されたトークン
  */
-function createSimulatedToken(session: Session): string {
+function createSimulatedToken(session: ExtendedSession): string {
 	// セッション情報からペイロードを作成
 	const payload = {
-		sub: session.user.id,
-		name: session.user.name,
-		email: session.user.email,
-		role: session.user.role,
+		sub: session.user?.id,
+		name: session.user?.name,
+		email: session.user?.email,
+		role: session.user?.role,
 		iat: Math.floor(Date.now() / 1000),
 		exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // 30日
 	};

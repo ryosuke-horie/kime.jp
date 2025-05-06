@@ -43,23 +43,7 @@ const apiConfig = {
 	},
 };
 
-/**
- * NextAuthのセッションから認証ヘッダーを取得する
- * @returns Authorization ヘッダーを持つオブジェクト、または空オブジェクト
- */
-const useAuthHeaders = () => {
-	const { data: session } = useSession();
-
-	// 認証済みなら認証ヘッダーを生成
-	if (session) {
-		// 実際の実装で管理しやすいようPromiseを返さないバージョンも用意
-		return {
-			Authorization: `Bearer ${session.user.id}_simulated_token`,
-		};
-	}
-
-	return {};
-};
+// useAuthHeaders 関数は削除（不要なため）
 
 /**
  * 認証済みAPIリクエストを実行する関数

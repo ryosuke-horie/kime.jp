@@ -2,7 +2,6 @@
 // テスト環境の共通設定を行います
 
 import { afterAll, beforeAll, vi } from "vitest";
-import { z } from "zod";
 
 // readFileSyncの代替実装を提供
 vi.mock("node:fs", () => ({

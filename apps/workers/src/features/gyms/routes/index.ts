@@ -1,14 +1,18 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import type { Env } from "../../../env";
+import { generateUUID } from "../../../lib/db-client";
 import { getDatabaseClient } from "../../../lib/do-client";
 import { adminOnlyMiddleware } from "../../../middlewares/auth";
 import {
+	CreateGymAccountRequest,
+	CreateGymAccountResponse,
 	CreateGymRequest,
 	GymDetailResponse,
 	GymListResponse,
 	UpdateGymRequest,
 } from "../../../schemas";
+import { hashPassword } from "../../../utils/jwt";
 import { validateBody, validateParam, validatedJson } from "../../../utils/validator";
 
 // Gymルーター
@@ -77,6 +81,90 @@ adminRouter.post("/", validateBody(CreateGymRequest), async (c) => {
 		},
 		201,
 	);
+});
+
+// ジムアカウント発行 - /api/gyms/create
+adminRouter.post("/create", validateBody(CreateGymAccountRequest), async (c) => {
+	const data = c.req.valid("json");
+	const dbClient = getDatabaseClient(c.env);
+
+	// 1. メールアドレスの重複確認（管理者アカウント）
+	const adminCheckResult = await dbClient.queryOne("admin_accounts", { email: data.ownerEmail });
+	if (adminCheckResult.success && adminCheckResult.data) {
+		return c.json({ error: "指定されたメールアドレスは既に使用されています" }, 400);
+	}
+
+	// トランザクション相当の処理を行うため順番に処理する
+	try {
+		// 2. ジムを作成
+		const gymId = generateUUID();
+		const gymResult = await dbClient.create("gyms", {
+			gymId,
+			name: data.name,
+			ownerEmail: data.ownerEmail,
+			phoneNumber: data.phoneNumber,
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+		});
+
+		if (!gymResult.success) {
+			return c.json({ error: "ジムの作成に失敗しました: " + gymResult.error }, 500);
+		}
+
+		// 3. 管理者アカウントを作成
+		// パスワードをハッシュ化
+		const passwordHash = await hashPassword(data.password);
+		const adminId = generateUUID();
+		const adminResult = await dbClient.create("admin_accounts", {
+			adminId,
+			email: data.ownerEmail,
+			name: data.ownerName,
+			role: "admin", // 所有者は常にadmin権限
+			passwordHash,
+			isActive: 1, // SQLiteはブール値をサポートしないため数値で表現
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+		});
+
+		if (!adminResult.success) {
+			// 管理者アカウント作成に失敗した場合、作成したジムを削除（ロールバック相当）
+			await dbClient.delete("gyms", gymId);
+			return c.json({ error: "管理者アカウントの作成に失敗しました: " + adminResult.error }, 500);
+		}
+
+		// 4. ジムと管理者アカウントの関連付け
+		const relationResult = await dbClient.create("admin_gym_relationships", {
+			adminId,
+			gymId,
+			role: "owner", // ジム内での役割はオーナー
+			createdAt: new Date().toISOString(),
+		});
+
+		if (!relationResult.success) {
+			// 関連付けに失敗した場合、作成したジムと管理者アカウントを削除（ロールバック相当）
+			await dbClient.delete("admin_accounts", adminId);
+			await dbClient.delete("gyms", gymId);
+			return c.json(
+				{ error: "アカウントとジムの関連付けに失敗しました: " + relationResult.error },
+				500,
+			);
+		}
+
+		// 5. 成功レスポンスを返す
+		return validatedJson(
+			c,
+			CreateGymAccountResponse,
+			{
+				message: "ジムアカウントが正常に発行されました",
+				gymId,
+				ownerId: adminId,
+			},
+			201,
+		);
+	} catch (error) {
+		console.error("ジムアカウント発行中にエラーが発生しました:", error);
+		return c.json({ error: "処理中にエラーが発生しました" }, 500);
+	}
 });
 
 // パスパラメータのスキーマ

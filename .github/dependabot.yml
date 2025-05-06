@@ -52,20 +52,35 @@ updates:
           - "@vitest/*"
           - "@vitejs/*"
           - "happy-dom"
-      # UI関連パッケージをグループ化
-      ui-deps:
+      # Shadcn UI/UI関連パッケージをグループ化
+      shadcn-ui-deps:
         patterns:
           - "@radix-ui/*"
           - "class-variance-authority"
           - "clsx"
           - "tailwind*"
+          - "tailwind-merge"
           - "next-themes"
+          - "lucide-react"
+          - "cmdk"
+          - "embla-carousel-react"
+          - "input-otp"
+          - "react-resizable-panels"
+          - "sonner"
+          - "vaul"
+          - "@hookform/resolvers"
+          - "react-hook-form"
       # Auth.js（Next-Auth）関連パッケージをグループ化
       auth-deps:
         patterns:
           - "next-auth"
           - "@auth/*"
           - "jose"
+      # データツール関連パッケージをグループ化
+      data-deps:
+        patterns:
+          - "date-fns"
+          - "recharts"
     labels:
       - "dependencies"
       - "web"

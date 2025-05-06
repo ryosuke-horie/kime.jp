@@ -37,11 +37,6 @@ app.get("/health", (c) => {
 	});
 });
 
-// APIドキュメントのプレースホルダ
-app.get("/docs", (c) => {
-	return c.json({ message: "API documentation is not available" });
-});
-
 // APIエンドポイント
 const api = new Hono<{ Bindings: Env }>();
 
@@ -51,8 +46,6 @@ api.route("/gyms", gymRouter);
 api.route("/members", memberRouter);
 api.route("/classes", classRouter);
 api.route("/bookings", bookingRouter);
-
-// 開発用テストエンドポイントは削除
 
 // APIルーターをメインアプリにマウント
 app.route("/api", api);

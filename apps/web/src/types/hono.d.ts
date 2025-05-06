@@ -119,14 +119,6 @@ declare module "hono/pretty-json" {
 	export function prettyJSON(): (c: Context, next: () => Promise<void>) => Promise<void>;
 }
 
-declare module "@hono/swagger-ui" {
-	import type { Hono } from "hono";
-	export function swaggerUI(options: {
-		url?: string;
-		openapi?: Record<string, unknown>;
-	}): (path: string) => (app: Hono) => void;
-}
-
 declare module "@hono/zod-validator" {
 	import type { Context } from "hono";
 	import type { ZodType } from "zod";

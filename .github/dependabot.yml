@@ -8,7 +8,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 10
     groups:
       # テスト関連のパッケージをグループ化
       testing-deps:
@@ -39,14 +38,13 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 5
     groups:
-      # React関連パッケージをグループ化
       react-deps:
         patterns:
           - "react*"
           - "next*"
           - "@types/react*"
+          - "zod"
       # テスト関連パッケージをグループ化
       test-deps:
         patterns:
@@ -62,17 +60,12 @@ updates:
           - "clsx"
           - "tailwind*"
           - "next-themes"
-      # OpenAPI関連パッケージをグループ化
-      openapi-deps:
-        patterns:
-          - "@asteasolutions/zod-to-openapi"
-          - "zod"
       # Auth.js（Next-Auth）関連パッケージをグループ化
       auth-deps:
         patterns:
           - "next-auth"
           - "@auth/*"
-          - "jose"  # JWTライブラリ
+          - "jose"
     labels:
       - "dependencies"
       - "web"
@@ -90,7 +83,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 5
     groups:
       # Cloudflare関連パッケージをグループ化
       cloudflare-deps:
@@ -103,9 +95,7 @@ updates:
           - "hono*"
           - "@hono/*"
           - "zod*"
-          - "@asteasolutions/zod-to-openapi"  # OpenAPI + Zod統合
-          - "@hono/swagger-ui"                # Swagger UI連携
-          - "@hono/zod-validator"             # Zod検証連携
+          - "@hono/zod-validator"
       # テスト関連パッケージをグループ化
       test-deps:
         patterns:
@@ -135,7 +125,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 5
     labels:
       - "dependencies"
       - "github-actions"

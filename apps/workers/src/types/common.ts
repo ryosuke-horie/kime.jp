@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { registry } from "./openapi/config";
+import { registry } from "./registry-mock";
 
 // 共通のエラーレスポンス型
 export const ErrorResponse = z.object({

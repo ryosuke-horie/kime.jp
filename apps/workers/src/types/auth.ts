@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ErrorResponse, ISODateTime, UUID } from "./common";
-import { registry } from "./openapi/config";
+import { registry } from "./registry-mock";
 
 // 管理者アカウントのロール
 export const AdminRole = z.enum(["admin", "staff"]).describe("管理者ロール");

@@ -61,7 +61,7 @@ describe("GymApiClient", () => {
 
 			// 期待される結果の検証
 			expect(mockApiClient.post).toHaveBeenCalledTimes(1);
-			expect(mockApiClient.post).toHaveBeenCalledWith("/api/gyms/create", requestData);
+			expect(mockApiClient.post).toHaveBeenCalledWith("/api/gyms/admin/create", requestData);
 			expect(result).toEqual(mockResponse);
 			expect(result.gymId).toBe("test-gym-id-123");
 			expect(result.ownerId).toBe("test-owner-id-456");
@@ -84,7 +84,7 @@ describe("GymApiClient", () => {
 			// エラーがスローされることを期待
 			await expect(gymApiClient.createGymAccount(requestData)).rejects.toThrow(errorMessage);
 			expect(mockApiClient.post).toHaveBeenCalledTimes(1);
-			expect(mockApiClient.post).toHaveBeenCalledWith("/api/gyms/create", requestData);
+			expect(mockApiClient.post).toHaveBeenCalledWith("/api/gyms/admin/create", requestData);
 		});
 	});
 });

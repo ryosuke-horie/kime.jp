@@ -9,7 +9,6 @@
 		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true,
 		"noEmit": true,
-		// OpenAPI + Zod統合に関連するエラーを抑制するための一時的な設定
 		"checkJs": false,
 		"noPropertyAccessFromIndexSignature": false,
 		"noUnusedLocals": false,

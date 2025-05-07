@@ -1,9 +1,262 @@
 {
 	"version": "6",
 	"dialect": "sqlite",
-	"id": "66a9f257-51e2-41f4-8ef0-5d666f5fb1c6",
+	"id": "89ba58ca-f8df-43f7-9599-d5f6ed701dc8",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"tables": {
+		"admin_accounts": {
+			"name": "admin_accounts",
+			"columns": {
+				"admin_id": {
+					"name": "admin_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"role": {
+					"name": "role",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'staff'"
+				},
+				"password_hash": {
+					"name": "password_hash",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"is_active": {
+					"name": "is_active",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": 1
+				},
+				"last_login_at": {
+					"name": "last_login_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {
+				"admin_accounts_email_unique": {
+					"name": "admin_accounts_email_unique",
+					"columns": ["email"],
+					"isUnique": true
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"admin_gym_relationships": {
+			"name": "admin_gym_relationships",
+			"columns": {
+				"admin_id": {
+					"name": "admin_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"gym_id": {
+					"name": "gym_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"role": {
+					"name": "role",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "'staff'"
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"admin_gym_relationships_admin_id_admin_accounts_admin_id_fk": {
+					"name": "admin_gym_relationships_admin_id_admin_accounts_admin_id_fk",
+					"tableFrom": "admin_gym_relationships",
+					"tableTo": "admin_accounts",
+					"columnsFrom": ["admin_id"],
+					"columnsTo": ["admin_id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"admin_gym_relationships_gym_id_gyms_gym_id_fk": {
+					"name": "admin_gym_relationships_gym_id_gyms_gym_id_fk",
+					"tableFrom": "admin_gym_relationships",
+					"tableTo": "gyms",
+					"columnsFrom": ["gym_id"],
+					"columnsTo": ["gym_id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"admin_gym_relationships_admin_id_gym_id_pk": {
+					"columns": ["admin_id", "gym_id"],
+					"name": "admin_gym_relationships_admin_id_gym_id_pk"
+				}
+			},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"admin_oauth_accounts": {
+			"name": "admin_oauth_accounts",
+			"columns": {
+				"oauth_id": {
+					"name": "oauth_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"admin_id": {
+					"name": "admin_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"provider": {
+					"name": "provider",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"provider_account_id": {
+					"name": "provider_account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"refresh_token": {
+					"name": "refresh_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"access_token": {
+					"name": "access_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"expires_at": {
+					"name": "expires_at",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"token_type": {
+					"name": "token_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"scope": {
+					"name": "scope",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"id_token": {
+					"name": "id_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false,
+					"default": "'CURRENT_TIMESTAMP'"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"admin_oauth_accounts_admin_id_admin_accounts_admin_id_fk": {
+					"name": "admin_oauth_accounts_admin_id_admin_accounts_admin_id_fk",
+					"tableFrom": "admin_oauth_accounts",
+					"tableTo": "admin_accounts",
+					"columnsFrom": ["admin_id"],
+					"columnsTo": ["admin_id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
 		"ai_conversations": {
 			"name": "ai_conversations",
 			"columns": {
@@ -82,7 +335,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"ai_messages": {
 			"name": "ai_messages",
@@ -188,7 +442,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"ai_outcomes": {
 			"name": "ai_outcomes",
@@ -267,7 +522,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"bookings": {
 			"name": "bookings",
@@ -348,7 +604,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"checkins": {
 			"name": "checkins",
@@ -381,13 +638,6 @@
 					"notNull": false,
 					"autoincrement": false,
 					"default": "'CURRENT_TIMESTAMP'"
-				},
-				"source": {
-					"name": "source",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false
 				}
 			},
 			"indexes": {},
@@ -412,7 +662,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"class_staff": {
 			"name": "class_staff",
@@ -459,7 +710,8 @@
 					"name": "class_staff_class_id_staff_id_pk"
 				}
 			},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"classes": {
 			"name": "classes",
@@ -543,7 +795,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"consents": {
 			"name": "consents",
@@ -605,7 +858,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"gyms": {
 			"name": "gyms",
@@ -624,28 +878,12 @@
 					"notNull": true,
 					"autoincrement": false
 				},
-				"timezone": {
-					"name": "timezone",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false,
-					"autoincrement": false,
-					"default": "'Asia/Tokyo'"
-				},
 				"owner_email": {
 					"name": "owner_email",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": true,
 					"autoincrement": false
-				},
-				"plan": {
-					"name": "plan",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true,
-					"autoincrement": false,
-					"default": "'basic'"
 				},
 				"created_at": {
 					"name": "created_at",
@@ -667,7 +905,8 @@
 			"indexes": {},
 			"foreignKeys": {},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"members": {
 			"name": "members",
@@ -766,7 +1005,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"payments": {
 			"name": "payments",
@@ -881,7 +1121,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"shifts": {
 			"name": "shifts",
@@ -952,7 +1193,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"staff": {
 			"name": "staff",
@@ -1023,7 +1265,8 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		},
 		"suspension_policies": {
 			"name": "suspension_policies",
@@ -1087,13 +1330,18 @@
 				}
 			},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {}
+			"uniqueConstraints": {},
+			"checkConstraints": {}
 		}
 	},
+	"views": {},
 	"enums": {},
 	"_meta": {
 		"schemas": {},
 		"tables": {},
 		"columns": {}
+	},
+	"internal": {
+		"indexes": {}
 	}
 }

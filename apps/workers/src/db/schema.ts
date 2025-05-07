@@ -6,9 +6,7 @@ import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core"
 export const gyms = sqliteTable("gyms", {
 	gymId: text("gym_id").primaryKey(),
 	name: text("name").notNull(),
-	timezone: text("timezone").default("Asia/Tokyo"),
 	ownerEmail: text("owner_email").notNull(),
-	plan: text("plan").notNull().default("basic"),
 	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 	updatedAt: text("updated_at").default("CURRENT_TIMESTAMP"),
 });
@@ -85,7 +83,6 @@ export const checkins = sqliteTable("checkins", {
 		.notNull()
 		.references(() => members.memberId),
 	scannedAt: text("scanned_at").default("CURRENT_TIMESTAMP"),
-	source: text("source", { enum: ["qr", "nfc"] }),
 });
 
 // ----------------------------------------------------------

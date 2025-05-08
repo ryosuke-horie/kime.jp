@@ -1,5 +1,6 @@
 import type { Env } from "../env";
 import { Database, getDatabase } from "./database";
+import * as schema from "../db/schema";
 
 /**
  * ルーターで使用するために以前のDOを使用したgetDatabaseClient関数と

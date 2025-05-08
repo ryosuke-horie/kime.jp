@@ -1,4 +1,13 @@
-import type { AdminAccountType } from "../types/auth";
+// AdminAccountTypeの独自定義
+interface AdminAccountType {
+	adminId: string;
+	email: string;
+	name: string;
+	role: "admin" | "staff";
+	isActive: boolean;
+	createdAt?: string;
+	updatedAt?: string;
+}
 
 /**
  * JWTトークンの検証と解析を行うユーティリティ
@@ -38,7 +47,11 @@ export async function verifyToken(
 		}
 
 		// ペイロードをデコード
-		const payloadBase64 = parts[1];
+		const payloadBase64 = parts[1] || "";
+		// null check を行う
+		if (!payloadBase64) {
+			return { valid: false, payload: null, error: "invalid_token" };
+		}
 		const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
 		const payload = JSON.parse(payloadJson) as JWTPayload;
 

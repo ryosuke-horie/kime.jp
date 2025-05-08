@@ -114,7 +114,7 @@ authRouter.post("/register", zValidator("json", CreateAdminRequest), async (c) =
 		adminId,
 		email,
 		name,
-		role,
+		role: role as "admin" | "staff",
 		isActive: true,
 	};
 
@@ -162,7 +162,7 @@ authRouter.post("/login", zValidator("json", AdminLoginRequest), async (c) => {
 		adminId: admin.adminId as string,
 		email: admin.email as string,
 		name: admin.name as string,
-		role: admin.role as string,
+		role: admin.role as "admin" | "staff",
 		isActive: Boolean(admin.isActive),
 	};
 
@@ -207,7 +207,7 @@ authRouter.post("/oauth", zValidator("json", OAuthRegisterRequest), async (c) =>
 				adminId: string;
 				email: string;
 				name: string;
-				role: string;
+				role: "admin" | "staff";
 				isActive: boolean;
 		  }
 		| undefined;
@@ -230,7 +230,7 @@ authRouter.post("/oauth", zValidator("json", OAuthRegisterRequest), async (c) =>
 			adminId: admin.data.adminId as string,
 			email: admin.data.email as string,
 			name: admin.data.name as string,
-			role: admin.data.role as string,
+			role: admin.data.role as "admin" | "staff",
 			isActive: Boolean(admin.data.isActive),
 		};
 
@@ -255,7 +255,7 @@ authRouter.post("/oauth", zValidator("json", OAuthRegisterRequest), async (c) =>
 				adminId,
 				email: existingUser.data.email as string,
 				name: existingUser.data.name as string,
-				role: existingUser.data.role as string,
+				role: existingUser.data.role as "admin" | "staff",
 				isActive: Boolean(existingUser.data.isActive),
 			};
 		} else {
@@ -279,7 +279,7 @@ authRouter.post("/oauth", zValidator("json", OAuthRegisterRequest), async (c) =>
 				adminId,
 				email,
 				name,
-				role: "staff",
+				role: "staff" as const,
 				isActive: true,
 			};
 		}
@@ -310,7 +310,7 @@ authRouter.post("/oauth", zValidator("json", OAuthRegisterRequest), async (c) =>
 	});
 
 	// JWTトークンを生成
-	const token = await generateToken(adminData, c.env.JWT_SECRET || "your-development-secret-key");
+	const token = await generateToken(adminData as AdminAccountType, c.env.JWT_SECRET || "your-development-secret-key");
 
 	return c.json({
 		token,

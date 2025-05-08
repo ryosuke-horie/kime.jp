@@ -1,7 +1,17 @@
 import type { Context, MiddlewareHandler, Next } from "hono";
 import type { Env } from "../env";
-import type { AdminAccountType } from "../types";
 import { extractAdminFromPayload, verifyToken } from "../utils/jwt";
+
+// AdminAccountTypeの定義
+interface AdminAccountType {
+	adminId: string;
+	email: string;
+	name: string;
+	role: "admin" | "staff";
+	isActive: boolean;
+	createdAt?: string;
+	updatedAt?: string;
+}
 
 /**
  * 拡張コンテキスト型の定義

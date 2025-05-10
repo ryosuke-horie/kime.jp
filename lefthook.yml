@@ -5,16 +5,28 @@ pre-commit:
   parallel: true
   commands:
     biome-check:
-      glob: "**/*.{js,jsx,ts,tsx}"
+      skip_empty: true
       run: |
-        echo "📝 コミット前の検証を実行中..."
-        echo "🔍 Biomeによるコードチェックを実行中..."
-        pnpm biome check --write {staged_files}
+        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$' || true)
+        if [ -n "$STAGED_FILES" ]; then
+          echo "📝 コミット前の検証を実行中..."
+          echo "🔍 Biomeによるコードチェックを実行中..."
+          echo "$STAGED_FILES" | xargs pnpm biome check --write
+        else
+          echo "🔍 チェック対象のファイルがありません。スキップします。"
+        fi
+        exit 0
     biome-lint:
-      glob: "**/*.{js,jsx,ts,tsx}"
+      skip_empty: true
       run: |
-        echo "🔍 Biomeによるリントを実行中..."
-        pnpm biome lint --write {staged_files}
+        STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$' || true)
+        if [ -n "$STAGED_FILES" ]; then
+          echo "🔍 Biomeによるリントを実行中..."
+          echo "$STAGED_FILES" | xargs pnpm biome lint --write
+        else
+          echo "🔍 リント対象のファイルがありません。スキップします。"
+        fi
+        exit 0
 
 # pre-pushフック設定
 pre-push:

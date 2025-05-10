@@ -38,7 +38,7 @@
 | ドメイン | テーブル／ポイント |
 |----------|------------------|
 | **コア** | `gyms`, `members`（status: active／suspended／withdrawn）, `classes`, `bookings`, `checkins` |
-| **スタッフ運用** | `staff`（role: admin／reception）, `class_staff`（多対多）, `shifts` |
+| **スタッフ運用** | `staff`（role: system_admin／gym_admin／staff）, `class_staff`（多対多）, `shifts` |
 | **法令同意** | `consents`（privacy／tos, version = YYYY‑MM‑DD） |
 | **AI ログ** | `ai_conversations`, `ai_messages`, `ai_outcomes` — 送受信内容・トークン・AI 成否・人手介入を記録 |
 | **休会ポリシー** | `suspension_policies` — ジム別 JSON 設定 |
@@ -105,9 +105,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS gyms (
   gym_id        TEXT PRIMARY KEY,
   name          TEXT NOT NULL,
-  timezone      TEXT DEFAULT 'Asia/Tokyo',
   owner_email   TEXT NOT NULL,
-  plan          TEXT NOT NULL DEFAULT 'basic',
   created_at    TEXT DEFAULT CURRENT_TIMESTAMP,
   updated_at    TEXT DEFAULT CURRENT_TIMESTAMP
 );
@@ -192,8 +190,8 @@ CREATE TABLE IF NOT EXISTS staff (
   name         TEXT NOT NULL,
   email        TEXT,
   role         TEXT NOT NULL
-                 CHECK (role IN ('admin','reception'))
-                 DEFAULT 'reception',
+                 CHECK (role IN ('system_admin','gym_admin','staff'))
+                 DEFAULT 'staff',
   active       INTEGER NOT NULL DEFAULT 1,
   created_at   TEXT DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (gym_id) REFERENCES gyms(gym_id)

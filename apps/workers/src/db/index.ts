@@ -1,37 +1,37 @@
 export * from "./schema";
 
-import type { InferModel } from "drizzle-orm";
+import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 // スキーマからの型定義をエクスポート
 import type * as schema from "./schema";
 
 // 各テーブルのレコード型を定義
-export type Gym = InferModel<typeof schema.gyms>;
-export type Member = InferModel<typeof schema.members>;
-export type Class = InferModel<typeof schema.classes>;
-export type Booking = InferModel<typeof schema.bookings>;
-export type Checkin = InferModel<typeof schema.checkins>;
-export type Staff = InferModel<typeof schema.staff>;
-export type ClassStaff = InferModel<typeof schema.classStaff>;
-export type Shift = InferModel<typeof schema.shifts>;
-export type Consent = InferModel<typeof schema.consents>;
-export type AiConversation = InferModel<typeof schema.aiConversations>;
-export type AiMessage = InferModel<typeof schema.aiMessages>;
-export type AiOutcome = InferModel<typeof schema.aiOutcomes>;
-export type SuspensionPolicy = InferModel<typeof schema.suspensionPolicies>;
-export type Payment = InferModel<typeof schema.payments>;
+export type Gym = InferSelectModel<typeof schema.gyms>;
+export type Member = InferSelectModel<typeof schema.members>;
+export type Class = InferSelectModel<typeof schema.classes>;
+export type Booking = InferSelectModel<typeof schema.bookings>;
+export type Checkin = InferSelectModel<typeof schema.checkins>;
+export type Staff = InferSelectModel<typeof schema.staff>;
+export type ClassStaff = InferSelectModel<typeof schema.classStaff>;
+export type Shift = InferSelectModel<typeof schema.shifts>;
+export type Consent = InferSelectModel<typeof schema.consents>;
+export type AiConversation = InferSelectModel<typeof schema.aiConversations>;
+export type AiMessage = InferSelectModel<typeof schema.aiMessages>;
+export type AiOutcome = InferSelectModel<typeof schema.aiOutcomes>;
+export type SuspensionPolicy = InferSelectModel<typeof schema.suspensionPolicies>;
+export type Payment = InferSelectModel<typeof schema.payments>;
 
 // Insert型も定義
-export type NewGym = InferModel<typeof schema.gyms, "insert">;
-export type NewMember = InferModel<typeof schema.members, "insert">;
-export type NewClass = InferModel<typeof schema.classes, "insert">;
-export type NewBooking = InferModel<typeof schema.bookings, "insert">;
-export type NewCheckin = InferModel<typeof schema.checkins, "insert">;
-export type NewStaff = InferModel<typeof schema.staff, "insert">;
-export type NewClassStaff = InferModel<typeof schema.classStaff, "insert">;
-export type NewShift = InferModel<typeof schema.shifts, "insert">;
-export type NewConsent = InferModel<typeof schema.consents, "insert">;
-export type NewAiConversation = InferModel<typeof schema.aiConversations, "insert">;
-export type NewAiMessage = InferModel<typeof schema.aiMessages, "insert">;
-export type NewAiOutcome = InferModel<typeof schema.aiOutcomes, "insert">;
-export type NewSuspensionPolicy = InferModel<typeof schema.suspensionPolicies, "insert">;
-export type NewPayment = InferModel<typeof schema.payments, "insert">;
+export type NewGym = InferInsertModel<typeof schema.gyms>;
+export type NewMember = InferInsertModel<typeof schema.members>;
+export type NewClass = InferInsertModel<typeof schema.classes>;
+export type NewBooking = InferInsertModel<typeof schema.bookings>;
+export type NewCheckin = InferInsertModel<typeof schema.checkins>;
+export type NewStaff = InferInsertModel<typeof schema.staff>;
+export type NewClassStaff = InferInsertModel<typeof schema.classStaff>;
+export type NewShift = InferInsertModel<typeof schema.shifts>;
+export type NewConsent = InferInsertModel<typeof schema.consents>;
+export type NewAiConversation = InferInsertModel<typeof schema.aiConversations>;
+export type NewAiMessage = InferInsertModel<typeof schema.aiMessages>;
+export type NewAiOutcome = InferInsertModel<typeof schema.aiOutcomes>;
+export type NewSuspensionPolicy = InferInsertModel<typeof schema.suspensionPolicies>;
+export type NewPayment = InferInsertModel<typeof schema.payments>;

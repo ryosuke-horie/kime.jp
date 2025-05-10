@@ -8,24 +8,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    groups:
-      # テスト関連のパッケージをグループ化
-      testing-deps:
-        patterns:
-          - "vitest"
-          - "@vitest/*"
-          - "@cloudflare/vitest*"
-      # 開発ツール関連のパッケージをグループ化
-      dev-tools:
-        patterns:
-          - "@biomejs/*"
-          - "turbo"
-          - "lefthook"
-    labels:
-      - "dependencies"
-      - "root"
-    reviewers:
-      - "ryosuke-horie"
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
@@ -38,51 +20,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    groups:
-      react-deps:
-        patterns:
-          - "react*"
-          - "next*"
-          - "@types/react*"
-          - "zod"
-      # テスト関連パッケージをグループ化
-      test-deps:
-        patterns:
-          - "vitest*"
-          - "@vitest/*"
-          - "@vitejs/*"
-          - "happy-dom"
-      # Shadcn UI/UI関連パッケージをグループ化
-      shadcn-ui-deps:
-        patterns:
-          - "@radix-ui/*"
-          - "class-variance-authority"
-          - "clsx"
-          - "tailwind*"
-          - "tailwind-merge"
-          - "next-themes"
-          - "lucide-react"
-          - "cmdk"
-          - "embla-carousel-react"
-          - "input-otp"
-          - "react-resizable-panels"
-          - "sonner"
-          - "vaul"
-          - "@hookform/resolvers"
-          - "react-hook-form"
-          - "date-fns"
-          - "recharts"
-      # Auth.js（Next-Auth）関連パッケージをグループ化
-      auth-deps:
-        patterns:
-          - "next-auth"
-          - "@auth/*"
-          - "jose"
-    labels:
-      - "dependencies"
-      - "web"
-    reviewers:
-      - "ryosuke-horie"
     commit-message:
       prefix: "chore(deps-web)"
       include: "scope"
@@ -95,36 +32,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    groups:
-      # Cloudflare関連パッケージをグループ化
-      cloudflare-deps:
-        patterns:
-          - "@cloudflare/*"
-          - "wrangler"
-      # APIフレームワーク関連パッケージをグループ化
-      api-deps:
-        patterns:
-          - "hono*"
-          - "@hono/*"
-          - "zod*"
-          - "@hono/zod-validator"
-      # テスト関連パッケージをグループ化
-      test-deps:
-        patterns:
-          - "vitest*"
-          - "@vitest/*"
-      # データベース関連パッケージをグループ化
-      db-deps:
-        patterns:
-          - "drizzle*"
-          - "drizzle-orm"
-          - "drizzle-kit"
-          - "drizzle-zod"
-    labels:
-      - "dependencies"
-      - "workers"
-    reviewers:
-      - "ryosuke-horie"
     commit-message:
       prefix: "chore(deps-workers)"
       include: "scope"
@@ -137,11 +44,6 @@ updates:
       day: "saturday"
       time: "07:00"
       timezone: "Asia/Tokyo"
-    labels:
-      - "dependencies"
-      - "github-actions"
-    reviewers:
-      - "ryosuke-horie"
     commit-message:
       prefix: "chore(actions)"
       prefix-development: "chore(actions)"

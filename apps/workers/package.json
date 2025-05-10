@@ -12,7 +12,7 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"typecheck": "pnpm exec tsc --noEmit --skipLibCheck dummy.ts",
+		"typecheck": "pnpm exec tsc --noEmit",
 		"generate": "drizzle-kit generate",
 		"migrate:production": "drizzle-kit migrate",
 		"migrate:development": "wrangler d1 migrations apply kime_mvp --local",

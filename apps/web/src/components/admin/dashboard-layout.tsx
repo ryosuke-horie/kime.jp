@@ -44,16 +44,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 	];
 
 	return (
-		<SidebarProvider>
+		<SidebarProvider defaultOpen={true}>
 			<div className="flex h-screen overflow-hidden">
-				<Sidebar>
+				<Sidebar variant="sidebar" collapsible="icon">
 					<SidebarHeader className="flex h-14 items-center px-4">
-						<div className="flex items-center gap-2">
-							<span className="font-semibold">KIME管理者</span>
-						</div>
-						<SidebarTrigger className="ml-auto" />
+						<div className="flex-1"></div>
+						<SidebarTrigger className="fixed top-4 left-4 z-20 h-10 w-10 flex items-center justify-center" />
 					</SidebarHeader>
-					<SidebarContent>
+					<SidebarContent className="pt-4">
 						<SidebarNav items={sidebarItems} />
 					</SidebarContent>
 				</Sidebar>

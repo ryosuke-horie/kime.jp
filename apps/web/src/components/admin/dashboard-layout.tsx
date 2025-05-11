@@ -32,11 +32,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 			icon: "lock",
 		},
 		{
-			title: "システム状態",
-			href: "/admin/system",
-			icon: "server",
-		},
-		{
 			title: "レポート・分析",
 			href: "/admin/reports",
 			icon: "chart",

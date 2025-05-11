@@ -28,13 +28,6 @@ export default function AdminDashboardPage() {
 			description: "当月",
 			trend: { value: 8, isPositive: true },
 		},
-		{
-			id: "system-uptime",
-			title: "システム稼働率",
-			value: "99.98%",
-			description: "直近30日間",
-			trend: { value: 0.01, isPositive: true },
-		},
 	];
 
 	// 仮の通知データ
@@ -75,29 +68,6 @@ export default function AdminDashboardPage() {
 				</div>
 
 				<div className="grid gap-4 md:grid-cols-2">
-					{/* 最近の通知 */}
-					<Card className="shadow-sm">
-						<CardHeader>
-							<CardTitle>最近の通知</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-4">
-								{notifications.map((notification) => (
-									<div
-										key={notification.id}
-										className="flex flex-col space-y-1 border-b pb-3 last:border-0"
-									>
-										<div className="flex justify-between">
-											<span className="font-medium">{notification.title}</span>
-											<span className="text-xs text-muted-foreground">{notification.time}</span>
-										</div>
-										<span className="text-sm">{notification.content}</span>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-
 					{/* クイックアクション */}
 					<Card className="shadow-sm">
 						<CardHeader>

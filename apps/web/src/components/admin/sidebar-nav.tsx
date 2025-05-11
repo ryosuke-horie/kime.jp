@@ -50,11 +50,14 @@ export function SidebarNav({ items }: SidebarNavProps) {
 				const isActive = pathname === item.href;
 				return (
 					<SidebarMenuItem key={item.href}>
-						<SidebarMenuButton asChild isActive={isActive} tooltip={item.title} className="px-3 py-2 h-10">
+						<SidebarMenuButton
+							asChild
+							isActive={isActive}
+							tooltip={item.title}
+							className="px-3 py-2 h-10"
+						>
 							<Link href={item.href} className="flex items-center gap-3">
-								<div className="flex items-center justify-center w-5 h-5">
-									{getIcon(item.icon)}
-								</div>
+								<div className="flex items-center justify-center w-5 h-5">{getIcon(item.icon)}</div>
 								<span className="text-sm">{item.title}</span>
 							</Link>
 						</SidebarMenuButton>

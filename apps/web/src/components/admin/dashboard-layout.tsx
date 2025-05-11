@@ -48,7 +48,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 			<div className="flex h-screen overflow-hidden">
 				<Sidebar variant="sidebar" collapsible="icon">
 					<SidebarHeader className="flex h-14 items-center px-4">
-						<div className="flex-1"></div>
+						<div className="flex-1" />
 						<SidebarTrigger className="fixed top-4 left-4 z-20 h-10 w-10 flex items-center justify-center" />
 					</SidebarHeader>
 					<SidebarContent className="pt-4">

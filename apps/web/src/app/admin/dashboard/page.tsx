@@ -30,28 +30,6 @@ export default function AdminDashboardPage() {
 		},
 	];
 
-	// 仮の通知データ
-	const notifications = [
-		{
-			id: "notif-1",
-			title: "新規ジム登録",
-			content: "フィットネスクラブXYZが新しく登録されました",
-			time: "5分前",
-		},
-		{
-			id: "notif-2",
-			title: "システムアラート",
-			content: "バックアップが正常に完了しました",
-			time: "1時間前",
-		},
-		{
-			id: "notif-3",
-			title: "メンテナンス情報",
-			content: "明日の深夜2時からシステムメンテナンスを実施します",
-			time: "3時間前",
-		},
-	];
-
 	return (
 		<DashboardLayout>
 			<div className="flex flex-col gap-6">

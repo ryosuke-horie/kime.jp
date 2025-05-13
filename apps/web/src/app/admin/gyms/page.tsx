@@ -22,9 +22,7 @@ export default function AdminGymsPage() {
 				<Card>
 					<CardHeader>
 						<CardTitle>ジム一覧</CardTitle>
-						<CardDescription>
-							システムに登録されているすべてのジムを表示しています
-						</CardDescription>
+						<CardDescription>システムに登録されているすべてのジムを表示しています</CardDescription>
 					</CardHeader>
 					<CardContent>
 						{/* ここにジム一覧の表が入る予定 */}

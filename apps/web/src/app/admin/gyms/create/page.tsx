@@ -2,7 +2,14 @@
 
 import { DashboardLayout } from "@/components/admin/dashboard-layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,9 +32,7 @@ export default function CreateGymPage() {
 				<Card>
 					<CardHeader>
 						<CardTitle>ジム情報</CardTitle>
-						<CardDescription>
-							ジムの基本情報を入力してください
-						</CardDescription>
+						<CardDescription>ジムの基本情報を入力してください</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<form className="space-y-6">

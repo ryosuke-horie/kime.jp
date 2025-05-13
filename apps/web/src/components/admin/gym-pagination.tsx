@@ -89,7 +89,7 @@ export function GymPagination({ meta, onPageChange }: GymPaginationProps) {
 
 				{getPageNumbers().map((pageNumber, index) =>
 					pageNumber === null ? (
-						<PaginationItem key={`ellipsis-${index}`}>
+						<PaginationItem key={`ellipsis-${index}-${currentPage}`}>
 							<PaginationEllipsis />
 						</PaginationItem>
 					) : (

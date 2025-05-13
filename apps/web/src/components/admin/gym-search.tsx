@@ -31,6 +31,7 @@ export function GymSearch({ onSearch }: GymSearchProps) {
 			</div>
 			<div className="flex items-end">
 				<button
+					type="button"
 					onClick={handleReset}
 					className="text-sm text-muted-foreground hover:text-foreground"
 				>

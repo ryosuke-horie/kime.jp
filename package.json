@@ -12,7 +12,6 @@
 		"test:coverage": "turbo run test:coverage",
 		"test:ui": "vitest --ui",
 		"typecheck": "turbo run typecheck",
-		"prepare": "lefthook install",
 		"clean": "find . -name '.turbo' -type d -prune -exec rm -rf {} \\; && find . -name '.vitest-cache' -type d -prune -exec rm -rf {} \\; && find . -name 'dist' -type d -prune -exec rm -rf {} \\;"
 	},
 	"devDependencies": {
@@ -20,7 +19,6 @@
 		"@cloudflare/vitest-pool-workers": "^0.8.24",
 		"@vitest/coverage-istanbul": "^3.1.2",
 		"@vitest/ui": "^3.1.2",
-		"lefthook": "^1.11.12",
 		"turbo": "latest"
 	},
 	"packageManager": "pnpm@10.10.0",

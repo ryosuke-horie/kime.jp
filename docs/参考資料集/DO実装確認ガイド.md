@@ -152,7 +152,7 @@ curl http://localhost:8787/api/gyms/{gymId}
 # 新規ジムの登録
 curl -X POST http://localhost:8787/api/gyms \
   -H "Content-Type: application/json" \
-  -d '{"name": "サンプルジム", "timezone": "Asia/Tokyo"}'
+  -d '{"name": "サンプルジム"}'
 ```
 
 #### 会員管理API

@@ -1,11 +1,12 @@
-import { defineConfig } from "vitest/config";
+import { defineWorkersConfig } from "@cloudflare/vitest-pool-workers/config";
+import path from "path";
 
-export default defineConfig({
+export default defineWorkersConfig({
 	test: {
 		testTimeout: 10000,
 		hookTimeout: 10000,
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-		exclude: ["**/node_modules/**", "**/dist/**", "**/routes/**"],
+		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
@@ -22,25 +23,26 @@ export default defineConfig({
 		},
 		// 高速失敗を有効化
 		bail: 1,
-		// Miniflare v4の設定
-		// 単体テストに注力する場合はこのブロックをコメントアウト
-		pool: '@cloudflare/vitest-pool-workers',
+		
+		// Cloudflare Workers の統合テスト設定
+		// 単体テストのみを実行する場合は以下の設定をコメントアウトし、
+		// environment: 'node' を追加
 		poolOptions: {
 			workers: {
-				singleWorker: true,
-				miniflare: {
-					d1Databases: ['DB'],
-					d1Persist: false,
-					modules: true,
-					wranglerConfigPath: './wrangler.toml',
-					// 最新のcompatibilityDateを使用（2024年5月現在）
-					compatibilityDate: '2024-05-14',
-					// Node.js互換性を有効化
-					compatibilityFlags: ['nodejs_compat'],
-				}
-			}
+				// Wrangler設定ファイルのパス
+				wrangler: {
+					configPath: './wrangler.toml',
+				},
+				// D1データベースの設定
+				d1Persist: false, // テスト間でデータを永続化しない
+				d1Databases: ['DB'],
+				// マイグレーションの設定
+				// すべてのマイグレーションを実行
+				migrationsPath: path.resolve("./migrations"),
+			},
 		},
+		
 		// テスト前に実行するセットアップファイル
-		setupFiles: ["./src/test/setup.ts"],
+		setupFiles: ["./src/test/apply-migrations.ts"],
 	},
 });

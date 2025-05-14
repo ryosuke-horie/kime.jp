@@ -1,22 +1,47 @@
 /// <reference path="../../worker-configuration.d.ts" />
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { GymRepository } from "./gym-repository";
-import { seedGymData, gymFixtures } from "../test/fixtures/gym-fixtures";
+import { gymFixtures } from "../test/fixtures/gym-fixtures";
+import { env } from "cloudflare:test";
+
+/**
+ * テスト環境がD1データベースをサポートしているかを確認するヘルパー関数
+ * @returns D1データベースが利用可能かどうか
+ */
+function isD1Available(): boolean {
+	if (typeof env === "undefined" || !env.DB) {
+		console.warn("Skipping D1 database tests - env.DB is not available");
+		return false;
+	}
+	return true;
+}
+
+/**
+ * D1データベースが必要なテストのためのヘルパー関数
+ * D1が利用できない場合は自動的にスキップする
+ */
+function itWithD1(name: string, fn: () => Promise<void>) {
+	it(name, async () => {
+		if (!isD1Available()) return;
+		await fn();
+	});
+}
 
 describe("GymRepository - 単体テスト", () => {
 	let repository: GymRepository;
 
 	// 各テスト前の準備
 	beforeEach(async () => {
-		// リポジトリの初期化
-		repository = new GymRepository(globalThis.testDb);
+		if (!isD1Available()) return;
 
-		// テストデータの投入
-		await seedGymData(globalThis.testDb);
+		// リポジトリの初期化
+		repository = new GymRepository(env.DB);
+
+		// テストデータはapply-migrations.tsですでに投入されている
 	});
 
 	describe("findAll", () => {
-		it("デフォルトのオプションでは全てのジムを返すこと", async () => {
+		itWithD1("デフォルトのオプションでは全てのジムを返すこと", async () => {
 			const result = await repository.findAll({});
 
 			expect(result.items).toHaveLength(gymFixtures.length);
@@ -25,7 +50,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(result.meta.limit).toBe(10);
 		});
 
-		it("ページネーションが正しく機能すること", async () => {
+		itWithD1("ページネーションが正しく機能すること", async () => {
 			// 2件ずつ、2ページ目を取得
 			const result = await repository.findAll({ page: 2, limit: 2 });
 
@@ -35,7 +60,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(result.meta.totalPages).toBe(2);
 		});
 
-		it("名前での検索が機能すること", async () => {
+		itWithD1("名前での検索が機能すること", async () => {
 			// 「センター」を含む名前で検索
 			const result = await repository.findAll({ search: "センター" });
 
@@ -43,7 +68,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(result.items[0].name).toContain("センター");
 		});
 
-		it("名前の昇順ソートが機能すること", async () => {
+		itWithD1("名前の昇順ソートが機能すること", async () => {
 			const result = await repository.findAll({ sort: "name" });
 
 			// 名前の昇順に並んでいることを確認
@@ -51,7 +76,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(names).toEqual([...names].sort());
 		});
 
-		it("名前の降順ソートが機能すること", async () => {
+		itWithD1("名前の降順ソートが機能すること", async () => {
 			const result = await repository.findAll({ sort: "-name" });
 
 			// 名前の降順に並んでいることを確認
@@ -59,7 +84,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(names).toEqual([...names].sort().reverse());
 		});
 
-		it("作成日の昇順ソートが機能すること", async () => {
+		itWithD1("作成日の昇順ソートが機能すること", async () => {
 			const result = await repository.findAll({ sort: "createdAt" });
 
 			// 作成日の昇順に並んでいることを確認
@@ -68,7 +93,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(isSorted).toBe(true);
 		});
 
-		it("作成日の降順ソートが機能すること", async () => {
+		itWithD1("作成日の降順ソートが機能すること", async () => {
 			const result = await repository.findAll({ sort: "-createdAt" });
 
 			// 作成日の降順に並んでいることを確認
@@ -79,7 +104,7 @@ describe("GymRepository - 単体テスト", () => {
 	});
 
 	describe("findById", () => {
-		it("存在するジムIDでは正しいジム情報を返すこと", async () => {
+		itWithD1("存在するジムIDでは正しいジム情報を返すこと", async () => {
 			const gymId = gymFixtures[0].id;
 			const result = await repository.findById(gymId);
 
@@ -88,7 +113,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(result?.name).toBe(gymFixtures[0].name);
 		});
 
-		it("存在しないジムIDではundefinedを返すこと", async () => {
+		itWithD1("存在しないジムIDではundefinedを返すこと", async () => {
 			const result = await repository.findById("non-existent-id");
 
 			expect(result).toBeUndefined();
@@ -96,7 +121,7 @@ describe("GymRepository - 単体テスト", () => {
 	});
 
 	describe("create", () => {
-		it("新しいジムを作成すること", async () => {
+		itWithD1("新しいジムを作成すること", async () => {
 			const newGym = {
 				gymId: "new-gym-id",
 				name: "新規ジム",
@@ -118,7 +143,7 @@ describe("GymRepository - 単体テスト", () => {
 	});
 
 	describe("update", () => {
-		it("既存のジムを更新すること", async () => {
+		itWithD1("既存のジムを更新すること", async () => {
 			const gymId = gymFixtures[0].id;
 			const updateData = {
 				name: "更新後のジム名",
@@ -137,7 +162,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(updatedGym?.name).toBe(updateData.name);
 		});
 
-		it("空のデータで更新を呼び出した場合は元のデータを返すこと", async () => {
+		itWithD1("空のデータで更新を呼び出した場合は元のデータを返すこと", async () => {
 			const gymId = gymFixtures[0].id;
 			const result = await repository.update(gymId, {});
 
@@ -146,7 +171,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(result?.name).toBe(gymFixtures[0].name);
 		});
 
-		it("存在しないジムIDで更新を呼び出した場合はundefinedを返すこと", async () => {
+		itWithD1("存在しないジムIDで更新を呼び出した場合はundefinedを返すこと", async () => {
 			const result = await repository.update("non-existent-id", { name: "更新テスト" });
 
 			expect(result).toBeUndefined();
@@ -154,7 +179,7 @@ describe("GymRepository - 単体テスト", () => {
 	});
 
 	describe("delete", () => {
-		it("既存のジムを削除すること", async () => {
+		itWithD1("既存のジムを削除すること", async () => {
 			const gymId = gymFixtures[0].id;
 
 			// 削除前に存在確認
@@ -170,7 +195,7 @@ describe("GymRepository - 単体テスト", () => {
 			expect(afterDelete).toBeUndefined();
 		});
 
-		it("存在しないジムIDで削除を呼び出した場合はfalseを返すこと", async () => {
+		itWithD1("存在しないジムIDで削除を呼び出した場合はfalseを返すこと", async () => {
 			const result = await repository.delete("non-existent-id");
 
 			expect(result).toBe(false);

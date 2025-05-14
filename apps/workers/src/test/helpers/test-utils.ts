@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
 import type { CloudflareBindings } from "../../index";
+import { env } from "cloudflare:test";
 
 /**
  * テスト用のHonoアプリケーションを作成するユーティリティ関数
@@ -18,9 +19,12 @@ export function createTestApp(app: Hono<{ Bindings: CloudflareBindings }>): Hono
  * @returns Cloudflareバインディングを含むオブジェクト
  */
 export function createTestBindings(): CloudflareBindings {
-	return {
-		DB: globalThis.DB,
-	};
+	if (typeof env !== "undefined" && env.DB) {
+		return {
+			DB: env.DB,
+		};
+	}
+	throw new Error("D1 database is not available in test environment");
 }
 
 /**
@@ -29,7 +33,10 @@ export function createTestBindings(): CloudflareBindings {
  * @returns drizzleインスタンス
  */
 export function createTestDb() {
-	return drizzle(globalThis.DB);
+	if (typeof env !== "undefined" && env.DB) {
+		return drizzle(env.DB);
+	}
+	throw new Error("D1 database is not available in test environment");
 }
 
 /**

@@ -66,7 +66,10 @@ export class GymRepository implements IGymRepository {
 
 		// 検索条件があれば適用
 		if (search) {
-			const searchCondition = or(like(gyms.name, `%${search}%`), like(gyms.ownerEmail, `%${search}%`));
+			const searchCondition = or(
+				like(gyms.name, `%${search}%`),
+				like(gyms.ownerEmail, `%${search}%`),
+			);
 			query = query.where(searchCondition);
 			countQuery = countQuery.where(searchCondition);
 		}

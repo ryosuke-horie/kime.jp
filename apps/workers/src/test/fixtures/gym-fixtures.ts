@@ -30,26 +30,25 @@ export const gymFixtures = [
  */
 export async function seedGymData(db: D1Database): Promise<void> {
 	// 一括でデータを挿入するSQLを構築
-	const placeholders = gymFixtures
-		.map(() => "(?, ?, ?, ?, ?)")
-		.join(", ");
+	const placeholders = gymFixtures.map(() => "(?, ?, ?, ?, ?)").join(", ");
 
-	const values = gymFixtures.flatMap(
-		(gym) => [
-			gym.id,
-			gym.name,
-			gym.owner_email,
-			gym.created_at,
-			gym.updated_at,
-		]
-	);
+	const values = gymFixtures.flatMap((gym) => [
+		gym.id,
+		gym.name,
+		gym.owner_email,
+		gym.created_at,
+		gym.updated_at,
+	]);
 
 	// SQLを実行してテストデータを挿入
-	await db.prepare(`
+	await db
+		.prepare(`
     INSERT INTO gyms (
       id, name, owner_email, created_at, updated_at
     ) VALUES ${placeholders}
-  `).bind(...values).run();
+  `)
+		.bind(...values)
+		.run();
 }
 
 /**
@@ -57,14 +56,14 @@ export async function seedGymData(db: D1Database): Promise<void> {
  */
 export async function seedGymDataFromBindings(): Promise<void> {
 	if (!globalThis.DB) {
-		console.error('D1 database is not available in the test environment');
+		console.error("D1 database is not available in the test environment");
 		return;
 	}
-	
+
 	try {
 		return await seedGymData(globalThis.DB);
 	} catch (error) {
-		console.error('Failed to seed gym data:', error);
+		console.error("Failed to seed gym data:", error);
 		throw error;
 	}
 }

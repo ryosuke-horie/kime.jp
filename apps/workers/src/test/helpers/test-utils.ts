@@ -1,27 +1,33 @@
-import { Hono } from "hono";
-import { drizzle } from "drizzle-orm/d1";
-import type { CloudflareBindings } from "../../index";
+/// <reference path="../../../worker-configuration.d.ts" />
+/// <reference path="../../types/cloudflare-test.d.ts" />
 import { env } from "cloudflare:test";
+import { drizzle } from "drizzle-orm/d1";
+import type { Hono } from "hono";
 
 /**
  * テスト用のHonoアプリケーションを作成するユーティリティ関数
- * 
+ *
  * @param app テスト対象のHonoアプリケーション
  * @returns テスト用の設定を含むHonoアプリケーション
  */
-export function createTestApp(app: Hono<{ Bindings: CloudflareBindings }>): Hono<{ Bindings: CloudflareBindings }> {
+export function createTestApp(
+	app: Hono<{ Bindings: Cloudflare.Env }>,
+): Hono<{ Bindings: Cloudflare.Env }> {
 	return app;
 }
 
 /**
  * テスト用のCloudflareバインディングを作成するユーティリティ関数
- * 
+ *
  * @returns Cloudflareバインディングを含むオブジェクト
  */
-export function createTestBindings(): CloudflareBindings {
+export function createTestBindings(): Cloudflare.Env {
 	if (typeof env !== "undefined" && env.DB) {
 		return {
 			DB: env.DB,
+			NODE_ENV: env.NODE_ENV || "test",
+			SKIP_AUTH: env.SKIP_AUTH || "true",
+			JWT_SECRET: env.JWT_SECRET || "test-secret",
 		};
 	}
 	throw new Error("D1 database is not available in test environment");
@@ -29,7 +35,7 @@ export function createTestBindings(): CloudflareBindings {
 
 /**
  * テスト用のdrizzleインスタンスを作成するユーティリティ関数
- * 
+ *
  * @returns drizzleインスタンス
  */
 export function createTestDb() {
@@ -41,7 +47,7 @@ export function createTestDb() {
 
 /**
  * テスト用のリクエストを作成するユーティリティ関数
- * 
+ *
  * @param path リクエストパス
  * @param options リクエストオプション
  * @returns Requestオブジェクト
@@ -52,7 +58,7 @@ export function createTestRequest(
 		method?: string;
 		headers?: Record<string, string>;
 		body?: Record<string, unknown>;
-	}
+	},
 ) {
 	const url = new URL(path, "http://localhost");
 	const init: RequestInit = {

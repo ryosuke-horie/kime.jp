@@ -1,8 +1,8 @@
+import { drizzle } from "drizzle-orm/d1";
 /// <reference types="vitest" />
 /// <reference types="miniflare" />
 /// <reference path="../../worker-configuration.d.ts" />
-import { beforeAll, beforeEach, afterAll, afterEach } from "vitest";
-import { drizzle } from "drizzle-orm/d1";
+import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
 import { gyms } from "../db/schema";
 
 /**
@@ -17,7 +17,7 @@ declare global {
  * 未定義のテスト用コンテキストを扱うための型ガード
  */
 function isTestEnv(): boolean {
-	return typeof globalThis.DB !== 'undefined';
+	return typeof globalThis.DB !== "undefined";
 }
 
 /**
@@ -27,7 +27,7 @@ function isTestEnv(): boolean {
  */
 beforeAll(async () => {
 	if (!isTestEnv()) {
-		console.warn('Test environment is not properly set up. Tests requiring D1 may fail.');
+		console.warn("Test environment is not properly set up. Tests requiring D1 may fail.");
 		return;
 	}
 
@@ -42,9 +42,9 @@ beforeAll(async () => {
         updated_at INTEGER NOT NULL
       )
     `);
-		console.log('Test database initialized successfully');
+		console.log("Test database initialized successfully");
 	} catch (error) {
-		console.error('Failed to initialize test database:', error);
+		console.error("Failed to initialize test database:", error);
 	}
 });
 
@@ -53,12 +53,12 @@ beforeAll(async () => {
  */
 beforeEach(async () => {
 	if (!isTestEnv()) return;
-	
+
 	try {
 		// テーブルのデータをクリア
 		await globalThis.DB.exec(`DELETE FROM ${gyms.name}`);
 	} catch (error) {
-		console.error('Failed to clean test data:', error);
+		console.error("Failed to clean test data:", error);
 	}
 });
 
@@ -74,12 +74,12 @@ afterEach(() => {
  */
 afterAll(async () => {
 	if (!isTestEnv()) return;
-	
+
 	try {
 		// テーブルの削除
 		await globalThis.DB.exec(`DROP TABLE IF EXISTS ${gyms.name}`);
-		console.log('Test database cleaned up');
+		console.log("Test database cleaned up");
 	} catch (error) {
-		console.error('Failed to cleanup test database:', error);
+		console.error("Failed to cleanup test database:", error);
 	}
 });

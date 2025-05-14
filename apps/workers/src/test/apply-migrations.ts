@@ -1,6 +1,7 @@
 /**
  * テスト環境用のD1マイグレーション適用スクリプト
  */
+/// <reference path="../types/cloudflare-test.d.ts" />
 import { env } from "cloudflare:test";
 
 /**
@@ -32,7 +33,7 @@ async function seedTestData() {
 				('gym-2', 'スポーツジムB', 'owner2@example.com', 1620100000, 1620100000),
 				('gym-3', 'トレーニングセンターC', 'owner3@example.com', 1620200000, 1620200000)
 		`).run();
-		
+
 		console.log("Test data seeded successfully");
 	} catch (error) {
 		console.error("Failed to seed test data:", error);

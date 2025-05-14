@@ -36,9 +36,8 @@ export default defineWorkersConfig({
 				// D1データベースの設定
 				d1Persist: false, // テスト間でデータを永続化しない
 				d1Databases: ['DB'],
-				// マイグレーションの設定
-				// すべてのマイグレーションを実行
-				migrationsPath: path.resolve("./migrations"),
+				// 代替の方法: マイグレーションファイルは使用せず、
+				// apply-migrations.ts内でテーブルを直接作成する
 			},
 		},
 		

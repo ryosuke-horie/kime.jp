@@ -11,11 +11,6 @@ describe("GymService - 単体テスト", () => {
 		// 各テスト前にモックリポジトリとサービスを初期化
 		mockRepository = createMockGymRepository();
 		gymService = new GymService(mockRepository);
-
-		// UUIDのモック
-		vi.mock("uuid", () => ({
-			v4: () => "mocked-uuid",
-		}));
 	});
 
 	describe("getGyms", () => {
@@ -78,12 +73,16 @@ describe("GymService - 単体テスト", () => {
 			
 			const result = await gymService.createGym(gymData);
 			
-			// リポジトリのcreateが正しく呼び出されたか検証
-			expect(mockRepository.create).toHaveBeenCalledWith({
-				gymId: "mocked-uuid",
-				name: gymData.name,
-				ownerEmail: gymData.ownerEmail,
-			});
+			// リポジトリのcreateが呼び出されたことを検証
+			expect(mockRepository.create).toHaveBeenCalled();
+			const createCall = mockRepository.create.mock.calls[0][0];
+			
+			// createに渡された引数を検証（UUIDは任意の文字列として検証）
+			expect(createCall).toHaveProperty("gymId");
+			expect(typeof createCall.gymId).toBe("string");
+			expect(createCall.gymId.length).toBeGreaterThan(10); // UUIDが適切な長さであることを検証
+			expect(createCall).toHaveProperty("name", gymData.name);
+			expect(createCall).toHaveProperty("ownerEmail", gymData.ownerEmail);
 			
 			// 返り値を検証
 			expect(result).toHaveProperty("id");

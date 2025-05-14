@@ -27,7 +27,7 @@ export default defineConfig((env: ConfigEnv) => {
 		build: {
 			ssr: true, // Build for SSR even though we're not really doing SSR
 			rollupOptions: {
-				input: "src/index.tsx", // Specify our entry point explicitly
+				input: "src/index.ts", // Specify our entry point explicitly
 			},
 		},
 	};

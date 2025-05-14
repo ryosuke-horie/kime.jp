@@ -1,26 +1,16 @@
 {
-    "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "lib": [
-            "ESNext",
-            "DOM"
-        ],
-        "types": [
-            "vite/client"
-        ],
-        "jsx": "react-jsx",
-        "jsxImportSource": "hono/jsx",
-        "noImplicitAny": false,
-        "allowSyntheticDefaultImports": true,
-        "noEmit": true,
-        "noPropertyAccessFromIndexSignature": false,
-        "noUnusedLocals": false,
-        "noUnusedParameters": false
-    },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/types/**/*.d.ts",
-        "worker-configuration.d.ts"
-    ]
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM"],
+		"types": ["vite/client"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx",
+		"noImplicitAny": false,
+		"allowSyntheticDefaultImports": true,
+		"noEmit": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts", "worker-configuration.d.ts"]
 }

@@ -4,44 +4,133 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
       time: "07:00"
       timezone: "Asia/Tokyo"
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
     
-  # Webアプリケーションの依存関係を管理
+  # Webアプリケーション - 本番用依存関係
   - package-ecosystem: "npm"
     directory: "/apps/web"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
       time: "07:00"
       timezone: "Asia/Tokyo"
+    groups:
+      production-dependencies:
+        patterns:
+          - "@auth/core"
+          - "@hookform/resolvers"
+          - "@radix-ui/*"
+          - "class-variance-authority"
+          - "clsx"
+          - "cmdk"
+          - "date-fns"
+          - "embla-carousel-react"
+          - "input-otp"
+          - "lucide-react"
+          - "next"
+          - "next-auth"
+          - "next-themes"
+          - "react"
+          - "react-dom"
+          - "react-hook-form"
+          - "react-resizable-panels"
+          - "recharts"
+          - "sonner"
+          - "tailwind-merge"
+          - "vaul"
+          - "zod"
     commit-message:
-      prefix: "chore(deps-web)"
+      prefix: "chore(deps-web-prod)"
       include: "scope"
       
-  # Workersアプリケーションの依存関係を管理
+  # Webアプリケーション - 開発用依存関係
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    groups:
+      development-dependencies:
+        patterns:
+          - "@cloudflare/workers-types"
+          - "@opennextjs/cloudflare"
+          - "@tailwindcss/postcss"
+          - "@types/*"
+          - "tailwindcss"
+          - "tw-animate-css"
+          - "typescript"
+          - "wrangler"
+    commit-message:
+      prefix: "chore(deps-web-dev)"
+      include: "scope"
+      
+  # Workersアプリケーション - 本番用依存関係
   - package-ecosystem: "npm"
     directory: "/apps/workers"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
       time: "07:00"
       timezone: "Asia/Tokyo"
+    groups:
+      production-dependencies:
+        patterns:
+          - "@hono/zod-validator"
+          - "drizzle-orm"
+          - "hono"
+          - "uuid"
+          - "zod"
     commit-message:
-      prefix: "chore(deps-workers)"
+      prefix: "chore(deps-workers-prod)"
+      include: "scope"
+    
+  # Workersアプリケーション - 開発用依存関係
+  - package-ecosystem: "npm"
+    directory: "/apps/workers"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    groups:
+      development-dependencies:
+        patterns:
+          - "@hono/vite-build"
+          - "@types/*"
+          - "drizzle-kit"
+          - "miniflare"
+          - "typescript"
+          - "vite"
+          - "wrangler"
+    commit-message:
+      prefix: "chore(deps-workers-dev)"
+      include: "scope"
+      
+  # Workersアプリケーション - テスト用依存関係
+  - package-ecosystem: "npm"
+    directory: "/apps/workers"
+    schedule:
+      interval: "daily"
+      time: "07:00"
+      timezone: "Asia/Tokyo"
+    groups:
+      testing-dependencies:
+        patterns:
+          - "@cloudflare/vitest-pool-workers"
+          - "@vitest/coverage-v8"
+          - "vitest"
+    commit-message:
+      prefix: "chore(deps-workers-test)"
       include: "scope"
     
   # GitHub Actionsの依存関係を管理
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "saturday"
+      interval: "daily"
       time: "07:00"
       timezone: "Asia/Tokyo"
     commit-message:

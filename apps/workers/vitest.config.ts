@@ -18,9 +18,9 @@ export default defineWorkersConfig({
 		// https://github.com/vitest-dev/vitest/releases/tag/v0.34.0
 		watchIgnore: ["**/node_modules/**", "**/dist/**"],
 		// キャッシュの有効化
-		cache: {
-			dir: ".vitest-cache",
-		},
+		// 非推奨のcache.dirからcacheDirへ変更
+		// Vitestは cacheDir/vitest に自動的にキャッシュを保存します
+		cacheDir: ".vitest-cache",
 		// 高速失敗を有効化
 		bail: 1,
 		

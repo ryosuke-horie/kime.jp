@@ -40,7 +40,7 @@ export interface IGymRepository {
 export class GymRepository implements IGymRepository {
 	private db;
 
-	constructor(d1: D1Database) {
+	constructor(d1: CloudflareBindings["DB"]) {
 		this.db = drizzle(d1, { schema: { gyms } });
 	}
 

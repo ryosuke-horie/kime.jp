@@ -3,6 +3,9 @@ import { z } from "zod";
 import { GymRepository } from "../repositories/gym-repository";
 import { GymService, type IGymService } from "../services/gym-service";
 
+// Honoのコンテキスト型拡張
+type AppContext = Context<{ Bindings: CloudflareBindings }>;
+
 // クエリパラメータのバリデーションスキーマ
 const gymListQuerySchema = z.object({
 	page: z
@@ -46,7 +49,7 @@ const updateGymSchema = z.object({
 export class GymController {
 	private gymService: IGymService;
 
-	constructor(d1: D1Database) {
+	constructor(d1: CloudflareBindings["DB"]) {
 		const gymRepository = new GymRepository(d1);
 		this.gymService = new GymService(gymRepository);
 	}
@@ -54,7 +57,7 @@ export class GymController {
 	/**
 	 * ジム一覧を取得する
 	 */
-	async getGyms(c: Context) {
+	async getGyms(c: AppContext) {
 		try {
 			// クエリパラメータをバリデーション
 			const parseResult = gymListQuerySchema.safeParse(
@@ -85,7 +88,7 @@ export class GymController {
 	/**
 	 * 特定のジムをIDで取得する
 	 */
-	async getGymById(c: Context) {
+	async getGymById(c: AppContext) {
 		try {
 			const gymId = c.req.param("gymId");
 
@@ -106,7 +109,7 @@ export class GymController {
 	/**
 	 * 新しいジムを作成する
 	 */
-	async createGym(c: Context) {
+	async createGym(c: AppContext) {
 		try {
 			const data = await c.req.json();
 
@@ -134,7 +137,7 @@ export class GymController {
 	/**
 	 * ジム情報を更新する
 	 */
-	async updateGym(c: Context) {
+	async updateGym(c: AppContext) {
 		try {
 			const gymId = c.req.param("gymId");
 			const data = await c.req.json();
@@ -168,7 +171,7 @@ export class GymController {
 	/**
 	 * ジムを削除する
 	 */
-	async deleteGym(c: Context) {
+	async deleteGym(c: AppContext) {
 		try {
 			const gymId = c.req.param("gymId");
 

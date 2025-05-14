@@ -1,5 +1,4 @@
 import { drizzle } from "drizzle-orm/d1";
-import type { Env } from "hono";
 import * as schema from "./schema";
 
 /**
@@ -7,6 +6,6 @@ import * as schema from "./schema";
  * @param env Honoのバインディング環境
  * @returns Drizzleクライアントインスタンス
  */
-export function createDb(env: Env) {
+export function createDb(env: CloudflareBindings) {
 	return drizzle(env.DB, { schema });
 }

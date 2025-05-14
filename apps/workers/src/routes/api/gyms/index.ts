@@ -1,10 +1,13 @@
 import { Hono } from "hono";
 import { GymController } from "../../../controllers/gym-controller";
 
+// Honoアプリケーションの型定義
+type AppHono = Hono<{ Bindings: CloudflareBindings }>;
+
 /**
  * ジム関連のAPIルーター
  */
-export const gymsRouter = new Hono();
+export const gymsRouter: AppHono = new Hono();
 
 // 各ルートとコントローラーを接続
 gymsRouter.get("/", (c) => {

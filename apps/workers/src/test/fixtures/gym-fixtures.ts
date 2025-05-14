@@ -51,3 +51,20 @@ export async function seedGymData(db: D1Database): Promise<void> {
     ) VALUES ${placeholders}
   `).bind(...values).run();
 }
+
+/**
+ * テスト用データをDBに挿入する関数（環境変数経由）
+ */
+export async function seedGymDataFromBindings(): Promise<void> {
+	if (!globalThis.DB) {
+		console.error('D1 database is not available in the test environment');
+		return;
+	}
+	
+	try {
+		return await seedGymData(globalThis.DB);
+	} catch (error) {
+		console.error('Failed to seed gym data:', error);
+		throw error;
+	}
+}

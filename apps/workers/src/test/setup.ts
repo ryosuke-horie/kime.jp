@@ -1,71 +1,85 @@
 /// <reference types="vitest" />
 /// <reference types="miniflare" />
-import { beforeAll, afterAll, beforeEach, afterEach } from "vitest";
-import { Miniflare } from "miniflare";
+/// <reference path="../../worker-configuration.d.ts" />
+import { beforeAll, beforeEach, afterAll, afterEach } from "vitest";
 import { drizzle } from "drizzle-orm/d1";
-import { migrate } from "drizzle-orm/d1/migrator";
 import { gyms } from "../db/schema";
 
 /**
- * Miniflareインスタンスとテスト用D1データベースをセットアップするためのグローバル変数
+ * テスト環境のグローバル変数の定義
  */
 declare global {
 	// eslint-disable-next-line no-var
-	var testMiniflare: Miniflare;
-	// eslint-disable-next-line no-var
-	var testDb: D1Database;
+	var DB: D1Database;
+}
+
+/**
+ * 未定義のテスト用コンテキストを扱うための型ガード
+ */
+function isTestEnv(): boolean {
+	return typeof globalThis.DB !== 'undefined';
 }
 
 /**
  * テスト前の初期セットアップを行う
- * - Miniflareインスタンスの作成
  * - D1データベースの初期化
  * - テスト用のテーブル作成
  */
 beforeAll(async () => {
-	// Miniflareインスタンスを作成
-	const miniflare = new Miniflare({
-		modules: true,
-		d1Databases: ["DB"],
-		d1Persist: false, // テスト間でデータを永続化しない
-	});
+	if (!isTestEnv()) {
+		console.warn('Test environment is not properly set up. Tests requiring D1 may fail.');
+		return;
+	}
 
-	// D1データベースを取得
-	const d1 = await miniflare.getD1Database("DB");
-
-	// Drizzle ORMを初期化
-	const db = drizzle(d1);
-
-	// マイグレーションの代わりに直接テーブルを作成
-	// 本番環境のマイグレーションファイルを使用する場合は次のようにする:
-	// await migrate(db, { migrationsFolder: "./migrations" });
-	await d1.exec(`
-    CREATE TABLE IF NOT EXISTS gyms (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      owner_email TEXT NOT NULL,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL
-    )
-  `);
-
-	// グローバル変数として設定
-	globalThis.testMiniflare = miniflare;
-	globalThis.testDb = d1;
+	try {
+		// マイグレーションの代わりに直接テーブルを作成
+		await globalThis.DB.exec(`
+      CREATE TABLE IF NOT EXISTS gyms (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        owner_email TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )
+    `);
+		console.log('Test database initialized successfully');
+	} catch (error) {
+		console.error('Failed to initialize test database:', error);
+	}
 });
 
 /**
  * 各テスト前にデータをクリーンアップする
  */
 beforeEach(async () => {
-	// テーブルのデータをクリア
-	await globalThis.testDb.exec(`DELETE FROM ${gyms.name}`);
+	if (!isTestEnv()) return;
+	
+	try {
+		// テーブルのデータをクリア
+		await globalThis.DB.exec(`DELETE FROM ${gyms.name}`);
+	} catch (error) {
+		console.error('Failed to clean test data:', error);
+	}
+});
+
+/**
+ * 各テスト後のクリーンアップ
+ */
+afterEach(() => {
+	// 必要に応じてリソースをクリーンアップ
 });
 
 /**
  * すべてのテスト終了後にクリーンアップする
  */
 afterAll(async () => {
-	// テーブルの削除
-	await globalThis.testDb.exec(`DROP TABLE IF EXISTS ${gyms.name}`);
+	if (!isTestEnv()) return;
+	
+	try {
+		// テーブルの削除
+		await globalThis.DB.exec(`DROP TABLE IF EXISTS ${gyms.name}`);
+		console.log('Test database cleaned up');
+	} catch (error) {
+		console.error('Failed to cleanup test database:', error);
+	}
 });

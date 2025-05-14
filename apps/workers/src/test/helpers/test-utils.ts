@@ -17,11 +17,9 @@ export function createTestApp(app: Hono<{ Bindings: CloudflareBindings }>): Hono
  * 
  * @returns Cloudflareバインディングを含むオブジェクト
  */
-export function createTestBindings(): { Bindings: CloudflareBindings } {
+export function createTestBindings(): CloudflareBindings {
 	return {
-		Bindings: {
-			DB: globalThis.testDb,
-		},
+		DB: globalThis.DB,
 	};
 }
 
@@ -31,7 +29,7 @@ export function createTestBindings(): { Bindings: CloudflareBindings } {
  * @returns drizzleインスタンス
  */
 export function createTestDb() {
-	return drizzle(globalThis.testDb);
+	return drizzle(globalThis.DB);
 }
 
 /**

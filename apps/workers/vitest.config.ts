@@ -22,8 +22,8 @@ export default defineConfig({
 		},
 		// 高速失敗を有効化
 		bail: 1,
-		// Miniflare設定は一時的に無効化
-		/*
+		// Miniflare v4の設定
+		// 単体テストに注力する場合はこのブロックをコメントアウト
 		pool: '@cloudflare/vitest-pool-workers',
 		poolOptions: {
 			workers: {
@@ -33,13 +33,14 @@ export default defineConfig({
 					d1Persist: false,
 					modules: true,
 					wranglerConfigPath: './wrangler.toml',
-					compatibilityDate: '2022-10-31',
-					compatibilityFlags: ['export_commonjs_default'],
+					// 最新のcompatibilityDateを使用（2024年5月現在）
+					compatibilityDate: '2024-05-14',
+					// Node.js互換性を有効化
+					compatibilityFlags: ['nodejs_compat'],
 				}
 			}
 		},
 		// テスト前に実行するセットアップファイル
 		setupFiles: ["./src/test/setup.ts"],
-		*/
 	},
 });

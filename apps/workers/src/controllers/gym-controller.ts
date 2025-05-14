@@ -1,3 +1,4 @@
+/// <reference path="../../worker-configuration.d.ts" />
 import type { Context } from "hono";
 import { z } from "zod";
 import { GymRepository } from "../repositories/gym-repository";
@@ -26,7 +27,8 @@ const gymListQuerySchema = z.object({
 		.transform((val) => {
 			// 許可されたソート値のみ受け付ける
 			const allowedValues = ["name", "createdAt", "-name", "-createdAt"];
-			return allowedValues.includes(val) ? val : "-createdAt";
+			// undefinedの場合もデフォルト値を返す
+			return val && allowedValues.includes(val) ? val : "-createdAt";
 		}),
 	search: z.string().optional(),
 });

@@ -14,7 +14,7 @@
 		"noUnusedLocals": false,
 		"noUnusedParameters": false
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts", "worker-configuration.d.ts"],
 	"exclude": [
 		"src/objects/DatabaseDO.ts",
 		"src/test/mocks.ts",

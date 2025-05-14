@@ -1,3 +1,4 @@
+/// <reference path="../../../../worker-configuration.d.ts" />
 import { Hono } from "hono";
 import { GymController } from "../../../controllers/gym-controller";
 

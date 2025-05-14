@@ -1,3 +1,4 @@
+/// <reference path="../../worker-configuration.d.ts" />
 import { asc, count, desc, eq, like, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import type { Gym } from "../db";

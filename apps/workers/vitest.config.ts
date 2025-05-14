@@ -5,7 +5,7 @@ export default defineWorkersConfig({
 	test: {
 		testTimeout: 10000,
 		hookTimeout: 10000,
-		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}"],
 		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
 			provider: "v8",

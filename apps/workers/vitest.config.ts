@@ -5,7 +5,7 @@ export default defineConfig({
 		testTimeout: 10000,
 		hookTimeout: 10000,
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-		exclude: ["**/node_modules/**", "**/dist/**"],
+		exclude: ["**/node_modules/**", "**/dist/**", "**/routes/**"],
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
@@ -22,13 +22,21 @@ export default defineConfig({
 		},
 		// 高速失敗を有効化
 		bail: 1,
-		// 一時的にCloudflare Workers環境の設定を無効化
+		// Miniflare設定は一時的に無効化
 		/*
-		environment: "miniflare",
-		environmentOptions: {
-			modules: true,
-			d1Databases: ["DB"],
-			d1Persist: false,
+		pool: '@cloudflare/vitest-pool-workers',
+		poolOptions: {
+			workers: {
+				singleWorker: true,
+				miniflare: {
+					d1Databases: ['DB'],
+					d1Persist: false,
+					modules: true,
+					wranglerConfigPath: './wrangler.toml',
+					compatibilityDate: '2022-10-31',
+					compatibilityFlags: ['export_commonjs_default'],
+				}
+			}
 		},
 		// テスト前に実行するセットアップファイル
 		setupFiles: ["./src/test/setup.ts"],

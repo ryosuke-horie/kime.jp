@@ -22,5 +22,16 @@ export default defineConfig({
 		},
 		// 高速失敗を有効化
 		bail: 1,
+		// 一時的にCloudflare Workers環境の設定を無効化
+		/*
+		environment: "miniflare",
+		environmentOptions: {
+			modules: true,
+			d1Databases: ["DB"],
+			d1Persist: false,
+		},
+		// テスト前に実行するセットアップファイル
+		setupFiles: ["./src/test/setup.ts"],
+		*/
 	},
 });

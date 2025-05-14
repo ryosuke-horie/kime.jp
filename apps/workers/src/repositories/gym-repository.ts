@@ -62,14 +62,20 @@ export class GymRepository implements IGymRepository {
 
 		// 基本クエリ
 		let query = this.db.select().from(gyms);
+		let countQuery = this.db.select({ value: count() }).from(gyms);
 
 		// 検索条件があれば適用
 		if (search) {
-			query = query.where(or(like(gyms.name, `%${search}%`), like(gyms.ownerEmail, `%${search}%`)));
+			const searchCondition = or(
+				like(gyms.name, `%${search}%`),
+				like(gyms.ownerEmail, `%${search}%`),
+			);
+			query = query.where(searchCondition);
+			countQuery = countQuery.where(searchCondition);
 		}
 
-		// 合計件数を取得
-		const countResult = await this.db.select({ value: count() }).from(gyms).execute();
+		// 検索条件を適用した合計件数を取得
+		const countResult = await countQuery.execute();
 		const total = countResult[0]?.value || 0;
 
 		// ソート条件を適用

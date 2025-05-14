@@ -1,6 +1,7 @@
-import { defineConfig } from "vitest/config";
+import { defineWorkersConfig } from "@cloudflare/vitest-pool-workers/config";
+import path from "path";
 
-export default defineConfig({
+export default defineWorkersConfig({
 	test: {
 		testTimeout: 10000,
 		hookTimeout: 10000,
@@ -22,5 +23,25 @@ export default defineConfig({
 		},
 		// 高速失敗を有効化
 		bail: 1,
+		
+		// Cloudflare Workers の統合テスト設定
+		// 単体テストのみを実行する場合は以下の設定をコメントアウトし、
+		// environment: 'node' を追加
+		poolOptions: {
+			workers: {
+				// Wrangler設定ファイルのパス
+				wrangler: {
+					configPath: './wrangler.toml',
+				},
+				// D1データベースの設定
+				d1Persist: false, // テスト間でデータを永続化しない
+				d1Databases: ['DB'],
+				// 代替の方法: マイグレーションファイルは使用せず、
+				// apply-migrations.ts内でテーブルを直接作成する
+			},
+		},
+		
+		// テスト前に実行するセットアップファイル
+		setupFiles: ["./src/test/apply-migrations.ts"],
 	},
 });

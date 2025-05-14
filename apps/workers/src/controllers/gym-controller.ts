@@ -1,19 +1,19 @@
-import { Context } from "hono";
-import { GymService, IGymService } from "../services/gym-service";
-import { GymRepository } from "../repositories/gym-repository";
+import type { Context } from "hono";
 import { z } from "zod";
+import { GymRepository } from "../repositories/gym-repository";
+import { GymService, type IGymService } from "../services/gym-service";
 
 // クエリパラメータのバリデーションスキーマ
 const gymListQuerySchema = z.object({
 	page: z
 		.string()
 		.optional()
-		.transform((val) => (val ? parseInt(val, 10) : 1)),
+		.transform((val) => (val ? Number.parseInt(val, 10) : 1)),
 	limit: z
 		.string()
 		.optional()
 		.transform((val) => {
-			const limit = val ? parseInt(val, 10) : 10;
+			const limit = val ? Number.parseInt(val, 10) : 10;
 			// 1~100の範囲に制限
 			return Math.max(1, Math.min(100, limit));
 		}),
@@ -57,31 +57,28 @@ export class GymController {
 	async getGyms(c: Context) {
 		try {
 			// クエリパラメータをバリデーション
-			const parseResult = gymListQuerySchema.safeParse(Object.fromEntries(
-				new URL(c.req.url).searchParams.entries()
-			));
-			
+			const parseResult = gymListQuerySchema.safeParse(
+				Object.fromEntries(new URL(c.req.url).searchParams.entries()),
+			);
+
 			if (!parseResult.success) {
 				return c.json(
 					{ error: "Invalid query parameters", details: parseResult.error.format() },
-					{ status: 400 }
+					{ status: 400 },
 				);
 			}
-			
+
 			const { page, limit, sort, search } = parseResult.data;
-			
+
 			const result = await this.gymService.getGyms({ page, limit, sort, search });
-			
+
 			return c.json({
 				gyms: result.items,
-				meta: result.meta
+				meta: result.meta,
 			});
 		} catch (error) {
 			console.error("Error in getGyms:", error);
-			return c.json(
-				{ error: "Failed to fetch gyms" },
-				{ status: 500 }
-			);
+			return c.json({ error: "Failed to fetch gyms" }, { status: 500 });
 		}
 	}
 
@@ -91,24 +88,18 @@ export class GymController {
 	async getGymById(c: Context) {
 		try {
 			const gymId = c.req.param("gymId");
-			
+
 			const gym = await this.gymService.getGymById(gymId);
-			
+
 			return c.json({ gym });
 		} catch (error) {
 			console.error("Error in getGymById:", error);
-			
+
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: error.message },
-					{ status: 404 }
-				);
+				return c.json({ error: error.message }, { status: 404 });
 			}
-			
-			return c.json(
-				{ error: "Failed to fetch gym" },
-				{ status: 500 }
-			);
+
+			return c.json({ error: "Failed to fetch gym" }, { status: 500 });
 		}
 	}
 
@@ -118,31 +109,25 @@ export class GymController {
 	async createGym(c: Context) {
 		try {
 			const data = await c.req.json();
-			
+
 			// 入力バリデーション
 			const parseResult = createGymSchema.safeParse(data);
-			
+
 			if (!parseResult.success) {
 				return c.json(
 					{ error: "Invalid request data", details: parseResult.error.format() },
-					{ status: 400 }
+					{ status: 400 },
 				);
 			}
-			
+
 			const { name, ownerEmail } = parseResult.data;
-			
+
 			const gym = await this.gymService.createGym({ name, ownerEmail });
-			
-			return c.json(
-				{ message: "Gym created successfully", gymId: gym.gymId },
-				{ status: 201 }
-			);
+
+			return c.json({ message: "Gym created successfully", gymId: gym.gymId }, { status: 201 });
 		} catch (error) {
 			console.error("Error in createGym:", error);
-			return c.json(
-				{ error: "Failed to create gym" },
-				{ status: 500 }
-			);
+			return c.json({ error: "Failed to create gym" }, { status: 500 });
 		}
 	}
 
@@ -153,36 +138,30 @@ export class GymController {
 		try {
 			const gymId = c.req.param("gymId");
 			const data = await c.req.json();
-			
+
 			// 入力バリデーション
 			const parseResult = updateGymSchema.safeParse(data);
-			
+
 			if (!parseResult.success) {
 				return c.json(
 					{ error: "Invalid request data", details: parseResult.error.format() },
-					{ status: 400 }
+					{ status: 400 },
 				);
 			}
-			
+
 			const validData = parseResult.data;
-			
+
 			await this.gymService.updateGym(gymId, validData);
-			
+
 			return c.json({ message: "Gym updated successfully" });
 		} catch (error) {
 			console.error("Error in updateGym:", error);
-			
+
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: error.message },
-					{ status: 404 }
-				);
+				return c.json({ error: error.message }, { status: 404 });
 			}
-			
-			return c.json(
-				{ error: "Failed to update gym" },
-				{ status: 500 }
-			);
+
+			return c.json({ error: "Failed to update gym" }, { status: 500 });
 		}
 	}
 
@@ -192,24 +171,18 @@ export class GymController {
 	async deleteGym(c: Context) {
 		try {
 			const gymId = c.req.param("gymId");
-			
+
 			await this.gymService.deleteGym(gymId);
-			
+
 			return c.json({ message: "Gym deleted successfully" });
 		} catch (error) {
 			console.error("Error in deleteGym:", error);
-			
+
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: error.message },
-					{ status: 404 }
-				);
+				return c.json({ error: error.message }, { status: 404 });
 			}
-			
-			return c.json(
-				{ error: "Failed to delete gym" },
-				{ status: 500 }
-			);
+
+			return c.json({ error: "Failed to delete gym" }, { status: 500 });
 		}
 	}
 }

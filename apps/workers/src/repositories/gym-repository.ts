@@ -1,4 +1,4 @@
-import { count, desc, asc, eq, like, or } from "drizzle-orm";
+import { asc, count, desc, eq, like, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import type { Gym } from "../db";
 import { gyms } from "../db/schema";
@@ -7,31 +7,31 @@ import { gyms } from "../db/schema";
  * ジムリポジトリのインターフェース
  */
 export interface IGymRepository {
-  findAll(options: {
-    page?: number;
-    limit?: number;
-    sort?: string;
-    search?: string;
-  }): Promise<{ 
-    items: Gym[];
-    meta: {
-      total: number;
-      page: number;
-      limit: number;
-      totalPages: number;
-    };
-  }>;
-  findById(gymId: string): Promise<Gym | undefined>;
-  create(data: {
-    gymId: string;
-    name: string;
-    ownerEmail: string;
-  }): Promise<Gym | undefined>;
-  update(
-    gymId: string, 
-    data: Partial<{ name: string; ownerEmail: string }>
-  ): Promise<Gym | undefined>;
-  delete(gymId: string): Promise<boolean>;
+	findAll(options: {
+		page?: number;
+		limit?: number;
+		sort?: string;
+		search?: string;
+	}): Promise<{
+		items: Gym[];
+		meta: {
+			total: number;
+			page: number;
+			limit: number;
+			totalPages: number;
+		};
+	}>;
+	findById(gymId: string): Promise<Gym | undefined>;
+	create(data: {
+		gymId: string;
+		name: string;
+		ownerEmail: string;
+	}): Promise<Gym | undefined>;
+	update(
+		gymId: string,
+		data: Partial<{ name: string; ownerEmail: string }>,
+	): Promise<Gym | undefined>;
+	delete(gymId: string): Promise<boolean>;
 }
 
 /**
@@ -55,35 +55,22 @@ export class GymRepository implements IGymRepository {
 		sort?: string;
 		search?: string;
 	}) {
-		const { 
-			page = 1, 
-			limit = 10, 
-			sort = "-createdAt", 
-			search 
-		} = options;
-		
+		const { page = 1, limit = 10, sort = "-createdAt", search } = options;
+
 		const offset = (page - 1) * limit;
-		
+
 		// 基本クエリ
 		let query = this.db.select().from(gyms);
-		
+
 		// 検索条件があれば適用
 		if (search) {
-			query = query.where(
-				or(
-					like(gyms.name, `%${search}%`),
-					like(gyms.ownerEmail, `%${search}%`)
-				)
-			);
+			query = query.where(or(like(gyms.name, `%${search}%`), like(gyms.ownerEmail, `%${search}%`)));
 		}
-		
+
 		// 合計件数を取得
-		const countResult = await this.db
-			.select({ value: count() })
-			.from(gyms)
-			.execute();
+		const countResult = await this.db.select({ value: count() }).from(gyms).execute();
 		const total = countResult[0]?.value || 0;
-		
+
 		// ソート条件を適用
 		switch (sort) {
 			case "name":
@@ -102,16 +89,16 @@ export class GymRepository implements IGymRepository {
 				// デフォルトは作成日の降順
 				query = query.orderBy(desc(gyms.createdAt));
 		}
-		
+
 		// ページネーションを適用
 		query = query.limit(limit).offset(offset);
-		
+
 		// クエリ実行
 		const results = await query.execute();
-		
+
 		// ページネーションメタデータの計算
 		const totalPages = Math.ceil(total / limit);
-		
+
 		return {
 			items: results as Gym[],
 			meta: {
@@ -129,12 +116,8 @@ export class GymRepository implements IGymRepository {
 	 * @returns ジム情報、存在しない場合はnull
 	 */
 	async findById(gymId: string) {
-		const result = await this.db
-			.select()
-			.from(gyms)
-			.where(eq(gyms.gymId, gymId))
-			.execute();
-		
+		const result = await this.db.select().from(gyms).where(eq(gyms.gymId, gymId)).execute();
+
 		return result[0] as Gym | undefined;
 	}
 
@@ -149,15 +132,18 @@ export class GymRepository implements IGymRepository {
 		ownerEmail: string;
 	}) {
 		const now = new Date().toISOString();
-		
-		await this.db.insert(gyms).values({
-			gymId: data.gymId,
-			name: data.name,
-			ownerEmail: data.ownerEmail,
-			createdAt: now,
-			updatedAt: now,
-		}).execute();
-		
+
+		await this.db
+			.insert(gyms)
+			.values({
+				gymId: data.gymId,
+				name: data.name,
+				ownerEmail: data.ownerEmail,
+				createdAt: now,
+				updatedAt: now,
+			})
+			.execute();
+
 		return this.findById(data.gymId);
 	}
 
@@ -167,16 +153,13 @@ export class GymRepository implements IGymRepository {
 	 * @param data 更新データ
 	 * @returns 更新後のジム情報
 	 */
-	async update(
-		gymId: string,
-		data: Partial<{ name: string; ownerEmail: string }>
-	) {
+	async update(gymId: string, data: Partial<{ name: string; ownerEmail: string }>) {
 		if (Object.keys(data).length === 0) {
 			return this.findById(gymId);
 		}
-		
+
 		const now = new Date().toISOString();
-		
+
 		await this.db
 			.update(gyms)
 			.set({
@@ -185,7 +168,7 @@ export class GymRepository implements IGymRepository {
 			})
 			.where(eq(gyms.gymId, gymId))
 			.execute();
-		
+
 		return this.findById(gymId);
 	}
 
@@ -195,11 +178,8 @@ export class GymRepository implements IGymRepository {
 	 * @returns 削除に成功したかどうか
 	 */
 	async delete(gymId: string) {
-		const result = await this.db
-			.delete(gyms)
-			.where(eq(gyms.gymId, gymId))
-			.execute();
-		
+		const result = await this.db.delete(gyms).where(eq(gyms.gymId, gymId)).execute();
+
 		return result.changes > 0;
 	}
 }

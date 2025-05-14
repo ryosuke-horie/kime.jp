@@ -1,25 +1,26 @@
 {
-	"extends": "../../tsconfig.base.json",
-	"compilerOptions": {
-		"lib": ["ESNext", "DOM"],
-		"types": ["vite/client"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx",
-		"noImplicitAny": false,
-		"allowSyntheticDefaultImports": true,
-		"noEmit": true,
-		// OpenAPI + Zod統合に関連するエラーを抑制するための一時的な設定
-		"checkJs": false,
-		"noPropertyAccessFromIndexSignature": false,
-		"noUnusedLocals": false,
-		"noUnusedParameters": false
-	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.d.ts", "worker-configuration.d.ts"],
-	"exclude": [
-		"src/objects/DatabaseDO.ts",
-		"src/test/mocks.ts",
-		"src/schemas/**/*.ts",
-		"src/features/**/*.ts",
-		"src/utils/validator.ts"
-	]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "types": [
+            "vite/client"
+        ],
+        "jsx": "react-jsx",
+        "jsxImportSource": "hono/jsx",
+        "noImplicitAny": false,
+        "allowSyntheticDefaultImports": true,
+        "noEmit": true,
+        "noPropertyAccessFromIndexSignature": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/types/**/*.d.ts",
+        "worker-configuration.d.ts"
+    ]
 }

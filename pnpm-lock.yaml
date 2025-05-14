@@ -30,9 +30,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@asteasolutions/zod-to-openapi':
-        specifier: ^7.3.0
-        version: 7.3.0(zod@3.24.4)
       '@auth/core':
         specifier: ^0.39.0
         version: 0.39.0

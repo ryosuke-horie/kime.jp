@@ -1,13 +1,9 @@
 import { z } from "zod";
-import { registry } from "./openapi/config";
 
 // 共通のエラーレスポンス型
 export const ErrorResponse = z.object({
 	error: z.string().describe("エラーメッセージ"),
 });
-
-// OpenAPIスキーマに登録
-registry.register("ErrorResponse", ErrorResponse);
 
 export type ErrorResponseType = z.infer<typeof ErrorResponse>;
 
@@ -15,9 +11,6 @@ export type ErrorResponseType = z.infer<typeof ErrorResponse>;
 export const SuccessResponse = z.object({
 	message: z.string().describe("成功メッセージ"),
 });
-
-// OpenAPIスキーマに登録
-registry.register("SuccessResponse", SuccessResponse);
 
 export type SuccessResponseType = z.infer<typeof SuccessResponse>;
 
@@ -40,9 +33,6 @@ export const PaginationParams = z.object({
 	limit: z.number().int().min(1).max(100).optional().default(20).describe("1ページあたりの件数"),
 });
 
-// OpenAPIスキーマに登録
-registry.register("PaginationParams", PaginationParams);
-
 export type PaginationParamsType = z.infer<typeof PaginationParams>;
 
 // ページネーション結果のメタデータ
@@ -52,8 +42,5 @@ export const PaginationMeta = z.object({
 	limit: z.number().int().describe("1ページあたりの件数"),
 	totalPages: z.number().int().describe("総ページ数"),
 });
-
-// OpenAPIスキーマに登録
-registry.register("PaginationMeta", PaginationMeta);
 
 export type PaginationMetaType = z.infer<typeof PaginationMeta>;

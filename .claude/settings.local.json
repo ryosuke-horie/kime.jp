@@ -108,7 +108,17 @@
       "Bash(true)",
       "Bash(gh repo view:*)",
       "Bash(timeout 10 pnpm --filter=web dev)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(gh issue view:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm format:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)"
     ],
     "deny": []
   }

@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import type { Gym } from "../db";
+import type { IAdminRepository } from "../repositories/admin-repository";
 import type { IGymRepository } from "../repositories/gym-repository";
 
 /**
@@ -30,10 +31,12 @@ export interface IGymService {
  * ジムサービス - ジム関連のビジネスロジックを担当
  */
 export class GymService implements IGymService {
-	private repository: IGymRepository;
+	private gymRepository: IGymRepository;
+	private adminRepository?: IAdminRepository;
 
-	constructor(repository: IGymRepository) {
-		this.repository = repository;
+	constructor(gymRepository: IGymRepository, adminRepository?: IAdminRepository) {
+		this.gymRepository = gymRepository;
+		this.adminRepository = adminRepository;
 	}
 
 	/**
@@ -47,7 +50,7 @@ export class GymService implements IGymService {
 		sort?: string;
 		search?: string;
 	}) {
-		return this.repository.findAll(options);
+		return this.gymRepository.findAll(options);
 	}
 
 	/**
@@ -57,7 +60,7 @@ export class GymService implements IGymService {
 	 * @throws ジムが存在しない場合はエラー
 	 */
 	async getGymById(gymId: string) {
-		const gym = await this.repository.findById(gymId);
+		const gym = await this.gymRepository.findById(gymId);
 
 		if (!gym) {
 			throw new Error(`Gym with ID ${gymId} not found`);
@@ -74,7 +77,8 @@ export class GymService implements IGymService {
 	async createGym(data: { name: string; ownerEmail: string }) {
 		const gymId = uuidv4();
 
-		const gym = await this.repository.create({
+		// ジムの作成
+		const gym = await this.gymRepository.create({
 			gymId,
 			name: data.name,
 			ownerEmail: data.ownerEmail,
@@ -82,6 +86,28 @@ export class GymService implements IGymService {
 
 		if (!gym) {
 			throw new Error("Failed to create gym");
+		}
+
+		// 管理者リポジトリが提供されている場合はオーナー関連の処理を行う
+		if (this.adminRepository) {
+			try {
+				// adminAccountsテーブルにオーナーアカウントを作成（未登録の場合）
+				const adminId = await this.adminRepository.findOrCreateAdminAccount({
+					email: data.ownerEmail,
+					name: `${data.name}オーナー`, // デフォルト名
+					role: "admin",
+				});
+
+				// adminGymRelationshipsテーブルに関連レコードを作成
+				await this.adminRepository.createGymRelationship({
+					adminId,
+					gymId,
+					role: "owner",
+				});
+			} catch (error) {
+				// 管理者関連のエラーはログに記録するが、ジム作成自体は成功とする
+				console.error("Failed to create admin account or gym relationship:", error);
+			}
 		}
 
 		return gym;
@@ -98,7 +124,7 @@ export class GymService implements IGymService {
 		// 更新前にジムの存在確認
 		await this.getGymById(gymId);
 
-		const updatedGym = await this.repository.update(gymId, data);
+		const updatedGym = await this.gymRepository.update(gymId, data);
 
 		if (!updatedGym) {
 			throw new Error(`Failed to update gym with ID ${gymId}`);
@@ -116,7 +142,7 @@ export class GymService implements IGymService {
 		// 削除前にジムの存在確認
 		await this.getGymById(gymId);
 
-		const success = await this.repository.delete(gymId);
+		const success = await this.gymRepository.delete(gymId);
 
 		if (!success) {
 			throw new Error(`Failed to delete gym with ID ${gymId}`);

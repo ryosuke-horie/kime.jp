@@ -147,4 +147,99 @@ describe("ジムAPI - 統合テスト", () => {
 			expect(res.status).toBe(404);
 		});
 	});
+
+	describe("POST /api/gyms", () => {
+		itWithD1("有効なデータでジムを作成できること", async () => {
+			// テストデータ
+			const gymData = {
+				name: "新規テストジム",
+				ownerEmail: "new-owner@example.com",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: gymData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(201);
+
+			const data = (await res.json()) as { message: string; gymId: string };
+			expect(data).toHaveProperty("message");
+			expect(data).toHaveProperty("gymId");
+			expect(typeof data.gymId).toBe("string");
+
+			// 作成されたジムをGETリクエストで確認
+			const getReq = createTestRequest(`/api/gyms/${data.gymId}`);
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(200);
+
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
+			expect(getGymData.gym.name).toBe(gymData.name);
+			expect(getGymData.gym.ownerEmail).toBe(gymData.ownerEmail);
+		});
+
+		itWithD1("バリデーションエラーが発生した場合に400エラーを返すこと", async () => {
+			// 不正なデータ（必須項目の欠如）
+			const invalidData = {
+				name: "", // 空文字列は無効
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: invalidData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(400);
+
+			const data = (await res.json()) as { error: string; details: unknown };
+			expect(data).toHaveProperty("error");
+			expect(data).toHaveProperty("details");
+		});
+
+		itWithD1("ownerEmailが不正な形式の場合に400エラーを返すこと", async () => {
+			// 不正なデータ（不正なメールアドレス）
+			const invalidData = {
+				name: "テストジム",
+				ownerEmail: "invalid-email", // 無効なメールアドレス
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: invalidData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(400);
+
+			const data = (await res.json()) as { error: string; details: unknown };
+			expect(data).toHaveProperty("error");
+			expect(data).toHaveProperty("details");
+		});
+	});
 });

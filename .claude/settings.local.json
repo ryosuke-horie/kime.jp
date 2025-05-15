@@ -118,7 +118,9 @@
       "Bash(pnpm format:*)",
       "Bash(git add:*)",
       "Bash(git push:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr comment:*)"
     ],
     "deny": []
   }

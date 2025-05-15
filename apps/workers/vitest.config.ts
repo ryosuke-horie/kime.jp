@@ -8,7 +8,7 @@ export default defineWorkersConfig({
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}"],
 		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
-			provider: "v8",
+			provider: "istanbul",
 			reporter: ["text", "json", "html"],
 			reportsDirectory: "./coverage",
 			exclude: ["**/node_modules/**", "**/test/**"],

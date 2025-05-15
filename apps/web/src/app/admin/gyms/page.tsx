@@ -6,72 +6,59 @@ import { GymSearch } from "@/components/admin/gym-search";
 import { GymTable } from "@/components/admin/gym-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockGyms, mockPaginationMeta } from "@/mock/gyms";
+import { useGyms } from "@/hooks/use-gyms";
 import type { GymType } from "@/types/gym";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 export default function AdminGymsPage() {
-	// ステート管理
-	const [gyms, setGyms] = useState(mockGyms);
-	const [paginationMeta, setPaginationMeta] = useState(mockPaginationMeta);
-
-	// フィルタリング関数
-	const filterGyms = useCallback(
-		(name: string) => {
-			let filtered = [...mockGyms];
-
-			if (name) {
-				filtered = filtered.filter((gym) => gym.name.toLowerCase().includes(name.toLowerCase()));
-			}
-
-			setGyms(filtered);
-
-			// ページネーションメタデータを更新
-			const totalItems = filtered.length;
-			setPaginationMeta({
-				...paginationMeta,
-				total: totalItems,
-				totalPages: Math.max(1, Math.ceil(totalItems / paginationMeta.limit)),
-				page: 1, // フィルタリング時は最初のページに戻る
-			});
-		},
-		[paginationMeta],
-	);
+	// カスタムフックを使用してジムデータを取得
+	const { gyms, paginationMeta, isLoading, searchGyms, changePage, deleteGym } = useGyms();
 
 	// 検索ハンドラー
 	const handleSearch = useCallback(
 		(newFilters: { name: string }) => {
-			filterGyms(newFilters.name);
+			searchGyms(newFilters.name);
 		},
-		[filterGyms],
+		[searchGyms],
 	);
 
 	// ページ切り替えハンドラー
-	const handlePageChange = useCallback((page: number) => {
-		setPaginationMeta((prev) => ({
-			...prev,
-			page,
-		}));
-		// 実際のAPIでは、ここでページに応じたデータを取得する
-	}, []);
+	const handlePageChange = useCallback(
+		(page: number) => {
+			changePage(page);
+		},
+		[changePage],
+	);
 
 	// ジム編集ハンドラー
 	const handleEdit = useCallback((gym: GymType) => {
 		// 実際の実装では編集ページへリダイレクト
-		toast.info(`「${gym.name}」の編集ページへ移動します`, {
-			description: "実データ連携時に実装予定です",
-		});
+		toast.info(`「${gym.name}」の編集ページへ移動します`);
+		// 実装例: router.push(`/admin/gyms/edit/${gym.gymId}`);
 	}, []);
 
 	// ジム削除ハンドラー
-	const handleDelete = useCallback((gym: GymType) => {
-		toast.info(`「${gym.name}」を削除します`, {
-			description: "実データ連携時に実装予定です",
-		});
-	}, []);
+	const handleDelete = useCallback(
+		async (gym: GymType) => {
+			try {
+				const success = await deleteGym(gym.gymId);
+				if (success) {
+					toast.success(`「${gym.name}」を削除しました`);
+				} else {
+					throw new Error("削除処理に失敗しました");
+				}
+			} catch (error) {
+				console.error("ジム削除に失敗しました", error);
+				toast.error(`「${gym.name}」の削除に失敗しました`, {
+					description: "しばらく経ってからもう一度お試しください",
+				});
+			}
+		},
+		[deleteGym],
+	);
 
 	return (
 		<DashboardLayout>
@@ -97,7 +84,12 @@ export default function AdminGymsPage() {
 					<CardContent>
 						<GymSearch onSearch={handleSearch} />
 
-						<GymTable gyms={gyms} onEdit={handleEdit} onDelete={handleDelete} />
+						<GymTable
+							gyms={gyms}
+							onEdit={handleEdit}
+							onDelete={handleDelete}
+							isLoading={isLoading}
+						/>
 
 						<GymPagination meta={paginationMeta} onPageChange={handlePageChange} />
 					</CardContent>

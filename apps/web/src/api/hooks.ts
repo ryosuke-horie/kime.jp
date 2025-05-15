@@ -95,13 +95,13 @@ export const useHealthCheck = () => {
  */
 export const useGyms = () => {
 	// React QueryやSWRを使った実装
-	// 例: return useQuery<GymListResponseType>(['gyms'], () => fetchApi('/api/gyms/admin'));
+	// 例: return useQuery<GymListResponseType>(['gyms'], () => fetchApi('/api/gyms'));
 
 	// サンプル実装として同期的に関数を返す
 	return {
 		fetchGyms: async (page = 1, limit = 20): Promise<GymListResponseType> => {
 			const response = await fetchWithAuth(
-				`${apiConfig.baseUrl}/api/gyms/admin?page=${page}&limit=${limit}`,
+				`${apiConfig.baseUrl}/api/gyms?page=${page}&limit=${limit}`,
 			);
 			return response.json();
 		},
@@ -134,7 +134,7 @@ export const useCreateGym = () => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		createGym: async (data: CreateGymRequestType): Promise<CreateGymResponseType> => {
-			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/admin`, {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms`, {
 				method: "POST",
 				body: JSON.stringify(data),
 			});
@@ -153,7 +153,7 @@ export const useUpdateGym = (gymId: string) => {
 	// サンプル実装として同期的に関数を返す
 	return {
 		updateGym: async (data: UpdateGymRequestType): Promise<SuccessResponseType> => {
-			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/${gymId}`, {
 				method: "PATCH",
 				body: JSON.stringify(data),
 			});
@@ -167,12 +167,12 @@ export const useUpdateGym = (gymId: string) => {
  */
 export const useDeleteGym = (gymId: string) => {
 	// React QueryやSWRを使った実装
-	// 例: return useMutation<SuccessResponseType>(() => fetchApi(`/api/gyms/admin/${gymId}`, { method: 'DELETE' }))
+	// 例: return useMutation<SuccessResponseType>(() => fetchApi(`/api/gyms/${gymId}`, { method: 'DELETE' }))
 
 	// サンプル実装として同期的に関数を返す
 	return {
 		deleteGym: async (): Promise<SuccessResponseType> => {
-			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/admin/${gymId}`, {
+			const response = await fetchWithAuth(`${apiConfig.baseUrl}/api/gyms/${gymId}`, {
 				method: "DELETE",
 			});
 			return response.json();

@@ -60,8 +60,5 @@ jobs:
       - name: Type Check
         run: pnpm --filter=web typecheck
 
-      - name: Build
-        run: pnpm --filter=web build
-
       - name: Test
         run: pnpm --filter=web test

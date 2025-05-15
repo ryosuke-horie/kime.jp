@@ -6,6 +6,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Table,
 	TableBody,
@@ -36,9 +37,10 @@ interface GymTableProps {
 	gyms: GymType[];
 	onEdit?: (gym: GymType) => void;
 	onDelete?: (gym: GymType) => void;
+	isLoading?: boolean;
 }
 
-export function GymTable({ gyms, onEdit, onDelete }: GymTableProps) {
+export function GymTable({ gyms, onEdit, onDelete, isLoading = false }: GymTableProps) {
 	// ソート状態の管理
 	const [sortField, setSortField] = useState<SortField>(null);
 	const [sortDirection, setSortDirection] = useState<SortDirection>(null);
@@ -94,6 +96,75 @@ export function GymTable({ gyms, onEdit, onDelete }: GymTableProps) {
 		);
 	};
 
+	// ローディングスケルトン - PC版
+	const renderPCLoadingSkeleton = () => {
+		// 静的な配列 - パフォーマンス上の問題はありません
+		const skeletonRows = [
+			"skeleton-row-1",
+			"skeleton-row-2",
+			"skeleton-row-3",
+			"skeleton-row-4",
+			"skeleton-row-5",
+		];
+
+		return (
+			<>
+				{skeletonRows.map((key) => (
+					<TableRow key={key}>
+						<TableCell>
+							<Skeleton className="h-5 w-[180px]" />
+						</TableCell>
+						<TableCell>
+							<Skeleton className="h-5 w-[250px]" />
+						</TableCell>
+						<TableCell>
+							<Skeleton className="h-5 w-[100px]" />
+						</TableCell>
+						<TableCell>
+							<Skeleton className="h-8 w-8 rounded-full" />
+						</TableCell>
+					</TableRow>
+				))}
+			</>
+		);
+	};
+
+	// ローディングスケルトン - モバイル版
+	const renderMobileLoadingSkeleton = () => {
+		// 静的な配列 - パフォーマンス上の問題はありません
+		const skeletonItems = ["mobile-skeleton-1", "mobile-skeleton-2", "mobile-skeleton-3"];
+
+		return (
+			<div className="grid gap-4 p-4">
+				{skeletonItems.map((key) => (
+					<div key={key} className="rounded-lg border p-4 shadow-sm">
+						<div className="flex items-center justify-between">
+							<Skeleton className="h-5 w-[150px]" />
+							<Skeleton className="h-8 w-8 rounded-full" />
+						</div>
+						<div className="mt-2 grid gap-2">
+							<div className="grid grid-cols-3 items-center">
+								<span className="text-muted-foreground">メール:</span>
+								<Skeleton className="col-span-2 h-4 w-full" />
+							</div>
+							<div className="grid grid-cols-3 items-center">
+								<span className="text-muted-foreground">登録日:</span>
+								<Skeleton className="col-span-2 h-4 w-[100px]" />
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+		);
+	};
+
+	// データなし
+	const renderEmptyState = (isMobile = false) => (
+		<div className={`${isMobile ? "" : "h-24"} text-center py-8 text-muted-foreground`}>
+			ジムの登録がありません
+		</div>
+	);
+
 	return (
 		<div className="rounded-md border">
 			{/* PC版テーブル - md以上のサイズで表示 */}
@@ -114,7 +185,9 @@ export function GymTable({ gyms, onEdit, onDelete }: GymTableProps) {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{sortedGyms.length === 0 ? (
+						{isLoading ? (
+							renderPCLoadingSkeleton()
+						) : sortedGyms.length === 0 ? (
 							<TableRow>
 								<TableCell colSpan={4} className="h-24 text-center">
 									ジムの登録がありません
@@ -156,8 +229,10 @@ export function GymTable({ gyms, onEdit, onDelete }: GymTableProps) {
 
 			{/* モバイル版カードレイアウト - md未満のサイズで表示 */}
 			<div className="block md:hidden">
-				{sortedGyms.length === 0 ? (
-					<div className="py-8 text-center text-muted-foreground">ジムの登録がありません</div>
+				{isLoading ? (
+					renderMobileLoadingSkeleton()
+				) : sortedGyms.length === 0 ? (
+					renderEmptyState(true)
 				) : (
 					<div className="grid gap-4 p-4">
 						{sortedGyms.map((gym) => (

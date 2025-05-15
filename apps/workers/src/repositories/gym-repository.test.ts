@@ -1,7 +1,7 @@
 /// <reference path="../../worker-configuration.d.ts" />
 /// <reference path="../types/cloudflare-test.d.ts" />
 import { env } from "cloudflare:test";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
 import { gymFixtures } from "../test/fixtures/gym-fixtures";
 import { isD1Available, itWithD1 } from "../test/helpers/test-utils";
 import { GymRepository } from "./gym-repository";

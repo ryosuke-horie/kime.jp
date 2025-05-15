@@ -1,7 +1,7 @@
 /// <reference path="../../../../worker-configuration.d.ts" />
 /// <reference path="../../../types/cloudflare-test.d.ts" />
 import { env } from "cloudflare:test";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
 import app from "../../../index";
 import { createTestRequest, isD1Available, itWithD1 } from "../../../test/helpers/test-utils";
 

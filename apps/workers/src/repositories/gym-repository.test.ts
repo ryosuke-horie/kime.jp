@@ -1,32 +1,11 @@
 /// <reference path="../../worker-configuration.d.ts" />
 /// <reference path="../types/cloudflare-test.d.ts" />
 import { env } from "cloudflare:test";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
 import { gymFixtures } from "../test/fixtures/gym-fixtures";
+import { isD1Available, itWithD1 } from "../test/helpers/skippable-test";
+import { createGymFixture } from "../test/helpers/test-factory";
 import { GymRepository } from "./gym-repository";
-
-/**
- * テスト環境がD1データベースをサポートしているかを確認するヘルパー関数
- * @returns D1データベースが利用可能かどうか
- */
-function isD1Available(): boolean {
-	if (typeof env === "undefined" || !env.DB) {
-		console.warn("Skipping D1 database tests - env.DB is not available");
-		return false;
-	}
-	return true;
-}
-
-/**
- * D1データベースが必要なテストのためのヘルパー関数
- * D1が利用できない場合は自動的にスキップする
- */
-function itWithD1(name: string, fn: () => Promise<void>) {
-	it(name, async () => {
-		if (!isD1Available()) return;
-		await fn();
-	});
-}
 
 describe("GymRepository - 単体テスト", () => {
 	let repository: GymRepository;
@@ -39,7 +18,7 @@ describe("GymRepository - 単体テスト", () => {
 		if (!env.DB) return;
 		repository = new GymRepository(env.DB);
 
-		// テストデータはapply-migrations.tsですでに投入されている
+		// テストデータはsetup.tsですでに投入されている
 	});
 
 	describe("findAll", () => {
@@ -138,13 +117,14 @@ describe("GymRepository - 単体テスト", () => {
 
 	describe("create", () => {
 		itWithD1("新しいジムを作成すること", async () => {
-			const newGym = {
-				gymId: "new-gym-id",
-				name: "新規ジム",
-				ownerEmail: "new@example.com",
-			};
+			// ファクトリー関数を使用してテストデータを生成
+			const newGym = createGymFixture();
 
-			const result = await repository.create(newGym);
+			const result = await repository.create({
+				gymId: newGym.gymId,
+				name: newGym.name,
+				ownerEmail: newGym.ownerEmail,
+			});
 
 			expect(result).toBeDefined();
 			if (result) {
@@ -212,28 +192,27 @@ describe("GymRepository - 単体テスト", () => {
 
 	describe("delete", () => {
 		itWithD1("既存のジムを削除すること", async () => {
-			// 新しいテスト用のレコードを作成し、そのレコードの削除を確認する
-			const testGymId = "delete-test-gym";
+			// ファクトリー関数を使用してテストデータを作成
+			const testGym = createGymFixture();
 
 			// テスト用データの挿入
 			if (!env.DB) return;
-			await env.DB.prepare(`
-				INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at)
-				VALUES ('${testGymId}', 'Delete Test Gym', 'delete@example.com', 1620000000, 1620000000)
-			`).run();
+			await repository.create({
+				gymId: testGym.gymId,
+				name: testGym.name,
+				ownerEmail: testGym.ownerEmail,
+			});
 
 			// 挿入後のレコードを確認
-			const beforeDelete = await repository.findById(testGymId);
+			const beforeDelete = await repository.findById(testGym.gymId);
 			expect(beforeDelete).toBeDefined();
 
 			// 削除の実行
-			const result = await repository.delete(testGymId);
-
-			// 削除に成功したかどうかを確認（特定のテスト条件に応じて調整可能）
-			// expect(result).toBe(true);
+			const result = await repository.delete(testGym.gymId);
+			expect(result).toBe(true);
 
 			// 削除後に存在確認
-			const afterDelete = await repository.findById(testGymId);
+			const afterDelete = await repository.findById(testGym.gymId);
 			expect(afterDelete).toBeUndefined();
 		});
 

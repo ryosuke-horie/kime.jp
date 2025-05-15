@@ -1,7 +1,23 @@
+/// <reference path="../../../worker-configuration.d.ts" />
+/// <reference path="../../types/cloudflare-test.d.ts" />
+import { camelToSnakeCase } from "../helpers/fixture-generator";
+
+/**
+ * Gymテストフィクスチャの型定義
+ * このインターフェースは自動生成されています - スキーマ変更後に更新されます
+ */
+export interface GymFixture {
+	id: string;
+	name: string;
+	owner_email: string;
+	created_at: number | string;
+	updated_at: number | string;
+}
+
 /**
  * テスト用のジムデータフィクスチャ
  */
-export const gymFixtures = [
+export const gymFixtures: GymFixture[] = [
 	{
 		id: "gym-1",
 		name: "フィットネスジムA",
@@ -44,7 +60,7 @@ export async function seedGymData(db: D1Database): Promise<void> {
 	await db
 		.prepare(`
     INSERT INTO gyms (
-      id, name, owner_email, created_at, updated_at
+      gym_id, name, owner_email, created_at, updated_at
     ) VALUES ${placeholders}
   `)
 		.bind(...values)
@@ -66,4 +82,40 @@ export async function seedGymDataFromBindings(): Promise<void> {
 		console.error("Failed to seed gym data:", error);
 		throw error;
 	}
+}
+
+/**
+ * フィクスチャのカラム名をDBのカラム名に変換するマッピング
+ */
+export const gymColumnMapping: Record<string, string> = {
+	id: "gym_id",
+	owner_email: "owner_email",
+	created_at: "created_at",
+	updated_at: "updated_at",
+};
+
+/**
+ * フィクスチャデータをDBスキーマ用に変換する関数
+ * @param fixture フィクスチャデータ
+ * @returns DBスキーマに合わせたデータ
+ */
+export function convertGymFixtureToDb(fixture: GymFixture): Record<string, unknown> {
+	const result: Record<string, unknown> = {};
+
+	// 固定のマッピング
+	for (const [fixtureKey, dbKey] of Object.entries(gymColumnMapping)) {
+		if (fixtureKey in fixture) {
+			result[dbKey] = fixture[fixtureKey as keyof GymFixture];
+		}
+	}
+
+	// マッピングにないものはスネークケースに自動変換
+	for (const key of Object.keys(fixture) as Array<keyof GymFixture>) {
+		if (!Object.keys(gymColumnMapping).includes(key as string)) {
+			const dbKey = camelToSnakeCase(key as string);
+			result[dbKey] = fixture[key];
+		}
+	}
+
+	return result;
 }

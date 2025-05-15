@@ -8,10 +8,10 @@ export default defineWorkersConfig({
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}"],
 		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
-			provider: "v8",
+			provider: "istanbul",
 			reporter: ["text", "json", "html"],
 			reportsDirectory: "./coverage",
-			exclude: ["**/node_modules/**", "**/test/**"],
+			exclude: ["**/node_modules/**", "**/test/**", "**/db/**", "**/vite.config.ts"],
 		},
 		globals: true,
 		// @ts-expect-error: Vitest 3.1.2ではwatchExcludeからwatchIgnoreに変更されたが型定義にまだ反映されていない

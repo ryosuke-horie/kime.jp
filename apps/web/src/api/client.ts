@@ -84,7 +84,7 @@ export class ApiClient {
 
 	// ジム一覧取得（管理者用）
 	async getGyms(page = 1, limit = 20): Promise<GymListResponseType> {
-		return this.fetchApi<GymListResponseType>(`/api/gyms/admin?page=${page}&limit=${limit}`);
+		return this.fetchApi<GymListResponseType>(`/api/gyms?page=${page}&limit=${limit}`);
 	}
 
 	// ジム詳細取得
@@ -94,7 +94,7 @@ export class ApiClient {
 
 	// ジム作成（管理者用）
 	async createGym(data: CreateGymRequestType): Promise<CreateGymResponseType> {
-		return this.fetchApi<CreateGymResponseType>("/api/gyms/admin", {
+		return this.fetchApi<CreateGymResponseType>("/api/gyms", {
 			method: "POST",
 			body: JSON.stringify(data),
 		});
@@ -102,7 +102,7 @@ export class ApiClient {
 
 	// ジム更新（管理者用）
 	async updateGym(gymId: string, data: UpdateGymRequestType): Promise<SuccessResponseType> {
-		return this.fetchApi<SuccessResponseType>(`/api/gyms/admin/${gymId}`, {
+		return this.fetchApi<SuccessResponseType>(`/api/gyms/${gymId}`, {
 			method: "PATCH",
 			body: JSON.stringify(data),
 		});
@@ -110,7 +110,7 @@ export class ApiClient {
 
 	// ジム削除（管理者用）
 	async deleteGym(gymId: string): Promise<SuccessResponseType> {
-		return this.fetchApi<SuccessResponseType>(`/api/gyms/admin/${gymId}`, {
+		return this.fetchApi<SuccessResponseType>(`/api/gyms/${gymId}`, {
 			method: "DELETE",
 		});
 	}

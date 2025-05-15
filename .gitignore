@@ -2,7 +2,6 @@ node_modules
 **/node_modules
 .turbo
 **/.turbo
-**/.claude/settings.local.json
 **/dist
 .next
 **/.next

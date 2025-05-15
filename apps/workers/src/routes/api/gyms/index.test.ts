@@ -162,7 +162,7 @@ describe("ジムAPI - 統合テスト", () => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(gymData),
+				body: gymData as Record<string, unknown>,
 			});
 
 			// リクエスト実行
@@ -172,7 +172,7 @@ describe("ジムAPI - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(201);
 
-			const data = await res.json();
+			const data = (await res.json()) as { message: string; gymId: string };
 			expect(data).toHaveProperty("message");
 			expect(data).toHaveProperty("gymId");
 			expect(typeof data.gymId).toBe("string");
@@ -182,7 +182,7 @@ describe("ジムAPI - 統合テスト", () => {
 			const getRes = await app.fetch(getReq, { DB: env.DB });
 			expect(getRes.status).toBe(200);
 
-			const getGymData = await getRes.json();
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
 			expect(getGymData.gym.name).toBe(gymData.name);
 			expect(getGymData.gym.ownerEmail).toBe(gymData.ownerEmail);
 		});
@@ -199,7 +199,7 @@ describe("ジムAPI - 統合テスト", () => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(invalidData),
+				body: invalidData as Record<string, unknown>,
 			});
 
 			// リクエスト実行
@@ -209,7 +209,7 @@ describe("ジムAPI - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(400);
 
-			const data = await res.json();
+			const data = (await res.json()) as { error: string; details: unknown };
 			expect(data).toHaveProperty("error");
 			expect(data).toHaveProperty("details");
 		});
@@ -227,7 +227,7 @@ describe("ジムAPI - 統合テスト", () => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(invalidData),
+				body: invalidData as Record<string, unknown>,
 			});
 
 			// リクエスト実行
@@ -237,7 +237,7 @@ describe("ジムAPI - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(400);
 
-			const data = await res.json();
+			const data = (await res.json()) as { error: string; details: unknown };
 			expect(data).toHaveProperty("error");
 			expect(data).toHaveProperty("details");
 		});

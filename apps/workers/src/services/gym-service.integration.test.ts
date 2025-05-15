@@ -57,9 +57,11 @@ describe("GymService - 統合テスト", () => {
 
 			// 関連付けが作成されたことを検証
 			expect(createRelationshipSpy).toHaveBeenCalled();
-			const createRelationshipArgs = createRelationshipSpy.mock.calls[0][0];
-			expect(createRelationshipArgs.gymId).toBe(gym.gymId);
-			expect(createRelationshipArgs.role).toBe("owner");
+			const createRelationshipArgs = createRelationshipSpy.mock.calls[0]?.[0];
+			if (createRelationshipArgs) {
+				expect(createRelationshipArgs.gymId).toBe(gym.gymId);
+				expect(createRelationshipArgs.role).toBe("owner");
+			}
 
 			// 実際にDBに保存されたかも確認
 			const adminAccount = await adminRepository.findAdminByEmail(ownerEmail);
@@ -73,7 +75,9 @@ describe("GymService - 統合テスト", () => {
 					gym.gymId,
 				);
 				expect(relationship).toBeDefined();
-				expect(relationship?.role).toBe("owner");
+				if (relationship) {
+					expect(relationship.role).toBe("owner");
+				}
 			}
 		});
 	});

@@ -4,9 +4,9 @@ import { DashboardLayout } from "@/components/admin/dashboard-layout";
 import { GymPagination } from "@/components/admin/gym-pagination";
 import { GymSearch } from "@/components/admin/gym-search";
 import { GymTable } from "@/components/admin/gym-table";
-import { useGyms } from "@/hooks/use-gyms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGyms } from "@/hooks/use-gyms";
 import type { GymType } from "@/types/gym";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -15,14 +15,7 @@ import { toast } from "sonner";
 
 export default function AdminGymsPage() {
 	// カスタムフックを使用してジムデータを取得
-	const {
-		gyms,
-		paginationMeta,
-		isLoading,
-		searchGyms,
-		changePage,
-		deleteGym,
-	} = useGyms();
+	const { gyms, paginationMeta, isLoading, searchGyms, changePage, deleteGym } = useGyms();
 
 	// 検索ハンドラー
 	const handleSearch = useCallback(

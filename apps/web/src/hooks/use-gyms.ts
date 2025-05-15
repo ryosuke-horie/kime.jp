@@ -17,25 +17,19 @@ export function useGyms({ initialPage = 1, pageSize = 10 }: UseGymsOptions = {})
 	const [searchName, setSearchName] = useState("");
 
 	// Tanstack Queryを使用してデータ取得
-	const { 
-		data, 
-		isLoading, 
-		isError, 
-		error, 
-		refetch 
-	} = useQuery({
+	const { data, isLoading, isError, error, refetch } = useQuery({
 		queryKey: ["gyms", page, pageSize, searchName],
 		queryFn: async () => {
 			const response = await apiClient.getGyms(page, pageSize);
-			
+
 			// 名前でのフィルタリング（サーバー側フィルタリングが実装されるまではクライアント側で行う）
 			let filteredGyms = response.gyms;
 			if (searchName) {
-				filteredGyms = filteredGyms.filter((gym) => 
-					gym.name.toLowerCase().includes(searchName.toLowerCase())
+				filteredGyms = filteredGyms.filter((gym) =>
+					gym.name.toLowerCase().includes(searchName.toLowerCase()),
 				);
 			}
-			
+
 			return {
 				gyms: filteredGyms,
 				meta: response.meta || {
@@ -43,7 +37,7 @@ export function useGyms({ initialPage = 1, pageSize = 10 }: UseGymsOptions = {})
 					page,
 					limit: pageSize,
 					totalPages: Math.max(1, Math.ceil(filteredGyms.length / pageSize)),
-				}
+				},
 			};
 		},
 	});

@@ -1,6 +1,7 @@
 /// <reference path="../../worker-configuration.d.ts" />
 import type { Context } from "hono";
 import { z } from "zod";
+import { AdminRepository } from "../repositories/admin-repository";
 import { GymRepository } from "../repositories/gym-repository";
 import { GymService, type IGymService } from "../services/gym-service";
 
@@ -53,7 +54,8 @@ export class GymController {
 
 	constructor(d1: CloudflareBindings["DB"]) {
 		const gymRepository = new GymRepository(d1);
-		this.gymService = new GymService(gymRepository);
+		const adminRepository = new AdminRepository(d1);
+		this.gymService = new GymService(gymRepository, adminRepository);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 import { vi } from "vitest";
 import type { Gym } from "../../db";
+import type { IAdminRepository } from "../../repositories/admin-repository";
 import type { IGymRepository } from "../../repositories/gym-repository";
 import { gymFixtures } from "../fixtures/gym-fixtures";
 
@@ -60,6 +61,52 @@ export function createMockGymRepository(): IGymRepository {
 		}),
 
 		delete: vi.fn().mockResolvedValue(true),
+	};
+}
+
+/**
+ * 管理者リポジトリのモックを作成するヘルパー関数
+ * @returns モック化されたIAdminRepositoryインターフェース
+ */
+export function createMockAdminRepository(): IAdminRepository {
+	return {
+		findAdminByEmail: vi.fn().mockImplementation(async (email: string) => {
+			// テスト用の既存アカウント
+			if (email === "existing@example.com") {
+				return {
+					adminId: "admin-123",
+					email: "existing@example.com",
+					name: "既存管理者",
+					role: "admin",
+				};
+			}
+			return undefined;
+		}),
+
+		findOrCreateAdminAccount: vi.fn().mockImplementation(async (data) => {
+			// 既存アカウントの場合
+			if (data.email === "existing@example.com") {
+				return "admin-123";
+			}
+			// 新規アカウントの場合は新しいIDを生成
+			return `admin-${Date.now()}`;
+		}),
+
+		createGymRelationship: vi.fn().mockImplementation(async (data) => {
+			return true;
+		}),
+
+		getGymRelationship: vi.fn().mockImplementation(async (adminId, gymId) => {
+			// テスト用の既存関連付け
+			if (adminId === "admin-123" && gymId === "gym-1") {
+				return {
+					adminId,
+					gymId,
+					role: "owner",
+				};
+			}
+			return undefined;
+		}),
 	};
 }
 

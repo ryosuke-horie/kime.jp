@@ -1,5 +1,6 @@
 "use client";
 
+import { useCreateGym } from "@/api/hooks";
 import { DashboardLayout } from "@/components/admin/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,12 +11,86 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
+// Zodでフォームのバリデーションスキーマを定義
+const gymFormSchema = z.object({
+	name: z.string().min(1, {
+		message: "ジム名は必須です",
+	}),
+	ownerEmail: z.string().email({
+		message: "有効なメールアドレスを入力してください",
+	}),
+	phone: z.string().optional(),
+	website: z
+		.string()
+		.url({
+			message: "有効なURLを入力してください",
+		})
+		.optional()
+		.or(z.literal("")),
+	address: z.string().optional(),
+	description: z.string().optional(),
+});
+
+type GymFormValues = z.infer<typeof gymFormSchema>;
 
 export default function CreateGymPage() {
+	const router = useRouter();
+	const { createGym } = useCreateGym();
+
+	// フォームの初期化
+	const form = useForm<GymFormValues>({
+		resolver: zodResolver(gymFormSchema),
+		defaultValues: {
+			name: "",
+			ownerEmail: "",
+			phone: "",
+			website: "",
+			address: "",
+			description: "",
+		},
+	});
+
+	// フォーム送信処理
+	async function onSubmit(values: GymFormValues) {
+		try {
+			const requiredData = {
+				name: values.name,
+				ownerEmail: values.ownerEmail,
+			};
+
+			const response = await createGym(requiredData);
+
+			toast.success("ジムを登録しました", {
+				description: `ジムID: ${response.gymId}`,
+			});
+
+			// 登録成功後、ジム一覧ページに遷移
+			router.push("/admin/gyms");
+		} catch (error) {
+			console.error("ジム登録エラー:", error);
+			toast.error("ジム登録に失敗しました", {
+				description: error instanceof Error ? error.message : "不明なエラーが発生しました",
+			});
+		}
+	}
+
 	return (
 		<DashboardLayout>
 			<div className="flex flex-col gap-6">
@@ -34,46 +109,102 @@ export default function CreateGymPage() {
 						<CardTitle>ジム情報</CardTitle>
 						<CardDescription>ジムの基本情報を入力してください</CardDescription>
 					</CardHeader>
-					<CardContent>
-						<form className="space-y-6">
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-								<div className="space-y-2">
-									<Label htmlFor="name">ジム名</Label>
-									<Input id="name" placeholder="ジム名を入力" />
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="email">メールアドレス</Label>
-									<Input id="email" type="email" placeholder="連絡先メールアドレス" />
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="phone">電話番号</Label>
-									<Input id="phone" placeholder="電話番号" />
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="website">Webサイト</Label>
-									<Input id="website" placeholder="https://example.com" />
-								</div>
-								<div className="space-y-2 md:col-span-2">
-									<Label htmlFor="address">住所</Label>
-									<Input id="address" placeholder="住所を入力" />
-								</div>
-								<div className="space-y-2 md:col-span-2">
-									<Label htmlFor="description">説明</Label>
-									<Textarea
-										id="description"
-										placeholder="ジムの説明や特徴を入力してください"
-										rows={4}
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+							<CardContent>
+								<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+									<FormField
+										control={form.control}
+										name="name"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>ジム名 *</FormLabel>
+												<FormControl>
+													<Input placeholder="ジム名を入力" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="ownerEmail"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>メールアドレス *</FormLabel>
+												<FormControl>
+													<Input type="email" placeholder="連絡先メールアドレス" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="phone"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>電話番号</FormLabel>
+												<FormControl>
+													<Input placeholder="電話番号" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="website"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Webサイト</FormLabel>
+												<FormControl>
+													<Input placeholder="https://example.com" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="address"
+										render={({ field }) => (
+											<FormItem className="md:col-span-2">
+												<FormLabel>住所</FormLabel>
+												<FormControl>
+													<Input placeholder="住所を入力" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="description"
+										render={({ field }) => (
+											<FormItem className="md:col-span-2">
+												<FormLabel>説明</FormLabel>
+												<FormControl>
+													<Textarea
+														placeholder="ジムの説明や特徴を入力してください"
+														rows={4}
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
 									/>
 								</div>
-							</div>
+							</CardContent>
+							<CardFooter className="flex justify-between">
+								<Button variant="outline" type="button" asChild>
+									<Link href="/admin/gyms">キャンセル</Link>
+								</Button>
+								<Button type="submit">保存</Button>
+							</CardFooter>
 						</form>
-					</CardContent>
-					<CardFooter className="flex justify-between">
-						<Button variant="outline" asChild>
-							<Link href="/admin/gyms">キャンセル</Link>
-						</Button>
-						<Button type="submit">保存</Button>
-					</CardFooter>
+					</Form>
 				</Card>
 			</div>
 		</DashboardLayout>

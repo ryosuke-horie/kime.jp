@@ -242,4 +242,228 @@ describe("ジムAPI - 統合テスト", () => {
 			expect(data).toHaveProperty("details");
 		});
 	});
+
+	describe("PATCH /api/gyms/:gymId", () => {
+		itWithD1("有効なデータでジムを部分更新できること", async () => {
+			// 更新データ（部分的な更新）
+			const updateData = {
+				name: "更新されたジム名",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/gym-1", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: updateData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(200);
+
+			const data = (await res.json()) as { message: string };
+			expect(data.message).toBe("Gym updated successfully");
+
+			// 更新されたジムをGETリクエストで確認
+			const getReq = createTestRequest("/api/gyms/gym-1");
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(200);
+
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
+			expect(getGymData.gym.name).toBe(updateData.name);
+			expect(getGymData.gym.ownerEmail).toBe("owner1@example.com"); // 変更されていない
+		});
+
+		itWithD1("存在しないIDのジムを更新しようとした場合に404を返すこと", async () => {
+			// 更新データ
+			const updateData = {
+				name: "更新されたジム名",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/non-existent-id", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: updateData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(404);
+		});
+
+		itWithD1("バリデーションエラーが発生した場合に400エラーを返すこと", async () => {
+			// 不正なデータ（空文字列）
+			const invalidData = {
+				name: "",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/gym-1", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: invalidData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(400);
+		});
+
+		itWithD1("メールアドレスのみを更新できること", async () => {
+			// 更新データ（ownerEmailのみ）
+			const updateData = {
+				ownerEmail: "updated-owner@example.com",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/gym-2", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: updateData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(200);
+
+			// 更新されたジムをGETリクエストで確認
+			const getReq = createTestRequest("/api/gyms/gym-2");
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(200);
+
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
+			expect(getGymData.gym.ownerEmail).toBe(updateData.ownerEmail);
+			expect(getGymData.gym.name).toBe("スポーツジムB"); // 変更されていない
+		});
+	});
+
+	describe("PUT /api/gyms/:gymId", () => {
+		itWithD1("有効なデータでジムを完全更新できること", async () => {
+			// 完全な更新データ（全フィールド必須）
+			const fullUpdateData = {
+				name: "完全に更新されたジム名",
+				ownerEmail: "fully-updated@example.com",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/gym-1", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: fullUpdateData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(200);
+
+			const data = (await res.json()) as { message: string };
+			expect(data.message).toBe("Gym updated successfully");
+
+			// 更新されたジムをGETリクエストで確認
+			const getReq = createTestRequest("/api/gyms/gym-1");
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(200);
+
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
+			expect(getGymData.gym.name).toBe(fullUpdateData.name);
+			expect(getGymData.gym.ownerEmail).toBe(fullUpdateData.ownerEmail);
+		});
+
+		itWithD1("必須フィールドが不足している場合に400エラーを返すこと", async () => {
+			// 不完全なデータ（nameが不足）
+			const incompleteData = {
+				ownerEmail: "incomplete@example.com",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/gym-1", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: incompleteData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(400);
+		});
+
+		itWithD1("存在しないIDのジムを更新しようとした場合に404を返すこと", async () => {
+			// 完全な更新データ
+			const fullUpdateData = {
+				name: "完全に更新されたジム名",
+				ownerEmail: "fully-updated@example.com",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/non-existent-id", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: fullUpdateData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(404);
+		});
+
+		itWithD1("バリデーションエラーが発生した場合に400エラーを返すこと", async () => {
+			// 不正なデータ（無効なメールアドレス）
+			const invalidData = {
+				name: "有効な名前",
+				ownerEmail: "invalid-email",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/gym-1", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: invalidData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(400);
+		});
+	});
 });

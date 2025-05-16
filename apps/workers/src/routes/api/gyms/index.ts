@@ -31,6 +31,11 @@ gymsRouter.patch("/:gymId", (c) => {
 	return controller.updateGym(c);
 });
 
+gymsRouter.put("/:gymId", (c) => {
+	const controller = new GymController(c.env.DB);
+	return controller.updateGymFull(c);
+});
+
 gymsRouter.delete("/:gymId", (c) => {
 	const controller = new GymController(c.env.DB);
 	return controller.deleteGym(c);

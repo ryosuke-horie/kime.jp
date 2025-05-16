@@ -40,10 +40,16 @@ const createGymSchema = z.object({
 	ownerEmail: z.string().email(),
 });
 
-// ジム更新リクエストのバリデーションスキーマ
+// ジム更新リクエストのバリデーションスキーマ（PATCH: 部分更新）
 const updateGymSchema = z.object({
 	name: z.string().min(1).max(100).optional(),
 	ownerEmail: z.string().email().optional(),
+});
+
+// ジム完全更新リクエストのバリデーションスキーマ（PUT: 完全更新）
+const updateGymFullSchema = z.object({
+	name: z.string().min(1).max(100),
+	ownerEmail: z.string().email(),
 });
 
 /**
@@ -139,7 +145,7 @@ export class GymController {
 	}
 
 	/**
-	 * ジム情報を更新する
+	 * ジム情報を部分的に更新する（PATCH）
 	 */
 	async updateGym(c: AppContext) {
 		try {
@@ -163,6 +169,40 @@ export class GymController {
 			return c.json({ message: "Gym updated successfully" });
 		} catch (error) {
 			console.error("Error in updateGym:", error);
+
+			if (error instanceof Error && error.message.includes("not found")) {
+				return c.json({ error: error.message }, { status: 404 });
+			}
+
+			return c.json({ error: "Failed to update gym" }, { status: 500 });
+		}
+	}
+
+	/**
+	 * ジム情報を完全に更新する（PUT）
+	 */
+	async updateGymFull(c: AppContext) {
+		try {
+			const gymId = c.req.param("gymId");
+			const data = await c.req.json();
+
+			// 入力バリデーション
+			const parseResult = updateGymFullSchema.safeParse(data);
+
+			if (!parseResult.success) {
+				return c.json(
+					{ error: "Invalid request data", details: parseResult.error.format() },
+					{ status: 400 },
+				);
+			}
+
+			const validData = parseResult.data;
+
+			await this.gymService.updateGym(gymId, validData);
+
+			return c.json({ message: "Gym updated successfully" });
+		} catch (error) {
+			console.error("Error in updateGymFull:", error);
 
 			if (error instanceof Error && error.message.includes("not found")) {
 				return c.json({ error: error.message }, { status: 404 });

@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -53,6 +54,7 @@ type GymFormValues = z.infer<typeof gymFormSchema>;
 export default function CreateGymPage() {
 	const router = useRouter();
 	const { createGym } = useCreateGym();
+	const queryClient = useQueryClient();
 
 	// フォームの初期化
 	const form = useForm<GymFormValues>({
@@ -80,6 +82,9 @@ export default function CreateGymPage() {
 			toast.success("ジムを登録しました", {
 				description: `ジムID: ${response.gymId}`,
 			});
+
+			// ジム一覧のキャッシュを無効化して再取得を促す
+			await queryClient.invalidateQueries({ queryKey: ["gyms"] });
 
 			// 登録成功後、ジム一覧ページに遷移
 			router.push("/admin/gyms");

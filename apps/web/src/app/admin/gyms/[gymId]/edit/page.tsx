@@ -83,7 +83,7 @@ export default function EditGymPage() {
 				form.reset({
 					name: data.gym.name,
 					ownerEmail: data.gym.ownerEmail,
-					// 他のフィールドは必要に応じてAPIから返ってくるようにバックエンドの拡張が必要
+					// 他のフィールドはAPIに未実装のため、空文字をデフォルト値として使用
 					phone: "",
 					website: "",
 					address: "",
@@ -109,6 +109,15 @@ export default function EditGymPage() {
 			const updateData = {
 				name: values.name,
 				ownerEmail: values.ownerEmail,
+				// オプショナルフィールドを追加（APIの拡張が必要）
+				// 現時点ではAPIでサポートされていないフィールドのため、
+				// バックエンドでこれらのフィールドが実装されるまでコメントアウトして保存
+				/*
+				phone: values.phone,
+				website: values.website,
+				address: values.address,
+				description: values.description,
+				*/
 			};
 
 			await updateGym(updateData);

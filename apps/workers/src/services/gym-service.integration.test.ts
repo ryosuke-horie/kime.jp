@@ -37,7 +37,7 @@ describe("GymService - 統合テスト", () => {
 			const findOrCreateSpy = vi.spyOn(adminRepository, "findOrCreateAdminAccount");
 			const createRelationshipSpy = vi.spyOn(adminRepository, "createGymRelationship");
 
-			// ジム作成
+			// ジム作成（拡張フィールドはオプショナル）
 			const gym = await gymService.createGym({
 				name,
 				ownerEmail,

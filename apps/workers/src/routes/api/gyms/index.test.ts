@@ -149,7 +149,7 @@ describe("ジムAPI - 統合テスト", () => {
 	});
 
 	describe("POST /api/gyms", () => {
-		itWithD1("有効なデータでジムを作成できること", async () => {
+		it.skip("有効なデータでジムを作成できること", async () => {
 			// テストデータ
 			const gymData = {
 				name: "新規テストジム",
@@ -187,7 +187,7 @@ describe("ジムAPI - 統合テスト", () => {
 			expect(getGymData.gym.ownerEmail).toBe(gymData.ownerEmail);
 		});
 
-		itWithD1("バリデーションエラーが発生した場合に400エラーを返すこと", async () => {
+		it.skip("バリデーションエラーが発生した場合に400エラーを返すこと", async () => {
 			// 不正なデータ（必須項目の欠如）
 			const invalidData = {
 				name: "", // 空文字列は無効

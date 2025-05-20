@@ -150,12 +150,14 @@ describe("GymController - 単体テスト", () => {
 
 			// 404レスポンスが返されることを確認
 			const response = await controller.getGymById(mockCtx as unknown as AppContext);
-			expect(response).toEqual(expect.objectContaining({
-				status: 404,
-				data: expect.objectContaining({
-					error: expect.stringContaining("non-existent")
-				})
-			}));
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 404,
+					data: expect.objectContaining({
+						error: expect.stringContaining("non-existent"),
+					}),
+				}),
+			);
 		});
 	});
 
@@ -204,12 +206,14 @@ describe("GymController - 単体テスト", () => {
 
 			// 400レスポンスが返されることを確認
 			const response = await controller.createGym(mockCtx as unknown as AppContext);
-			expect(response).toEqual(expect.objectContaining({
-				status: 400,
-				data: expect.objectContaining({
-					error: expect.stringContaining("リクエストデータが不正です")
-				})
-			}));
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 400,
+					data: expect.objectContaining({
+						error: expect.stringContaining("リクエストデータが不正です"),
+					}),
+				}),
+			);
 		});
 	});
 
@@ -251,12 +255,14 @@ describe("GymController - 単体テスト", () => {
 
 			// 404レスポンスが返されることを確認
 			const response = await controller.updateGym(mockCtx as unknown as AppContext);
-			expect(response).toEqual(expect.objectContaining({
-				status: 404,
-				data: expect.objectContaining({
-					error: expect.stringContaining("non-existent")
-				})
-			}));
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 404,
+					data: expect.objectContaining({
+						error: expect.stringContaining("non-existent"),
+					}),
+				}),
+			);
 		});
 	});
 
@@ -293,12 +299,14 @@ describe("GymController - 単体テスト", () => {
 
 			// 404レスポンスが返されることを確認
 			const response = await controller.deleteGym(mockCtx as unknown as AppContext);
-			expect(response).toEqual(expect.objectContaining({
-				status: 404,
-				data: expect.objectContaining({
-					error: expect.stringContaining("non-existent")
-				})
-			}));
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 404,
+					data: expect.objectContaining({
+						error: expect.stringContaining("non-existent"),
+					}),
+				}),
+			);
 		});
 	});
 });

@@ -100,10 +100,7 @@ export class GymController {
 		} catch (error) {
 			// NotFoundエラーの場合は404レスポンスを直接返す
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: `ジムID ${gymId} が見つかりません` },
-					{ status: 404 }
-				);
+				return c.json({ error: `ジムID ${gymId} が見つかりません` }, { status: 404 });
 			}
 			// その他のエラーは再スロー
 			throw new ServerError("ジム情報の取得に失敗しました");
@@ -122,7 +119,7 @@ export class GymController {
 		if (!parseResult.success) {
 			return c.json(
 				{ error: "リクエストデータが不正です", details: parseResult.error.format() },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -149,7 +146,7 @@ export class GymController {
 		if (!parseResult.success) {
 			return c.json(
 				{ error: "リクエストデータが不正です", details: parseResult.error.format() },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -160,10 +157,7 @@ export class GymController {
 			return c.json({ message: "ジム情報を更新しました" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: `ジムID ${gymId} が見つかりません` },
-					{ status: 404 }
-				);
+				return c.json({ error: `ジムID ${gymId} が見つかりません` }, { status: 404 });
 			}
 			throw new ServerError("ジム情報の更新に失敗しました");
 		}
@@ -182,7 +176,7 @@ export class GymController {
 		if (!parseResult.success) {
 			return c.json(
 				{ error: "リクエストデータが不正です", details: parseResult.error.format() },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -193,10 +187,7 @@ export class GymController {
 			return c.json({ message: "ジム情報を更新しました" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: `ジムID ${gymId} が見つかりません` },
-					{ status: 404 }
-				);
+				return c.json({ error: `ジムID ${gymId} が見つかりません` }, { status: 404 });
 			}
 			throw new ServerError("ジム情報の更新に失敗しました");
 		}
@@ -213,10 +204,7 @@ export class GymController {
 			return c.json({ message: "ジムを削除しました" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
-				return c.json(
-					{ error: `ジムID ${gymId} が見つかりません` },
-					{ status: 404 }
-				);
+				return c.json({ error: `ジムID ${gymId} が見つかりません` }, { status: 404 });
 			}
 			throw new ServerError("ジムの削除に失敗しました");
 		}

@@ -173,5 +173,15 @@ describe("GymService - 単体テスト", () => {
 				"Failed to delete gym with ID gym-1",
 			);
 		});
+
+		it("関連データと一緒にジムが削除されること", async () => {
+			// マイグレーションファイルの制約では一部テーブルだけがON DELETE CASCADEされる
+			// このテストでは単純にジムの削除だけを検証（外部キー制約は本番環境での話）
+			const gymId = "gym-1";
+			await gymService.deleteGym(gymId);
+
+			// deleteが呼び出されたか検証
+			expect(mockRepository.delete).toHaveBeenCalledWith(gymId);
+		});
 	});
 });

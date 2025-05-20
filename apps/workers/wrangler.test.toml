@@ -1,0 +1,29 @@
+name = "kime-workers-test"
+compatibility_date = "2024-04-01"
+main = "./src/index.ts"
+
+# テスト環境専用のD1データベース設定
+[[d1_databases]]
+binding = "DB"
+database_name = "kime_mvp_test"
+database_id = "test_db" # 実際のIDはローカル環境でのみ使用されるため、ダミー値でOK
+
+# テスト環境固有の変数
+[vars]
+NODE_ENV = "test"
+SKIP_AUTH = "true"
+JWT_SECRET = "test-secret-key"
+
+# ローカルテスト環境の一時D1データベースを使用
+[dev]
+port = 8787
+local_protocol = "http"
+persist_to = "./.wrangler/test-state"
+
+# D1データベースの永続性設定
+# テスト用設定で本番環境に影響を与えないようにする
+[miniflare]
+kv_persist = false
+cache_persist = false
+d1_persist = false
+durable_objects_persist = false

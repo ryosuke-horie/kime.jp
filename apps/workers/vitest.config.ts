@@ -24,24 +24,33 @@ export default defineWorkersConfig({
 		// 高速失敗を有効化
 		bail: 1,
 		
+		// 環境変数の設定 - テスト環境であることを明示
+		env: {
+			NODE_ENV: "test",
+			SKIP_AUTH: "true",
+			JWT_SECRET: "test-secret-key",
+		},
+		
 		// Cloudflare Workers の統合テスト設定
 		// 単体テストのみを実行する場合は以下の設定をコメントアウトし、
 		// environment: 'node' を追加
 		poolOptions: {
 			workers: {
-				// Wrangler設定ファイルのパス
+				// テスト専用のWrangler設定ファイルのパス
 				wrangler: {
-					configPath: './wrangler.toml',
+					configPath: './wrangler.test.toml',
 				},
 				// D1データベースの設定
 				d1Persist: false, // テスト間でデータを永続化しない
 				d1Databases: ['DB'],
-				// 代替の方法: マイグレーションファイルは使用せず、
-				// apply-migrations.ts内でテーブルを直接作成する
+				// 分離されたストレージパスを指定
+				persistTo: './.wrangler/test-state',
+				// D1データベースの自動クリーンアップ
+				d1AutoReset: true,
 			},
 		},
 		
 		// テスト前に実行するセットアップファイル
-		setupFiles: ["./src/test/apply-migrations.ts"],
+		setupFiles: ["./src/test/setup.ts"],
 	},
 });

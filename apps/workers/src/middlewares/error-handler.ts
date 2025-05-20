@@ -1,6 +1,9 @@
 import type { Context, MiddlewareHandler, Next } from "hono";
 import { AppError, formatError } from "../utils/errors";
 
+// Honoで使用可能なHTTPステータスコード
+type HTTPStatusCode = 400 | 401 | 403 | 404 | 409 | 500;
+
 /**
  * エラーハンドリングミドルウェア
  * アプリケーション全体で発生するエラーを捕捉し、統一されたフォーマットでレスポンスを返す
@@ -24,7 +27,10 @@ export const errorHandler: MiddlewareHandler = async (c: Context, next: Next) =>
 				error: formattedError.error,
 				...(formattedError.details && { details: formattedError.details }),
 			},
-			{ status: formattedError.status },
+			{ status: formattedError.status as HTTPStatusCode },
 		);
 	}
+
+	// 正常系の場合は明示的に返り値なし（次のミドルウェアに処理を委ねる）
+	return undefined;
 };

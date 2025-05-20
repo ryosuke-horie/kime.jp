@@ -10,6 +10,7 @@ import {
 	type UpdateGymRequestType,
 } from "../types";
 import type { AdminInfo } from "../types/admin";
+import { type ApiError, asApiError } from "../types/api-error";
 import { getAuthToken } from "../utils/auth";
 
 /**
@@ -72,7 +73,7 @@ export class ApiClient {
 
 			// レスポンスボディをJSONとして解析
 			// JSONでないレスポンスの場合はエラーを処理
-			let data;
+			let data: unknown;
 			try {
 				data = await response.json();
 			} catch (parseError) {
@@ -97,10 +98,10 @@ export class ApiClient {
 					errorData.error || statusMessages[response.status] || "APIエラーが発生しました";
 
 				// エラーオブジェクトにAPIレスポンスデータとステータスコードを含める
-				const error = new Error(errorMessage);
-				(error as any).status = response.status;
-				(error as any).data = errorData;
-				(error as any).response = clonedResponse;
+				const error = asApiError(new Error(errorMessage));
+				error.status = response.status;
+				error.data = errorData;
+				error.response = clonedResponse;
 
 				throw error;
 			}
@@ -113,7 +114,8 @@ export class ApiClient {
 			}
 
 			// 既にAPIエラーとして処理済みの場合はそのまま再スロー
-			if ((error as any).status) {
+			const apiError = error as ApiError;
+			if (apiError.status) {
 				throw error;
 			}
 

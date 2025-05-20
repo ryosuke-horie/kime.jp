@@ -62,20 +62,20 @@ export function useGymApi(gymId: string) {
 // ジム作成用のカスタムフック
 export function useCreateGymApi() {
 	return useMutation<CreateGymResponseType, Error, CreateGymRequestType>({
-		mutationFn: (data: CreateGymRequestType) => createGymApi(data),
+		mutationFn: (data) => createGymApi(data) as Promise<CreateGymResponseType>,
 	});
 }
 
 // ジム更新用のカスタムフック
 export function useUpdateGymApi() {
 	return useMutation<SuccessResponseType, Error, { gymId: string; data: UpdateGymRequestType }>({
-		mutationFn: ({ gymId, data }) => updateGymApi(gymId, data),
+		mutationFn: ({ gymId, data }) => updateGymApi(gymId, data) as Promise<SuccessResponseType>,
 	});
 }
 
 // ジム削除用のカスタムフック
 export function useDeleteGymApi() {
 	return useMutation<SuccessResponseType, Error, string>({
-		mutationFn: (gymId: string) => deleteGymApi(gymId),
+		mutationFn: (gymId) => deleteGymApi(gymId) as Promise<SuccessResponseType>,
 	});
 }

@@ -113,7 +113,17 @@ export default function AdminGymsPage() {
 							isLoading={isLoading}
 						/>
 
-						<GymPagination meta={paginationMeta} onPageChange={handlePageChange} />
+						{paginationMeta && (
+							<GymPagination
+								meta={{
+									page: paginationMeta.page,
+									limit: paginationMeta.limit,
+									total: paginationMeta.total,
+									totalPages: paginationMeta.totalPages,
+								}}
+								onPageChange={handlePageChange}
+							/>
+						)}
 					</CardContent>
 				</Card>
 

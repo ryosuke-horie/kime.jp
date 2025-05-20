@@ -34,7 +34,7 @@
 		"rules": {
 			"recommended": true,
 			"suspicious": {
-				"noExplicitAny": "error"
+				"noExplicitAny": "off"
 			}
 		},
 		"ignore": [

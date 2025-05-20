@@ -12,7 +12,7 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
 ): (...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>> {
 	return async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
 		try {
-			return await apiFn(...args);
+			return (await apiFn(...args)) as Awaited<ReturnType<T>>;
 		} catch (error) {
 			// グローバルエラーハンドラーを使用
 			handleError(error, errorMessage);

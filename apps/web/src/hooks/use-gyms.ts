@@ -20,11 +20,13 @@ export function useGyms({ initialPage = 1, pageSize = 10 }: UseGymsOptions = {})
 	const deleteGymMutation = useDeleteGymApi();
 
 	// 名前でのフィルタリング（サーバー側フィルタリングが実装されるまではクライアント側で行う）
-	const filteredGyms = data?.gyms
-		? data.gyms.filter(
-				(gym) => !searchName || gym.name.toLowerCase().includes(searchName.toLowerCase()),
-			)
-		: [];
+	const filteredGyms =
+		data && "gyms" in data && Array.isArray(data.gyms)
+			? data.gyms.filter(
+					(gym: { name: string }) =>
+						!searchName || gym.name.toLowerCase().includes(searchName.toLowerCase()),
+				)
+			: [];
 
 	// ジム削除関数
 	const deleteGym = async (gymId: string): Promise<boolean> => {
@@ -52,12 +54,15 @@ export function useGyms({ initialPage = 1, pageSize = 10 }: UseGymsOptions = {})
 	};
 
 	// メタデータ処理
-	const paginationMeta = data?.meta || {
-		total: 0,
-		page,
-		limit: pageSize,
-		totalPages: 0,
-	};
+	const paginationMeta =
+		data && "meta" in data
+			? data.meta
+			: {
+					total: 0,
+					page,
+					limit: pageSize,
+					totalPages: 0,
+				};
 
 	return {
 		gyms: filteredGyms,

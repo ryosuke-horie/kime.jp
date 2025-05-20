@@ -194,6 +194,42 @@ describe("GymController - 単体テスト", () => {
 			expect(options).toEqual({ status: 201 });
 		});
 
+		it("拡張フィールドを含む有効なデータでジムを作成すること", async () => {
+			const gymData = {
+				name: "新規ジム",
+				ownerEmail: "test@example.com",
+				phone: "03-1234-5678",
+				website: "https://example.com/gym",
+				address: "東京都新宿区1-1-1",
+				description: "24時間営業のフィットネスジム",
+			};
+
+			const mockCtx = createMockContext({
+				body: gymData,
+			});
+
+			// サービスの戻り値をモック
+			mockService.createGym = vi.fn().mockResolvedValue({
+				gymId: "new-gym-id",
+				...gymData,
+			});
+
+			await controller.createGym(mockCtx as unknown as AppContext);
+
+			// サービスが正しいパラメータで呼び出されたか検証
+			expect(mockService.createGym).toHaveBeenCalledWith(gymData);
+
+			// 201レスポンスが返されたか検証
+			expect(mockCtx.json).toHaveBeenCalled();
+			const mockCalls = (mockCtx.json as Mock).mock.calls;
+			const calledWith = mockCalls[0]?.[0];
+			const options = mockCalls[0]?.[1];
+			expect(calledWith).toHaveProperty("message");
+			expect(calledWith.message).toContain("ジム");
+			expect(calledWith).toHaveProperty("gymId");
+			expect(options).toEqual({ status: 201 });
+		});
+
 		it("不正なデータでは400レスポンスを返すこと", async () => {
 			const invalidData = {
 				name: "", // 空の名前は不正
@@ -222,6 +258,34 @@ describe("GymController - 単体テスト", () => {
 			const gymId = "gym-1";
 			const updateData = {
 				name: "更新ジム名",
+			};
+
+			const mockCtx = createMockContext({
+				params: { gymId },
+				body: updateData,
+			});
+
+			await controller.updateGym(mockCtx as unknown as AppContext);
+
+			// サービスが正しいパラメータで呼び出されたか検証
+			expect(mockService.updateGym).toHaveBeenCalledWith(gymId, updateData);
+
+			// 成功レスポンスが返されたか検証
+			expect(mockCtx.json).toHaveBeenCalled();
+			const mockCalls = (mockCtx.json as Mock).mock.calls;
+			const calledWith = mockCalls[0]?.[0];
+			expect(calledWith).toHaveProperty("message");
+			expect(calledWith.message).toContain("ジム");
+		});
+
+		it("拡張フィールドを含む有効なデータでジムを更新すること", async () => {
+			const gymId = "gym-1";
+			const updateData = {
+				name: "更新ジム名",
+				phone: "03-9876-5432",
+				website: "https://example.com/updated-gym",
+				address: "東京都新宿区9-9-9",
+				description: "リニューアルしたフィットネスジム",
 			};
 
 			const mockCtx = createMockContext({

@@ -22,8 +22,25 @@ export interface IGymService {
 		};
 	}>;
 	getGymById(gymId: string): Promise<Gym>;
-	createGym(data: { name: string; ownerEmail: string }): Promise<Gym>;
-	updateGym(gymId: string, data: Partial<{ name: string; ownerEmail: string }>): Promise<Gym>;
+	createGym(data: {
+		name: string;
+		ownerEmail: string;
+		phone?: string;
+		website?: string;
+		address?: string;
+		description?: string;
+	}): Promise<Gym>;
+	updateGym(
+		gymId: string,
+		data: Partial<{
+			name: string;
+			ownerEmail: string;
+			phone: string;
+			website: string;
+			address: string;
+			description: string;
+		}>,
+	): Promise<Gym>;
 	deleteGym(gymId: string): Promise<void>;
 }
 
@@ -74,7 +91,14 @@ export class GymService implements IGymService {
 	 * @param data ジム情報
 	 * @returns 作成されたジム情報
 	 */
-	async createGym(data: { name: string; ownerEmail: string }) {
+	async createGym(data: {
+		name: string;
+		ownerEmail: string;
+		phone?: string;
+		website?: string;
+		address?: string;
+		description?: string;
+	}) {
 		const gymId = uuidv4();
 
 		// ジムの作成
@@ -82,6 +106,10 @@ export class GymService implements IGymService {
 			gymId,
 			name: data.name,
 			ownerEmail: data.ownerEmail,
+			phone: data.phone,
+			website: data.website,
+			address: data.address,
+			description: data.description,
 		});
 
 		if (!gym) {

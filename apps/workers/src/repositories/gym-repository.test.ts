@@ -138,6 +138,42 @@ describe("GymRepository - 単体テスト", () => {
 				expect(savedGym.name).toBe(newGym.name);
 			}
 		});
+
+		itWithD1("拡張フィールドを含むジムを作成すること", async () => {
+			const newGym = {
+				gymId: "new-gym-extended-id",
+				name: "拡張フィールド付きジム",
+				ownerEmail: "extended@example.com",
+				phone: "03-1234-5678",
+				website: "https://example.com/extended",
+				address: "東京都渋谷区1-2-3",
+				description: "拡張フィールドテスト用ジム",
+			};
+
+			const result = await repository.create(newGym);
+
+			expect(result).toBeDefined();
+			if (result) {
+				expect(result.gymId).toBe(newGym.gymId);
+				expect(result.name).toBe(newGym.name);
+				expect(result.ownerEmail).toBe(newGym.ownerEmail);
+				expect(result.phone).toBe(newGym.phone);
+				expect(result.website).toBe(newGym.website);
+				expect(result.address).toBe(newGym.address);
+				expect(result.description).toBe(newGym.description);
+			}
+
+			// DBに保存されていることを確認
+			const savedGym = await repository.findById(newGym.gymId);
+			expect(savedGym).toBeDefined();
+			if (savedGym) {
+				expect(savedGym.name).toBe(newGym.name);
+				expect(savedGym.phone).toBe(newGym.phone);
+				expect(savedGym.website).toBe(newGym.website);
+				expect(savedGym.address).toBe(newGym.address);
+				expect(savedGym.description).toBe(newGym.description);
+			}
+		});
 	});
 
 	describe("update", () => {
@@ -165,6 +201,53 @@ describe("GymRepository - 単体テスト", () => {
 				if (updatedGym) {
 					expect(updatedGym.name).toBe("更新後のジム名");
 				}
+			}
+		});
+
+		itWithD1("拡張フィールドを含むジムを更新すること", async () => {
+			// 最初に拡張フィールド付きのジムを作成
+			const extendedGymId = "update-extended-test-gym";
+			const newGym = {
+				gymId: extendedGymId,
+				name: "拡張フィールド更新テスト用ジム",
+				ownerEmail: "update-extended@example.com",
+				phone: "03-1111-2222",
+				website: "https://example.com/update-test",
+				address: "東京都新宿区5-5-5",
+				description: "拡張フィールド更新テスト用の説明",
+			};
+
+			await repository.create(newGym);
+
+			// 拡張フィールドを更新
+			const updateData = {
+				phone: "03-9999-8888",
+				website: "https://example.com/updated-website",
+				address: "東京都渋谷区9-9-9",
+				description: "更新後の拡張フィールド説明",
+			};
+
+			const result = await repository.update(extendedGymId, updateData);
+
+			expect(result).toBeDefined();
+			if (result) {
+				expect(result.gymId).toBe(extendedGymId);
+				expect(result.name).toBe(newGym.name); // 更新していないフィールドは元の値が維持される
+				expect(result.ownerEmail).toBe(newGym.ownerEmail); // 更新していないフィールドは元の値が維持される
+				expect(result.phone).toBe(updateData.phone);
+				expect(result.website).toBe(updateData.website);
+				expect(result.address).toBe(updateData.address);
+				expect(result.description).toBe(updateData.description);
+			}
+
+			// DBに更新が反映されていることを確認
+			const updatedGym = await repository.findById(extendedGymId);
+			expect(updatedGym).toBeDefined();
+			if (updatedGym) {
+				expect(updatedGym.phone).toBe(updateData.phone);
+				expect(updatedGym.website).toBe(updateData.website);
+				expect(updatedGym.address).toBe(updateData.address);
+				expect(updatedGym.description).toBe(updateData.description);
 			}
 		});
 

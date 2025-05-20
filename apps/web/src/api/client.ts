@@ -58,23 +58,69 @@ export class ApiClient {
 			}
 		}
 
-		const response = await fetch(url, {
-			...options,
-			headers: {
-				...headersWithAuth,
-				...options.headers,
-			},
-		});
+		try {
+			const response = await fetch(url, {
+				...options,
+				headers: {
+					...headersWithAuth,
+					...options.headers,
+				},
+			});
 
-		const data = await response.json();
+			// レスポンスのクローンを作成（ストリームは一度だけ読み取り可能なため）
+			const clonedResponse = response.clone();
 
-		if (!response.ok) {
-			// エラーレスポンスを型付きで扱う
-			const errorData = data as ErrorResponseType;
-			throw new Error(errorData.error || "APIエラーが発生しました");
+			// レスポンスボディをJSONとして解析
+			// JSONでないレスポンスの場合はエラーを処理
+			let data;
+			try {
+				data = await response.json();
+			} catch (parseError) {
+				console.error("JSONパースエラー:", parseError);
+				throw new Error("レスポンスの解析に失敗しました");
+			}
+
+			if (!response.ok) {
+				// HTTPステータスコードに基づいたエラーメッセージ
+				const statusMessages: Record<number, string> = {
+					400: "リクエストが不正です",
+					401: "認証が必要です",
+					403: "権限がありません",
+					404: "リソースが見つかりません",
+					409: "リソースが競合しています",
+					500: "サーバーエラーが発生しました",
+				};
+
+				// エラーレスポンスを型付きで扱う
+				const errorData = data as ErrorResponseType;
+				const errorMessage =
+					errorData.error || statusMessages[response.status] || "APIエラーが発生しました";
+
+				// エラーオブジェクトにAPIレスポンスデータとステータスコードを含める
+				const error = new Error(errorMessage);
+				(error as any).status = response.status;
+				(error as any).data = errorData;
+				(error as any).response = clonedResponse;
+
+				throw error;
+			}
+
+			return data as T;
+		} catch (error) {
+			// fetch自体の失敗（ネットワークエラーなど）
+			if (!(error instanceof Error)) {
+				throw new Error("ネットワークエラーが発生しました");
+			}
+
+			// 既にAPIエラーとして処理済みの場合はそのまま再スロー
+			if ((error as any).status) {
+				throw error;
+			}
+
+			// その他のエラー
+			console.error("API呼び出しエラー:", error);
+			throw error;
 		}
-
-		return data as T;
 	}
 
 	// ヘルスチェック

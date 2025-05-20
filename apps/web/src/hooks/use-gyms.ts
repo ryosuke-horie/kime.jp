@@ -1,11 +1,8 @@
 "use client";
 
-import { ApiClient } from "@/api/client";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-
-// APIクライアントのシングルトンインスタンス
-const apiClient = new ApiClient();
+import { toast } from "sonner";
+import { useDeleteGymApi, useGymsApi } from "./use-api";
 
 export interface UseGymsOptions {
 	initialPage?: number;
@@ -16,41 +13,29 @@ export function useGyms({ initialPage = 1, pageSize = 10 }: UseGymsOptions = {})
 	const [page, setPage] = useState(initialPage);
 	const [searchName, setSearchName] = useState("");
 
-	// Tanstack Queryを使用してデータ取得
-	const { data, isLoading, isError, error, refetch } = useQuery({
-		queryKey: ["gyms", page, pageSize, searchName],
-		queryFn: async () => {
-			const response = await apiClient.getGyms(page, pageSize);
+	// APIフックを使用（内部でエラーハンドリングが実装済み）
+	const { data, isLoading, isError, error, refetch } = useGymsApi(page, pageSize);
 
-			// 名前でのフィルタリング（サーバー側フィルタリングが実装されるまではクライアント側で行う）
-			let filteredGyms = response.gyms;
-			if (searchName) {
-				filteredGyms = filteredGyms.filter((gym) =>
-					gym.name.toLowerCase().includes(searchName.toLowerCase()),
-				);
-			}
+	// 削除ミューテーションフック
+	const deleteGymMutation = useDeleteGymApi();
 
-			return {
-				gyms: filteredGyms,
-				meta: response.meta || {
-					total: filteredGyms.length,
-					page,
-					limit: pageSize,
-					totalPages: Math.max(1, Math.ceil(filteredGyms.length / pageSize)),
-				},
-			};
-		},
-	});
+	// 名前でのフィルタリング（サーバー側フィルタリングが実装されるまではクライアント側で行う）
+	const filteredGyms = data?.gyms
+		? data.gyms.filter(
+				(gym) => !searchName || gym.name.toLowerCase().includes(searchName.toLowerCase()),
+			)
+		: [];
 
 	// ジム削除関数
 	const deleteGym = async (gymId: string): Promise<boolean> => {
 		try {
-			await apiClient.deleteGym(gymId);
+			await deleteGymMutation.mutateAsync(gymId);
+			toast.success("ジムを削除しました");
 			// 削除に成功したら再フェッチ
 			await refetch();
 			return true;
 		} catch (error) {
-			console.error("ジム削除に失敗しました", error);
+			// エラーハンドリングは内部で行われるため、ここでは結果だけ返す
 			return false;
 		}
 	};
@@ -66,14 +51,17 @@ export function useGyms({ initialPage = 1, pageSize = 10 }: UseGymsOptions = {})
 		setPage(newPage);
 	};
 
+	// メタデータ処理
+	const paginationMeta = data?.meta || {
+		total: 0,
+		page,
+		limit: pageSize,
+		totalPages: 0,
+	};
+
 	return {
-		gyms: data?.gyms || [],
-		paginationMeta: data?.meta || {
-			total: 0,
-			page,
-			limit: pageSize,
-			totalPages: 0,
-		},
+		gyms: filteredGyms,
+		paginationMeta,
 		isLoading,
 		isError,
 		error,

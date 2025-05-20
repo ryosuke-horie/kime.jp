@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
+import { errorHandler } from "./middlewares/error-handler";
 import router from "./routes";
 
 // アプリケーションインスタンスを作成
@@ -12,6 +13,7 @@ const app = new Hono<{ Bindings: CloudflareBindings }>();
 app.use("*", logger());
 app.use("*", prettyJSON());
 app.use("*", cors());
+app.use("*", errorHandler); // グローバルエラーハンドラーを追加
 
 // ルートパス
 app.get("/", (c) => {

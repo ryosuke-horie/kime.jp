@@ -1,4 +1,5 @@
 import "./globals.css";
+import { ErrorHandler } from "@/components/ui/error-handler";
 import AuthProvider from "@/contexts/auth-provider";
 import { QueryClientProvider } from "@/contexts/query-client-provider";
 import type { Metadata } from "next";
@@ -30,8 +31,10 @@ export default function RootLayout({
 		<html lang="ja" className="light">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<QueryClientProvider>
-					<AuthProvider>{children}</AuthProvider>
-					<Toaster position="top-right" richColors />
+					<ErrorHandler>
+						<AuthProvider>{children}</AuthProvider>
+						<Toaster position="top-right" richColors />
+					</ErrorHandler>
 				</QueryClientProvider>
 			</body>
 		</html>

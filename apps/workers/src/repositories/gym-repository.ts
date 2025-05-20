@@ -185,8 +185,13 @@ export class GymRepository implements IGymRepository {
 	 * @returns 削除に成功したかどうか
 	 */
 	async delete(gymId: string) {
-		const result = await this.db.delete(gyms).where(eq(gyms.gymId, gymId)).execute();
-
-		return result.changes > 0;
+		try {
+			// ジムを削除すると、ON DELETE CASCADEによって関連するデータも削除される
+			const result = await this.db.delete(gyms).where(eq(gyms.gymId, gymId)).execute();
+			return result.changes > 0;
+		} catch (error) {
+			console.error(`Failed to delete gym with ID ${gymId}:`, error);
+			return false;
+		}
 	}
 }

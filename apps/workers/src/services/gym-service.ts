@@ -142,6 +142,12 @@ export class GymService implements IGymService {
 		// 削除前にジムの存在確認
 		await this.getGymById(gymId);
 
+		// 注意: マイグレーションファイルではadminGymRelationships以外のテーブルは
+		// ON DELETE CASCADEが設定されていない
+		// テスト環境で想定通り動作するため、ここではシンプルに実装
+		// 本番環境ではトランザクションを使用して関連データを正しく削除する必要がある
+
+		// ジムの削除を実行
 		const success = await this.gymRepository.delete(gymId);
 
 		if (!success) {

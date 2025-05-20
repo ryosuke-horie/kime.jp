@@ -466,4 +466,61 @@ describe("ジムAPI - 統合テスト", () => {
 			expect(res.status).toBe(400);
 		});
 	});
+
+	describe("DELETE /api/gyms/:gymId", () => {
+		itWithD1("存在するジムIDを指定した場合に正常に削除できること", async () => {
+			// まず新しいジムを作成
+			const newGymData = {
+				name: "削除テスト用ジム",
+				ownerEmail: "delete-test@example.com",
+			};
+
+			const createReq = createTestRequest("/api/gyms", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: newGymData as Record<string, unknown>,
+			});
+
+			if (!env.DB) return;
+			const createRes = await app.fetch(createReq, { DB: env.DB });
+			expect(createRes.status).toBe(201);
+
+			const createData = (await createRes.json()) as { message: string; gymId: string };
+			const newGymId = createData.gymId;
+
+			// 作成したジムを削除
+			const deleteReq = createTestRequest(`/api/gyms/${newGymId}`, {
+				method: "DELETE",
+			});
+
+			const deleteRes = await app.fetch(deleteReq, { DB: env.DB });
+
+			// レスポンス検証
+			expect(deleteRes.status).toBe(200);
+
+			const data = (await deleteRes.json()) as { message: string };
+			expect(data.message).toBe("Gym deleted successfully");
+
+			// 削除されたジムが取得できないことを確認
+			const getReq = createTestRequest(`/api/gyms/${newGymId}`);
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(404);
+		});
+
+		itWithD1("存在しないジムIDを指定した場合に404エラーを返すこと", async () => {
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms/non-existent-id", {
+				method: "DELETE",
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(404);
+		});
+	});
 });

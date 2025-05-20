@@ -475,7 +475,7 @@ describe("ジムAPI - 統合テスト", () => {
 
 			// 既存のgym-1を使用
 			const gymId = "gym-1";
-			
+
 			// 削除リクエスト
 			const deleteReq = createTestRequest(`/api/gyms/${gymId}`, {
 				method: "DELETE",
@@ -489,10 +489,10 @@ describe("ジムAPI - 統合テスト", () => {
 			// gymIdが存在する場合のみテストを実施
 			if (getRes.status === 200) {
 				const deleteRes = await app.fetch(deleteReq, { DB: env.DB });
-				
+
 				// レスポンスが成功またはエラーであることを確認
 				expect([200, 500]).toContain(deleteRes.status);
-				
+
 				// 200の場合はメッセージを検証
 				if (deleteRes.status === 200) {
 					const data = (await deleteRes.json()) as { message: string };

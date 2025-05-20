@@ -98,9 +98,12 @@ export class GymController {
 			const gym = await this.gymService.getGymById(gymId);
 			return c.json({ gym });
 		} catch (error) {
-			// NotFoundエラーの変換
+			// NotFoundエラーの場合は404レスポンスを直接返す
 			if (error instanceof Error && error.message.includes("not found")) {
-				throw new NotFoundError(`ジムID ${gymId} が見つかりません`);
+				return c.json(
+					{ error: `ジムID ${gymId} が見つかりません` },
+					{ status: 404 }
+				);
 			}
 			// その他のエラーは再スロー
 			throw new ServerError("ジム情報の取得に失敗しました");
@@ -117,7 +120,10 @@ export class GymController {
 		const parseResult = createGymSchema.safeParse(data);
 
 		if (!parseResult.success) {
-			throw new BadRequestError("リクエストデータが不正です", parseResult.error.format());
+			return c.json(
+				{ error: "リクエストデータが不正です", details: parseResult.error.format() },
+				{ status: 400 }
+			);
 		}
 
 		const { name, ownerEmail } = parseResult.data;
@@ -141,7 +147,10 @@ export class GymController {
 		const parseResult = updateGymSchema.safeParse(data);
 
 		if (!parseResult.success) {
-			throw new BadRequestError("リクエストデータが不正です", parseResult.error.format());
+			return c.json(
+				{ error: "リクエストデータが不正です", details: parseResult.error.format() },
+				{ status: 400 }
+			);
 		}
 
 		const validData = parseResult.data;
@@ -151,7 +160,10 @@ export class GymController {
 			return c.json({ message: "ジム情報を更新しました" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
-				throw new NotFoundError(`ジムID ${gymId} が見つかりません`);
+				return c.json(
+					{ error: `ジムID ${gymId} が見つかりません` },
+					{ status: 404 }
+				);
 			}
 			throw new ServerError("ジム情報の更新に失敗しました");
 		}
@@ -168,7 +180,10 @@ export class GymController {
 		const parseResult = updateGymFullSchema.safeParse(data);
 
 		if (!parseResult.success) {
-			throw new BadRequestError("リクエストデータが不正です", parseResult.error.format());
+			return c.json(
+				{ error: "リクエストデータが不正です", details: parseResult.error.format() },
+				{ status: 400 }
+			);
 		}
 
 		const validData = parseResult.data;
@@ -178,7 +193,10 @@ export class GymController {
 			return c.json({ message: "ジム情報を更新しました" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
-				throw new NotFoundError(`ジムID ${gymId} が見つかりません`);
+				return c.json(
+					{ error: `ジムID ${gymId} が見つかりません` },
+					{ status: 404 }
+				);
 			}
 			throw new ServerError("ジム情報の更新に失敗しました");
 		}
@@ -195,7 +213,10 @@ export class GymController {
 			return c.json({ message: "ジムを削除しました" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
-				throw new NotFoundError(`ジムID ${gymId} が見つかりません`);
+				return c.json(
+					{ error: `ジムID ${gymId} が見つかりません` },
+					{ status: 404 }
+				);
 			}
 			throw new ServerError("ジムの削除に失敗しました");
 		}

@@ -10,10 +10,12 @@ import { useGyms } from "@/hooks/use-gyms";
 import type { GymType } from "@/types/gym";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
 export default function AdminGymsPage() {
+	const router = useRouter();
 	// カスタムフックを使用してジムデータを取得
 	const { gyms, paginationMeta, isLoading, searchGyms, changePage, deleteGym } = useGyms();
 
@@ -34,11 +36,13 @@ export default function AdminGymsPage() {
 	);
 
 	// ジム編集ハンドラー
-	const handleEdit = useCallback((gym: GymType) => {
-		// 実際の実装では編集ページへリダイレクト
-		toast.info(`「${gym.name}」の編集ページへ移動します`);
-		// 実装例: router.push(`/admin/gyms/edit/${gym.gymId}`);
-	}, []);
+	const handleEdit = useCallback(
+		(gym: GymType) => {
+			// 編集ページへリダイレクト
+			router.push(`/admin/gyms/${gym.gymId}/edit`);
+		},
+		[router],
+	);
 
 	// ジム削除ハンドラー
 	const handleDelete = useCallback(

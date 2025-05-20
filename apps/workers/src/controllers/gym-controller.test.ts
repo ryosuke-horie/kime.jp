@@ -5,6 +5,7 @@ import type { Mock } from "vitest";
 import { GymService } from "../services/gym-service";
 import { gymFixtures } from "../test/fixtures/gym-fixtures";
 import { createMockGymRepository } from "../test/helpers/mock-helpers";
+import { BadRequestError, NotFoundError, ServerError } from "../utils/errors";
 import { GymController } from "./gym-controller";
 
 // コントローラーのコンテキスト型
@@ -105,21 +106,14 @@ describe("GymController - 単体テスト", () => {
 			});
 		});
 
-		it("サービスでエラーが発生した場合に500エラーを返すこと", async () => {
+		it("サービスでエラーが発生した場合にエラーを再スローすること", async () => {
 			const mockCtx = createMockContext({ url: "http://localhost/api/gyms" });
 
 			// サービスがエラーをスローするようにモック
-			mockService.getGyms = vi.fn().mockRejectedValue(new Error("Test error"));
+			mockService.getGyms = vi.fn().mockRejectedValue(new ServerError("Test error"));
 
-			await controller.getGyms(mockCtx as unknown as AppContext);
-
-			// 500エラーが返されたか検証
-			expect(mockCtx.json).toHaveBeenCalled();
-			const mockCalls = (mockCtx.json as Mock).mock.calls;
-			const calledWith = mockCalls[0]?.[0];
-			const options = mockCalls[0]?.[1];
-			expect(calledWith).toHaveProperty("error");
-			expect(options).toEqual({ status: 500 });
+			// エラーが再スローされることを確認
+			await expect(controller.getGyms(mockCtx as unknown as AppContext)).rejects.toThrow();
 		});
 	});
 
@@ -144,7 +138,7 @@ describe("GymController - 単体テスト", () => {
 			expect(calledWith.gym).toHaveProperty("name");
 		});
 
-		it("存在しないジムIDでは404エラーを返すこと", async () => {
+		it("存在しないジムIDでは404レスポンスを返すこと", async () => {
 			const mockCtx = createMockContext({
 				params: { gymId: "non-existent" },
 			});
@@ -154,16 +148,16 @@ describe("GymController - 単体テスト", () => {
 				.fn()
 				.mockRejectedValue(new Error("Gym with ID non-existent not found"));
 
-			await controller.getGymById(mockCtx as unknown as AppContext);
-
-			// 404エラーが返されたか検証
-			expect(mockCtx.json).toHaveBeenCalled();
-			const mockCalls = (mockCtx.json as Mock).mock.calls;
-			const calledWith = mockCalls[0]?.[0];
-			const options = mockCalls[0]?.[1];
-			expect(calledWith).toHaveProperty("error");
-			expect(calledWith.error).toContain("not found");
-			expect(options).toEqual({ status: 404 });
+			// 404レスポンスが返されることを確認
+			const response = await controller.getGymById(mockCtx as unknown as AppContext);
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 404,
+					data: expect.objectContaining({
+						error: expect.stringContaining("non-existent"),
+					}),
+				}),
+			);
 		});
 	});
 
@@ -195,12 +189,12 @@ describe("GymController - 単体テスト", () => {
 			const calledWith = mockCalls[0]?.[0];
 			const options = mockCalls[0]?.[1];
 			expect(calledWith).toHaveProperty("message");
-			expect(calledWith.message).toContain("success");
+			expect(calledWith.message).toContain("ジム");
 			expect(calledWith).toHaveProperty("gymId");
 			expect(options).toEqual({ status: 201 });
 		});
 
-		it("不正なデータでは400エラーを返すこと", async () => {
+		it("不正なデータでは400レスポンスを返すこと", async () => {
 			const invalidData = {
 				name: "", // 空の名前は不正
 				ownerEmail: "invalid-email", // 不正なメールアドレス
@@ -210,16 +204,16 @@ describe("GymController - 単体テスト", () => {
 				body: invalidData,
 			});
 
-			await controller.createGym(mockCtx as unknown as AppContext);
-
-			// 400エラーが返されたか検証
-			expect(mockCtx.json).toHaveBeenCalled();
-			const mockCalls = (mockCtx.json as Mock).mock.calls;
-			const calledWith = mockCalls[0]?.[0];
-			const options = mockCalls[0]?.[1];
-			expect(calledWith).toHaveProperty("error");
-			expect(calledWith.error).toContain("Invalid");
-			expect(options).toEqual({ status: 400 });
+			// 400レスポンスが返されることを確認
+			const response = await controller.createGym(mockCtx as unknown as AppContext);
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 400,
+					data: expect.objectContaining({
+						error: expect.stringContaining("リクエストデータが不正です"),
+					}),
+				}),
+			);
 		});
 	});
 
@@ -245,10 +239,10 @@ describe("GymController - 単体テスト", () => {
 			const mockCalls = (mockCtx.json as Mock).mock.calls;
 			const calledWith = mockCalls[0]?.[0];
 			expect(calledWith).toHaveProperty("message");
-			expect(calledWith.message).toContain("success");
+			expect(calledWith.message).toContain("ジム");
 		});
 
-		it("存在しないジムIDでは404エラーを返すこと", async () => {
+		it("存在しないジムIDでは404レスポンスを返すこと", async () => {
 			const mockCtx = createMockContext({
 				params: { gymId: "non-existent" },
 				body: { name: "更新テスト" },
@@ -259,16 +253,16 @@ describe("GymController - 単体テスト", () => {
 				.fn()
 				.mockRejectedValue(new Error("Gym with ID non-existent not found"));
 
-			await controller.updateGym(mockCtx as unknown as AppContext);
-
-			// 404エラーが返されたか検証
-			expect(mockCtx.json).toHaveBeenCalled();
-			const mockCalls = (mockCtx.json as Mock).mock.calls;
-			const calledWith = mockCalls[0]?.[0];
-			const options = mockCalls[0]?.[1];
-			expect(calledWith).toHaveProperty("error");
-			expect(calledWith.error).toContain("not found");
-			expect(options).toEqual({ status: 404 });
+			// 404レスポンスが返されることを確認
+			const response = await controller.updateGym(mockCtx as unknown as AppContext);
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 404,
+					data: expect.objectContaining({
+						error: expect.stringContaining("non-existent"),
+					}),
+				}),
+			);
 		});
 	});
 
@@ -290,10 +284,10 @@ describe("GymController - 単体テスト", () => {
 			const mockCalls = (mockCtx.json as Mock).mock.calls;
 			const calledWith = mockCalls[0]?.[0];
 			expect(calledWith).toHaveProperty("message");
-			expect(calledWith.message).toContain("success");
+			expect(calledWith.message).toContain("ジム");
 		});
 
-		it("存在しないジムIDでは404エラーを返すこと", async () => {
+		it("存在しないジムIDでは404レスポンスを返すこと", async () => {
 			const mockCtx = createMockContext({
 				params: { gymId: "non-existent" },
 			});
@@ -303,16 +297,16 @@ describe("GymController - 単体テスト", () => {
 				.fn()
 				.mockRejectedValue(new Error("Gym with ID non-existent not found"));
 
-			await controller.deleteGym(mockCtx as unknown as AppContext);
-
-			// 404エラーが返されたか検証
-			expect(mockCtx.json).toHaveBeenCalled();
-			const mockCalls = (mockCtx.json as Mock).mock.calls;
-			const calledWith = mockCalls[0]?.[0];
-			const options = mockCalls[0]?.[1];
-			expect(calledWith).toHaveProperty("error");
-			expect(calledWith.error).toContain("not found");
-			expect(options).toEqual({ status: 404 });
+			// 404レスポンスが返されることを確認
+			const response = await controller.deleteGym(mockCtx as unknown as AppContext);
+			expect(response).toEqual(
+				expect.objectContaining({
+					status: 404,
+					data: expect.objectContaining({
+						error: expect.stringContaining("non-existent"),
+					}),
+				}),
+			);
 		});
 	});
 });

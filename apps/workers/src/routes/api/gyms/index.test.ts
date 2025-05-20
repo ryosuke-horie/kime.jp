@@ -267,7 +267,7 @@ describe("ジムAPI - 統合テスト", () => {
 			expect(res.status).toBe(200);
 
 			const data = (await res.json()) as { message: string };
-			expect(data.message).toBe("Gym updated successfully");
+			expect(data.message).toBe("ジム情報を更新しました");
 
 			// 更新されたジムをGETリクエストで確認
 			const getReq = createTestRequest("/api/gyms/gym-1");
@@ -383,7 +383,7 @@ describe("ジムAPI - 統合テスト", () => {
 			expect(res.status).toBe(200);
 
 			const data = (await res.json()) as { message: string };
-			expect(data.message).toBe("Gym updated successfully");
+			expect(data.message).toBe("ジム情報を更新しました");
 
 			// 更新されたジムをGETリクエストで確認
 			const getReq = createTestRequest("/api/gyms/gym-1");

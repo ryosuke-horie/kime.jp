@@ -284,7 +284,7 @@ describe("GymController - 単体テスト", () => {
 			const mockCalls = (mockCtx.json as Mock).mock.calls;
 			const calledWith = mockCalls[0]?.[0];
 			expect(calledWith).toHaveProperty("message");
-			expect(calledWith.message).toContain("ジム");
+			expect(calledWith.message).toBe("Gym deleted successfully");
 		});
 
 		it("存在しないジムIDでは404レスポンスを返すこと", async () => {

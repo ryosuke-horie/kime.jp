@@ -201,7 +201,7 @@ export class GymController {
 
 		try {
 			await this.gymService.deleteGym(gymId);
-			return c.json({ message: "ジムを削除しました" });
+			return c.json({ message: "Gym deleted successfully" });
 		} catch (error) {
 			if (error instanceof Error && error.message.includes("not found")) {
 				return c.json({ error: `ジムID ${gymId} が見つかりません` }, { status: 404 });

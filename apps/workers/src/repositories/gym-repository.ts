@@ -186,24 +186,21 @@ export class GymRepository implements IGymRepository {
 	 */
 	async delete(gymId: string) {
 		try {
+			// 削除前に存在確認
+			const existingGym = await this.findById(gymId);
+			if (!existingGym) {
+				return false;
+			}
+
 			// ジムを削除すると、ON DELETE CASCADEによって関連するデータも削除される
 			// （マイグレーションファイルでON DELETE CASCADEが設定されているテーブルのみ）
-			const result = await this.db.delete(gyms).where(eq(gyms.gymId, gymId)).execute();
+			await this.db.delete(gyms).where(eq(gyms.gymId, gymId)).execute();
 
-			// テスト環境では常に成功と見なす
-			if (process.env.NODE_ENV === "test") {
-				return true;
-			}
-
-			return result.changes > 0;
+			// 削除後に存在確認
+			const deletedGym = await this.findById(gymId);
+			return deletedGym === undefined;
 		} catch (error) {
 			console.error(`Failed to delete gym with ID ${gymId}:`, error);
-
-			// テスト環境ではエラーを無視して成功と見なす
-			if (process.env.NODE_ENV === "test") {
-				return true;
-			}
-
 			return false;
 		}
 	}

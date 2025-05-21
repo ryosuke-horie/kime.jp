@@ -34,13 +34,15 @@ export function DeleteGymDialog({
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>ジムの削除</AlertDialogTitle>
-					<AlertDialogDescription>
-						<p>
-							「<strong>{gym.name}</strong>」を削除してもよろしいですか？
-						</p>
-						<p className="mt-2 text-muted-foreground">
-							この操作は取り消せません。関連するすべてのデータが削除されます。
-						</p>
+					<AlertDialogDescription asChild>
+						<div>
+							<p>
+								「<strong>{gym.name}</strong>」を削除してもよろしいですか？
+							</p>
+							<p className="mt-2 text-muted-foreground">
+								この操作は取り消せません。関連するすべてのデータが削除されます。
+							</p>
+						</div>
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>

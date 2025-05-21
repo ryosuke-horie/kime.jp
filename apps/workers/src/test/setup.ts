@@ -74,7 +74,7 @@ async function seedTestData(db: D1Database): Promise<void> {
 		// テストデータの挿入 - フィクスチャーデータを使用
 		for (const fixture of gymFixtures) {
 			await db.exec(
-				`INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('${fixture.id}', '${fixture.name}', '${fixture.owner_email}', '${fixture.created_at}', '${fixture.updated_at}');`
+				`INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('${fixture.id}', '${fixture.name}', '${fixture.owner_email}', '${fixture.created_at}', '${fixture.updated_at}');`,
 			);
 		}
 

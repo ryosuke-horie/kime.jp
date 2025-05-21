@@ -73,6 +73,7 @@ export default function EditGymPage() {
 	});
 
 	// ページロード時にジム情報を取得
+	// biome-ignore lint/correctness/useExhaustiveDependencies: fetchGym、form.reset、router.pushは毎回新しい参照になるため依存関係に含めると無限ループが発生する
 	useEffect(() => {
 		// エラー発生時に無限ループを防ぐためのフラグ
 		let isMounted = true;
@@ -118,7 +119,7 @@ export default function EditGymPage() {
 		return () => {
 			isMounted = false;
 		};
-	}, [fetchGym, form, router]);
+	}, []);
 
 	// フォーム送信処理
 	async function onSubmit(values: GymFormValues) {

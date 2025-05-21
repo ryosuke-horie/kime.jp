@@ -74,33 +74,51 @@ export default function EditGymPage() {
 
 	// ページロード時にジム情報を取得
 	useEffect(() => {
+		// エラー発生時に無限ループを防ぐためのフラグ
+		let isMounted = true;
 		const loadGymData = async () => {
 			try {
 				setIsLoading(true);
 				const data = await fetchGym();
 
-				// フォームに既存データをセット
-				form.reset({
-					name: data.gym.name,
-					ownerEmail: data.gym.ownerEmail,
-					// 他のフィールドはAPIに未実装のため、空文字をデフォルト値として使用
-					phone: "",
-					website: "",
-					address: "",
-					description: "",
-				});
+				// コンポーネントがアンマウントされていなければ処理を続行
+				if (isMounted) {
+					// フォームに既存データをセット
+					form.reset({
+						name: data.gym.name,
+						ownerEmail: data.gym.ownerEmail,
+						// 他のフィールドはAPIに未実装のため、空文字をデフォルト値として使用
+						phone: "",
+						website: "",
+						address: "",
+						description: "",
+					});
+				}
 			} catch (error) {
-				console.error("ジム情報取得エラー:", error);
-				toast.error("ジム情報の取得に失敗しました", {
-					description: error instanceof Error ? error.message : "不明なエラーが発生しました",
-				});
+				// コンポーネントがアンマウントされていなければエラー表示
+				if (isMounted) {
+					console.error("ジム情報取得エラー:", error);
+					toast.error("ジム情報の取得に失敗しました", {
+						description: error instanceof Error ? error.message : "不明なエラーが発生しました",
+					});
+					// エラー発生時はジム一覧ページに戻す
+					router.push("/admin/gyms");
+				}
 			} finally {
-				setIsLoading(false);
+				// コンポーネントがアンマウントされていなければローディング状態を更新
+				if (isMounted) {
+					setIsLoading(false);
+				}
 			}
 		};
 
 		loadGymData();
-	}, [fetchGym, form]);
+
+		// クリーンアップ関数
+		return () => {
+			isMounted = false;
+		};
+	}, [fetchGym, form, router]);
 
 	// フォーム送信処理
 	async function onSubmit(values: GymFormValues) {

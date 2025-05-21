@@ -12,6 +12,7 @@ import { drizzle } from "drizzle-orm/d1";
 /// <reference path="../types/cloudflare-test.d.ts" />
 import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
 import { gyms } from "../db/schema";
+import { gymFixtures } from "./fixtures/gym-fixtures";
 
 /**
  * テスト環境の変数を取得するユーティリティ
@@ -70,13 +71,12 @@ async function seedTestData(db: D1Database): Promise<void> {
 			await createTestTables(db);
 		}
 
-		// テストデータの挿入 - SQL文を単純化
-		await db.exec(
-			"INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('gym-test-1', 'テスト用ジムA', 'test1@example.com', '2023-01-01', '2023-01-01');",
-		);
-		await db.exec(
-			"INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('gym-test-2', 'テスト用ジムB', 'test2@example.com', '2023-01-02', '2023-01-02');",
-		);
+		// テストデータの挿入 - フィクスチャーデータを使用
+		for (const fixture of gymFixtures) {
+			await db.exec(
+				`INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('${fixture.id}', '${fixture.name}', '${fixture.owner_email}', '${fixture.created_at}', '${fixture.updated_at}');`
+			);
+		}
 
 		console.log("✅ Test data seeded successfully");
 	} catch (error) {

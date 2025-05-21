@@ -18,13 +18,13 @@ import * as schema from "../../db/schema";
  * @returns テスト環境情報
  */
 export function getTestEnv() {
-  return {
-    DB: env?.DB,
-    isTestEnv: typeof env !== "undefined" && env.DB !== undefined,
-    NODE_ENV: env?.NODE_ENV || "test",
-    SKIP_AUTH: env?.SKIP_AUTH || "true",
-    JWT_SECRET: env?.JWT_SECRET || "test-secret",
-  };
+	return {
+		DB: env?.DB,
+		isTestEnv: typeof env !== "undefined" && env.DB !== undefined,
+		NODE_ENV: env?.NODE_ENV || "test",
+		SKIP_AUTH: env?.SKIP_AUTH || "true",
+		JWT_SECRET: env?.JWT_SECRET || "test-secret",
+	};
 }
 
 /**
@@ -34,9 +34,9 @@ export function getTestEnv() {
  * @returns テスト用の設定を含むHonoアプリケーション
  */
 export function createTestApp(
-  app: Hono<{ Bindings: Cloudflare.Env }>,
+	app: Hono<{ Bindings: Cloudflare.Env }>,
 ): Hono<{ Bindings: Cloudflare.Env }> {
-  return app;
+	return app;
 }
 
 /**
@@ -45,18 +45,18 @@ export function createTestApp(
  * @returns Cloudflareバインディングを含むオブジェクト
  */
 export function createTestBindings(): Cloudflare.Env {
-  const { DB, NODE_ENV, SKIP_AUTH, JWT_SECRET, isTestEnv } = getTestEnv();
-  
-  if (isTestEnv && DB) {
-    return {
-      DB,
-      NODE_ENV,
-      SKIP_AUTH,
-      JWT_SECRET,
-    };
-  }
-  
-  throw new Error("テスト環境が正しく設定されていません。pnpm test:setup を実行してください。");
+	const { DB, NODE_ENV, SKIP_AUTH, JWT_SECRET, isTestEnv } = getTestEnv();
+
+	if (isTestEnv && DB) {
+		return {
+			DB,
+			NODE_ENV,
+			SKIP_AUTH,
+			JWT_SECRET,
+		};
+	}
+
+	throw new Error("テスト環境が正しく設定されていません。pnpm test:setup を実行してください。");
 }
 
 /**
@@ -65,13 +65,13 @@ export function createTestBindings(): Cloudflare.Env {
  * @returns drizzleインスタンス
  */
 export function createTestDb() {
-  const { DB, isTestEnv } = getTestEnv();
-  
-  if (isTestEnv && DB) {
-    return drizzle(DB, { schema });
-  }
-  
-  throw new Error("テスト環境が正しく設定されていません。pnpm test:setup を実行してください。");
+	const { DB, isTestEnv } = getTestEnv();
+
+	if (isTestEnv && DB) {
+		return drizzle(DB, { schema });
+	}
+
+	throw new Error("テスト環境が正しく設定されていません。pnpm test:setup を実行してください。");
 }
 
 /**
@@ -79,14 +79,14 @@ export function createTestDb() {
  * @returns 環境情報
  */
 export function checkEnvironment() {
-  const { NODE_ENV, isTestEnv } = getTestEnv();
-  
-  return {
-    isTest: NODE_ENV === "test" && isTestEnv,
-    isProd: NODE_ENV === "production",
-    isDev: NODE_ENV === "development" || NODE_ENV === undefined,
-    environment: NODE_ENV || "development",
-  };
+	const { NODE_ENV, isTestEnv } = getTestEnv();
+
+	return {
+		isTest: NODE_ENV === "test" && isTestEnv,
+		isProd: NODE_ENV === "production",
+		isDev: NODE_ENV === "development" || NODE_ENV === undefined,
+		environment: NODE_ENV || "development",
+	};
 }
 
 /**
@@ -102,19 +102,19 @@ export function checkEnvironment() {
  * });
  */
 export async function setupD1Test(setupFn?: () => Promise<void>): Promise<void> {
-  if (!isD1Available()) {
-    console.warn("⚠️ D1データベースが利用できないため、テストセットアップをスキップします");
-    return;
-  }
+	if (!isD1Available()) {
+		console.warn("⚠️ D1データベースが利用できないため、テストセットアップをスキップします");
+		return;
+	}
 
-  if (setupFn) {
-    try {
-      await setupFn();
-    } catch (error) {
-      console.error("❌ テストセットアップ中にエラーが発生しました:", error);
-      throw error;
-    }
-  }
+	if (setupFn) {
+		try {
+			await setupFn();
+		} catch (error) {
+			console.error("❌ テストセットアップ中にエラーが発生しました:", error);
+			throw error;
+		}
+	}
 }
 
 /**
@@ -130,19 +130,19 @@ export async function setupD1Test(setupFn?: () => Promise<void>): Promise<void> 
  * });
  */
 export async function cleanupD1Test(cleanupFn?: () => Promise<void>): Promise<void> {
-  if (!isD1Available()) {
-    console.warn("⚠️ D1データベースが利用できないため、テストクリーンアップをスキップします");
-    return;
-  }
+	if (!isD1Available()) {
+		console.warn("⚠️ D1データベースが利用できないため、テストクリーンアップをスキップします");
+		return;
+	}
 
-  if (cleanupFn) {
-    try {
-      await cleanupFn();
-    } catch (error) {
-      console.error("❌ テストクリーンアップ中にエラーが発生しました:", error);
-      throw error;
-    }
-  }
+	if (cleanupFn) {
+		try {
+			await cleanupFn();
+		} catch (error) {
+			console.error("❌ テストクリーンアップ中にエラーが発生しました:", error);
+			throw error;
+		}
+	}
 }
 
 /**
@@ -153,28 +153,28 @@ export async function cleanupD1Test(cleanupFn?: () => Promise<void>): Promise<vo
  * @returns Requestオブジェクト
  */
 export function createTestRequest(
-  path: string,
-  options?: {
-    method?: string;
-    headers?: Record<string, string>;
-    body?: Record<string, unknown>;
-  },
+	path: string,
+	options?: {
+		method?: string;
+		headers?: Record<string, string>;
+		body?: Record<string, unknown>;
+	},
 ): Request {
-  const url = new URL(path, "http://localhost");
-  const init: RequestInit = {
-    method: options?.method || "GET",
-    headers: options?.headers || {},
-  };
+	const url = new URL(path, "http://localhost");
+	const init: RequestInit = {
+		method: options?.method || "GET",
+		headers: options?.headers || {},
+	};
 
-  if (options?.body) {
-    init.body = JSON.stringify(options.body);
-    init.headers = {
-      ...init.headers,
-      "Content-Type": "application/json",
-    };
-  }
+	if (options?.body) {
+		init.body = JSON.stringify(options.body);
+		init.headers = {
+			...init.headers,
+			"Content-Type": "application/json",
+		};
+	}
 
-  return new Request(url, init);
+	return new Request(url, init);
 }
 
 /**
@@ -182,14 +182,14 @@ export function createTestRequest(
  * @returns D1データベースが利用可能かどうか
  */
 export function isD1Available(): boolean {
-  const { DB } = getTestEnv();
-  
-  if (!DB) {
-    console.warn("⚠️ D1データベースが利用できません - pnpm test:setup を実行してください");
-    return false;
-  }
-  
-  return true;
+	const { DB } = getTestEnv();
+
+	if (!DB) {
+		console.warn("⚠️ D1データベースが利用できません - pnpm test:setup を実行してください");
+		return false;
+	}
+
+	return true;
 }
 
 /**
@@ -197,13 +197,13 @@ export function isD1Available(): boolean {
  * D1が利用できない場合は自動的にスキップする
  */
 export function itWithD1(name: string, fn: () => Promise<void>) {
-  it(name, async () => {
-    if (!isD1Available()) {
-      console.warn(`⚠️ テスト "${name}" は D1 データベースが必要なためスキップします`);
-      return;
-    }
-    await fn();
-  });
+	it(name, async () => {
+		if (!isD1Available()) {
+			console.warn(`⚠️ テスト "${name}" は D1 データベースが必要なためスキップします`);
+			return;
+		}
+		await fn();
+	});
 }
 
 /**
@@ -211,11 +211,11 @@ export function itWithD1(name: string, fn: () => Promise<void>) {
  * D1が利用できない場合は自動的にスキップする
  */
 export function describeWithD1(name: string, fn: () => void) {
-  describe(name, () => {
-    if (!isD1Available()) {
-      it.todo(`⚠️ D1 データベースが利用できないため、テストスイート "${name}" はスキップします`);
-      return;
-    }
-    fn();
-  });
+	describe(name, () => {
+		if (!isD1Available()) {
+			it.todo(`⚠️ D1 データベースが利用できないため、テストスイート "${name}" はスキップします`);
+			return;
+		}
+		fn();
+	});
 }

@@ -1,3 +1,4 @@
+import { env } from "cloudflare:test";
 /**
  * テスト環境のセットアップスクリプト
  * - D1データベースの初期化
@@ -11,17 +12,16 @@ import { drizzle } from "drizzle-orm/d1";
 /// <reference path="../types/cloudflare-test.d.ts" />
 import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
 import { gyms } from "../db/schema";
-import { env } from "cloudflare:test";
 
 /**
  * テスト環境の変数を取得するユーティリティ
  * @returns D1データベースへのアクセスを提供するオブジェクト
  */
 function getTestEnv() {
-  return {
-    DB: env?.DB,
-    isTestEnv: typeof env !== "undefined" && env.DB !== undefined,
-  };
+	return {
+		DB: env?.DB,
+		isTestEnv: typeof env !== "undefined" && env.DB !== undefined,
+	};
 }
 
 /**
@@ -29,21 +29,27 @@ function getTestEnv() {
  * @param db D1データベースインスタンス
  */
 async function createTestTables(db: D1Database): Promise<void> {
-  try {
-    // gymsテーブルの作成 - SQL文を単純化
-    await db.exec("CREATE TABLE IF NOT EXISTS gyms (gym_id TEXT PRIMARY KEY, name TEXT NOT NULL, owner_email TEXT NOT NULL, created_at TEXT, updated_at TEXT);");
+	try {
+		// gymsテーブルの作成 - SQL文を単純化
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS gyms (gym_id TEXT PRIMARY KEY, name TEXT NOT NULL, owner_email TEXT NOT NULL, created_at TEXT, updated_at TEXT);",
+		);
 
-    // adminAccountsテーブルの作成 - SQL文を単純化
-    await db.exec("CREATE TABLE IF NOT EXISTS admin_accounts (admin_id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL, role TEXT NOT NULL, password_hash TEXT, is_active INTEGER, last_login_at TEXT, created_at TEXT, updated_at TEXT);");
+		// adminAccountsテーブルの作成 - SQL文を単純化
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS admin_accounts (admin_id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL, role TEXT NOT NULL, password_hash TEXT, is_active INTEGER, last_login_at TEXT, created_at TEXT, updated_at TEXT);",
+		);
 
-    // adminGymRelationshipsテーブルの作成 - SQL文を単純化
-    await db.exec("CREATE TABLE IF NOT EXISTS admin_gym_relationships (admin_id TEXT NOT NULL, gym_id TEXT NOT NULL, role TEXT NOT NULL, created_at TEXT, PRIMARY KEY (admin_id, gym_id));");
+		// adminGymRelationshipsテーブルの作成 - SQL文を単純化
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS admin_gym_relationships (admin_id TEXT NOT NULL, gym_id TEXT NOT NULL, role TEXT NOT NULL, created_at TEXT, PRIMARY KEY (admin_id, gym_id));",
+		);
 
-    console.log("✅ Test tables created successfully");
-  } catch (error) {
-    console.error("❌ Failed to create test tables:", error);
-    throw error;
-  }
+		console.log("✅ Test tables created successfully");
+	} catch (error) {
+		console.error("❌ Failed to create test tables:", error);
+		throw error;
+	}
 }
 
 /**
@@ -51,26 +57,32 @@ async function createTestTables(db: D1Database): Promise<void> {
  * @param db D1データベースインスタンス
  */
 async function seedTestData(db: D1Database): Promise<void> {
-  try {
-    // まず、テーブルの存在を確認
-    const tableExists = await db.prepare(`
+	try {
+		// まず、テーブルの存在を確認
+		const tableExists = await db
+			.prepare(`
       SELECT name FROM sqlite_master WHERE type='table' AND name='gyms';
-    `).first();
-    
-    if (!tableExists) {
-      console.warn("⚠️ gymsテーブルが存在しません。先にテーブルを作成します。");
-      await createTestTables(db);
-    }
-    
-    // テストデータの挿入 - SQL文を単純化
-    await db.exec("INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('gym-test-1', 'テスト用ジムA', 'test1@example.com', '2023-01-01', '2023-01-01');");
-    await db.exec("INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('gym-test-2', 'テスト用ジムB', 'test2@example.com', '2023-01-02', '2023-01-02');");
+    `)
+			.first();
 
-    console.log("✅ Test data seeded successfully");
-  } catch (error) {
-    console.error("❌ Failed to seed test data:", error);
-    throw error;
-  }
+		if (!tableExists) {
+			console.warn("⚠️ gymsテーブルが存在しません。先にテーブルを作成します。");
+			await createTestTables(db);
+		}
+
+		// テストデータの挿入 - SQL文を単純化
+		await db.exec(
+			"INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('gym-test-1', 'テスト用ジムA', 'test1@example.com', '2023-01-01', '2023-01-01');",
+		);
+		await db.exec(
+			"INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at) VALUES ('gym-test-2', 'テスト用ジムB', 'test2@example.com', '2023-01-02', '2023-01-02');",
+		);
+
+		console.log("✅ Test data seeded successfully");
+	} catch (error) {
+		console.error("❌ Failed to seed test data:", error);
+		throw error;
+	}
 }
 
 /**
@@ -78,30 +90,33 @@ async function seedTestData(db: D1Database): Promise<void> {
  * @param db D1データベースインスタンス
  */
 async function cleanupData(db: D1Database): Promise<void> {
-  try {
-    // テーブルの存在を確認してからデータを削除
-    const tables = ["admin_gym_relationships", "admin_accounts", "gyms"];
-    
-    for (const table of tables) {
-      try {
-        // テーブルが存在するか確認してから削除
-        const result = await db.prepare(`
+	try {
+		// テーブルの存在を確認してからデータを削除
+		const tables = ["admin_gym_relationships", "admin_accounts", "gyms"];
+
+		for (const table of tables) {
+			try {
+				// テーブルが存在するか確認してから削除
+				const result = await db
+					.prepare(`
           SELECT name FROM sqlite_master WHERE type='table' AND name=?;
-        `).bind(table).first();
-        
-        if (result) {
-          await db.exec(`DELETE FROM ${table}`);
-        }
-      } catch (err) {
-        console.warn(`⚠️ Table '${table}' might not exist yet, skipping cleanup`);
-      }
-    }
-    
-    console.log("✅ Database data cleaned up");
-  } catch (error) {
-    console.error("❌ Failed to clean database data:", error);
-    throw error;
-  }
+        `)
+					.bind(table)
+					.first();
+
+				if (result) {
+					await db.exec(`DELETE FROM ${table}`);
+				}
+			} catch (err) {
+				console.warn(`⚠️ Table '${table}' might not exist yet, skipping cleanup`);
+			}
+		}
+
+		console.log("✅ Database data cleaned up");
+	} catch (error) {
+		console.error("❌ Failed to clean database data:", error);
+		throw error;
+	}
 }
 
 /**
@@ -109,23 +124,23 @@ async function cleanupData(db: D1Database): Promise<void> {
  * @param db D1データベースインスタンス
  */
 async function dropTestTables(db: D1Database): Promise<void> {
-  try {
-    // 参照整合性の制約があるので、順番に削除
-    const tablesToDrop = ["admin_gym_relationships", "admin_accounts", gyms.name];
-    
-    for (const table of tablesToDrop) {
-      try {
-        await db.exec(`DROP TABLE IF EXISTS ${table}`);
-      } catch (err) {
-        console.warn(`⚠️ Could not drop table ${table}, it might not exist`);
-      }
-    }
-    
-    console.log("✅ Test tables dropped successfully");
-  } catch (error) {
-    console.error("❌ Failed to drop test tables:", error);
-    throw error;
-  }
+	try {
+		// 参照整合性の制約があるので、順番に削除
+		const tablesToDrop = ["admin_gym_relationships", "admin_accounts", gyms.name];
+
+		for (const table of tablesToDrop) {
+			try {
+				await db.exec(`DROP TABLE IF EXISTS ${table}`);
+			} catch (err) {
+				console.warn(`⚠️ Could not drop table ${table}, it might not exist`);
+			}
+		}
+
+		console.log("✅ Test tables dropped successfully");
+	} catch (error) {
+		console.error("❌ Failed to drop test tables:", error);
+		throw error;
+	}
 }
 
 /**
@@ -134,24 +149,24 @@ async function dropTestTables(db: D1Database): Promise<void> {
  * - 基本的なテストデータの挿入
  */
 beforeAll(async () => {
-  const { DB, isTestEnv } = getTestEnv();
-  
-  if (!isTestEnv || !DB) {
-    console.warn("⚠️ Test environment is not properly set up. Tests requiring D1 may fail.");
-    return;
-  }
+	const { DB, isTestEnv } = getTestEnv();
 
-  try {
-    // テスト用のテーブルを作成
-    await createTestTables(DB);
-    
-    // 初期テストデータを挿入
-    await seedTestData(DB);
-    
-    console.log("✅ Test environment initialized successfully");
-  } catch (error) {
-    console.error("❌ Failed to initialize test environment:", error);
-  }
+	if (!isTestEnv || !DB) {
+		console.warn("⚠️ Test environment is not properly set up. Tests requiring D1 may fail.");
+		return;
+	}
+
+	try {
+		// テスト用のテーブルを作成
+		await createTestTables(DB);
+
+		// 初期テストデータを挿入
+		await seedTestData(DB);
+
+		console.log("✅ Test environment initialized successfully");
+	} catch (error) {
+		console.error("❌ Failed to initialize test environment:", error);
+	}
 });
 
 /**
@@ -160,26 +175,26 @@ beforeAll(async () => {
  * - 基本的なテストデータの再挿入
  */
 beforeEach(async () => {
-  const { DB, isTestEnv } = getTestEnv();
-  
-  if (!isTestEnv || !DB) return;
+	const { DB, isTestEnv } = getTestEnv();
 
-  try {
-    // テストデータをクリーンアップ
-    await cleanupData(DB);
-    
-    // 基本的なテストデータを再挿入
-    await seedTestData(DB);
-  } catch (error) {
-    console.error("❌ Failed to reset test data:", error);
-  }
+	if (!isTestEnv || !DB) return;
+
+	try {
+		// テストデータをクリーンアップ
+		await cleanupData(DB);
+
+		// 基本的なテストデータを再挿入
+		await seedTestData(DB);
+	} catch (error) {
+		console.error("❌ Failed to reset test data:", error);
+	}
 });
 
 /**
  * 各テスト実行後のクリーンアップ
  */
 afterEach(async () => {
-  // 特別なクリーンアップが必要な場合はここに追加
+	// 特別なクリーンアップが必要な場合はここに追加
 });
 
 /**
@@ -188,16 +203,16 @@ afterEach(async () => {
  * - リソースの解放
  */
 afterAll(async () => {
-  const { DB, isTestEnv } = getTestEnv();
-  
-  if (!isTestEnv || !DB) return;
+	const { DB, isTestEnv } = getTestEnv();
 
-  try {
-    // テスト終了時にテーブルを削除
-    await dropTestTables(DB);
-    
-    console.log("✅ Test environment cleaned up successfully");
-  } catch (error) {
-    console.error("❌ Failed to cleanup test environment:", error);
-  }
+	if (!isTestEnv || !DB) return;
+
+	try {
+		// テスト終了時にテーブルを削除
+		await dropTestTables(DB);
+
+		console.log("✅ Test environment cleaned up successfully");
+	} catch (error) {
+		console.error("❌ Failed to cleanup test environment:", error);
+	}
 });

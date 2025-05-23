@@ -120,6 +120,7 @@ describe("GymRepository - 単体テスト", () => {
 				gymId: "new-gym-id",
 				name: "新規ジム",
 				ownerEmail: "new@example.com",
+				passwordHash: "$2a$10$XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
 			};
 
 			const result = await repository.create(newGym);

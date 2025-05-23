@@ -72,6 +72,7 @@ describe("GymService - 単体テスト", () => {
 			const gymData = {
 				name: "新しいジム",
 				ownerEmail: "new@example.com",
+				password: "testPassword123",
 			};
 
 			const result = await gymService.createGym(gymData);
@@ -89,6 +90,8 @@ describe("GymService - 単体テスト", () => {
 				expect(createCall.gymId.length).toBeGreaterThan(10); // UUIDが適切な長さであることを検証
 				expect(createCall).toHaveProperty("name", gymData.name);
 				expect(createCall).toHaveProperty("ownerEmail", gymData.ownerEmail);
+				expect(createCall).toHaveProperty("passwordHash");
+				expect(typeof createCall.passwordHash).toBe("string");
 			}
 
 			// 返り値を検証
@@ -106,6 +109,7 @@ describe("GymService - 単体テスト", () => {
 				gymService.createGym({
 					name: "テストジム",
 					ownerEmail: "test@example.com",
+					password: "testPassword123",
 				}),
 			).rejects.toThrow("Failed to create gym");
 		});

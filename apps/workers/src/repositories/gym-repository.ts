@@ -27,10 +27,11 @@ export interface IGymRepository {
 		gymId: string;
 		name: string;
 		ownerEmail: string;
+		passwordHash: string;
 	}): Promise<Gym | undefined>;
 	update(
 		gymId: string,
-		data: Partial<{ name: string; ownerEmail: string }>,
+		data: Partial<{ name: string; ownerEmail: string; passwordHash?: string }>,
 	): Promise<Gym | undefined>;
 	delete(gymId: string): Promise<boolean>;
 }
@@ -137,6 +138,7 @@ export class GymRepository implements IGymRepository {
 		gymId: string;
 		name: string;
 		ownerEmail: string;
+		passwordHash: string;
 	}) {
 		const now = new Date().toISOString();
 
@@ -146,6 +148,7 @@ export class GymRepository implements IGymRepository {
 				gymId: data.gymId,
 				name: data.name,
 				ownerEmail: data.ownerEmail,
+				passwordHash: data.passwordHash,
 				createdAt: now,
 				updatedAt: now,
 			})
@@ -160,7 +163,10 @@ export class GymRepository implements IGymRepository {
 	 * @param data 更新データ
 	 * @returns 更新後のジム情報
 	 */
-	async update(gymId: string, data: Partial<{ name: string; ownerEmail: string }>) {
+	async update(
+		gymId: string,
+		data: Partial<{ name: string; ownerEmail: string; passwordHash?: string }>,
+	) {
 		if (Object.keys(data).length === 0) {
 			return this.findById(gymId);
 		}

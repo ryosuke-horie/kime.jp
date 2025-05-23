@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { Gym } from "../db";
 import type { IAdminRepository } from "../repositories/admin-repository";
 import type { IGymRepository } from "../repositories/gym-repository";
+import { hashPassword } from "../utils/password";
 
 /**
  * ジムサービスのインターフェース
@@ -22,8 +23,11 @@ export interface IGymService {
 		};
 	}>;
 	getGymById(gymId: string): Promise<Gym>;
-	createGym(data: { name: string; ownerEmail: string }): Promise<Gym>;
-	updateGym(gymId: string, data: Partial<{ name: string; ownerEmail: string }>): Promise<Gym>;
+	createGym(data: { name: string; ownerEmail: string; password: string }): Promise<Gym>;
+	updateGym(
+		gymId: string,
+		data: Partial<{ name: string; ownerEmail: string; password?: string }>,
+	): Promise<Gym>;
 	deleteGym(gymId: string): Promise<void>;
 }
 
@@ -74,14 +78,18 @@ export class GymService implements IGymService {
 	 * @param data ジム情報
 	 * @returns 作成されたジム情報
 	 */
-	async createGym(data: { name: string; ownerEmail: string }) {
+	async createGym(data: { name: string; ownerEmail: string; password: string }) {
 		const gymId = uuidv4();
+
+		// パスワードをハッシュ化
+		const passwordHash = await hashPassword(data.password);
 
 		// ジムの作成
 		const gym = await this.gymRepository.create({
 			gymId,
 			name: data.name,
 			ownerEmail: data.ownerEmail,
+			passwordHash,
 		});
 
 		if (!gym) {
@@ -120,11 +128,22 @@ export class GymService implements IGymService {
 	 * @returns 更新後のジム情報
 	 * @throws ジムが存在しない場合はエラー
 	 */
-	async updateGym(gymId: string, data: Partial<{ name: string; ownerEmail: string }>) {
+	async updateGym(
+		gymId: string,
+		data: Partial<{ name: string; ownerEmail: string; password?: string }>,
+	) {
 		// 更新前にジムの存在確認
 		await this.getGymById(gymId);
 
-		const updatedGym = await this.gymRepository.update(gymId, data);
+		// パスワードが含まれている場合はハッシュ化
+		const updateData: any = { ...data };
+		if (data.password) {
+			const passwordHash = await hashPassword(data.password);
+			updateData.passwordHash = passwordHash;
+			updateData.password = undefined;
+		}
+
+		const updatedGym = await this.gymRepository.update(gymId, updateData);
 
 		if (!updatedGym) {
 			throw new Error(`Failed to update gym with ID ${gymId}`);

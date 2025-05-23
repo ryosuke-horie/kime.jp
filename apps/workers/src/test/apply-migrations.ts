@@ -20,6 +20,7 @@ async function seedTestData() {
 				gym_id TEXT PRIMARY KEY,
 				name TEXT NOT NULL,
 				owner_email TEXT NOT NULL,
+				password_hash TEXT,
 				created_at TEXT DEFAULT CURRENT_TIMESTAMP,
 				updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 			)

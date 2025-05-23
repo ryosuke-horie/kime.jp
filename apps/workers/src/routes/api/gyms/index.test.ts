@@ -154,6 +154,7 @@ describe("ジムAPI - 統合テスト", () => {
 			const gymData = {
 				name: "新規テストジム",
 				ownerEmail: "new-owner@example.com",
+				password: "testPassword123",
 			};
 
 			// リクエスト作成

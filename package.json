@@ -18,7 +18,7 @@
 		"@biomejs/biome": "1.9.4",
 		"@cloudflare/vitest-pool-workers": "^0.8.24",
 		"@vitest/coverage-istanbul": "^3.1.2",
-		"@vitest/ui": "^3.1.2",
+		"@vitest/ui": "^3.1.4",
 		"turbo": "latest"
 	},
 	"packageManager": "pnpm@10.10.0",

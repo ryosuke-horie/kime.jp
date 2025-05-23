@@ -18,12 +18,3 @@ JWT_SECRET = "test-secret-key"
 [dev]
 port = 8787
 local_protocol = "http"
-persist_to = "./.wrangler/test-state"
-
-# D1データベースの永続性設定
-# テスト用設定で本番環境に影響を与えないようにする
-[miniflare]
-kv_persist = false
-cache_persist = false
-d1_persist = false
-durable_objects_persist = false

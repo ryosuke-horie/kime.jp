@@ -33,8 +33,10 @@ jobs:
   # テストのみのジョブ（push・PRの両方で実行）
   workers-test:
     name: Workers App Test
-    # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, self-hosted]
     timeout-minutes: 20
     steps:
       - name: Check out code

@@ -33,7 +33,8 @@ jobs:
   # テストのみのジョブ（push・PRの両方で実行）
   web-test:
     name: Web App Test
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 20
     steps:
       - name: Check out code

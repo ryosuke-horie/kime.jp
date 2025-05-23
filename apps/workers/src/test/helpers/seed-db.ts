@@ -25,11 +25,11 @@ export async function seedGymData(db: D1Database): Promise<void> {
 		const placeholders = gymFixtures.map(() => "(?, ?, ?, ?, ?)").join(", ");
 
 		const values = gymFixtures.flatMap((gym) => [
-			gym.id,
+			gym.gymId,
 			gym.name,
-			gym.owner_email,
-			gym.created_at,
-			gym.updated_at,
+			gym.ownerEmail,
+			gym.createdAt || new Date().toISOString(),
+			gym.updatedAt || new Date().toISOString(),
 		]);
 
 		// SQLを実行してテストデータを挿入

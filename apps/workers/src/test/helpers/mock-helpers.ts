@@ -13,11 +13,11 @@ export function createMockGymRepository(): IGymRepository {
 	return {
 		findAll: vi.fn().mockResolvedValue({
 			items: gymFixtures.map((g) => ({
-				gymId: g.id,
+				gymId: g.gymId,
 				name: g.name,
-				ownerEmail: g.owner_email,
-				createdAt: g.created_at.toString(),
-				updatedAt: g.updated_at.toString(),
+				ownerEmail: g.ownerEmail,
+				createdAt: g.createdAt || new Date().toISOString(),
+				updatedAt: g.updatedAt || new Date().toISOString(),
 			})) as Gym[],
 			meta: {
 				total: gymFixtures.length,
@@ -28,35 +28,35 @@ export function createMockGymRepository(): IGymRepository {
 		}),
 
 		findById: vi.fn().mockImplementation(async (gymId: string) => {
-			const gym = gymFixtures.find((g) => g.id === gymId);
+			const gym = gymFixtures.find((g) => g.gymId === gymId);
 			if (!gym) return undefined;
 
 			return {
-				gymId: gym.id,
+				gymId: gym.gymId,
 				name: gym.name,
-				ownerEmail: gym.owner_email,
-				createdAt: gym.created_at.toString(),
-				updatedAt: gym.updated_at.toString(),
+				ownerEmail: gym.ownerEmail,
+				createdAt: gym.createdAt || new Date().toISOString(),
+				updatedAt: gym.updatedAt || new Date().toISOString(),
 			} as Gym;
 		}),
 
-		create: vi.fn().mockImplementation(async (gym) => {
+		create: vi.fn().mockImplementation(async (gymData) => {
 			return {
-				...gym,
-				id: "new-gym-id",
-				created_at: Date.now(),
-				updated_at: Date.now(),
+				...gymData,
+				gymId: "new-gym-id",
+				createdAt: new Date().toISOString(),
+				updatedAt: new Date().toISOString(),
 			};
 		}),
 
 		update: vi.fn().mockImplementation(async (gymId, data) => {
-			const gym = gymFixtures.find((g) => g.id === gymId);
+			const gym = gymFixtures.find((g) => g.gymId === gymId);
 			if (!gym) return undefined;
 
 			return {
 				...gym,
 				...data,
-				updated_at: Date.now(),
+				updatedAt: new Date().toISOString(),
 			};
 		}),
 

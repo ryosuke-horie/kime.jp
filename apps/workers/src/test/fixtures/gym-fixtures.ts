@@ -1,54 +1,74 @@
+import { drizzle } from "drizzle-orm/d1";
+import { gyms } from "../../db/schema";
+import { createGymFixture, createMultipleFixtures } from "../helpers/fixture-generator";
+import type { SchemaTypeMap } from "../helpers/schema-type-extractor";
+
 /**
- * テスト用のジムデータフィクスチャ
+ * テスト用のジムデータフィクスチャ（型安全）
  */
-export const gymFixtures = [
-	{
-		id: "gym-1",
+export const gymFixtures: SchemaTypeMap["gyms"]["insert"][] = [
+	createGymFixture({
+		gymId: "gym-1",
 		name: "フィットネスジムA",
-		owner_email: "owner1@example.com",
-		created_at: 1620000000,
-		updated_at: 1620000000,
-	},
-	{
-		id: "gym-2",
+		ownerEmail: "owner1@example.com",
+	}),
+	createGymFixture({
+		gymId: "gym-2",
 		name: "スポーツジムB",
-		owner_email: "owner2@example.com",
-		created_at: 1620100000,
-		updated_at: 1620100000,
-	},
-	{
-		id: "gym-3",
+		ownerEmail: "owner2@example.com",
+	}),
+	createGymFixture({
+		gymId: "gym-3",
 		name: "トレーニングセンターC",
-		owner_email: "owner3@example.com",
-		created_at: 1620200000,
-		updated_at: 1620200000,
-	},
+		ownerEmail: "owner3@example.com",
+	}),
 ];
 
 /**
- * テスト用データをDBに挿入する関数
+ * 指定した数のジムフィクスチャを生成する関数
+ */
+export function generateGymFixtures(count: number): SchemaTypeMap["gyms"]["insert"][] {
+	return createMultipleFixtures("gyms", count);
+}
+
+/**
+ * カスタムデータでジムフィクスチャを生成する関数
+ */
+export function createCustomGymFixtures(
+	customData: Partial<SchemaTypeMap["gyms"]["insert"]>[],
+): SchemaTypeMap["gyms"]["insert"][] {
+	return createMultipleFixtures("gyms", customData.length, customData);
+}
+
+/**
+ * テスト用データをDBに挿入する関数（Drizzle使用）
  */
 export async function seedGymData(db: D1Database): Promise<void> {
-	// 一括でデータを挿入するSQLを構築
-	const placeholders = gymFixtures.map(() => "(?, ?, ?, ?, ?)").join(", ");
+	const drizzleDb = drizzle(db);
 
-	const values = gymFixtures.flatMap((gym) => [
-		gym.id,
-		gym.name,
-		gym.owner_email,
-		gym.created_at,
-		gym.updated_at,
-	]);
+	try {
+		await drizzleDb.insert(gyms).values(gymFixtures);
+	} catch (error) {
+		console.error("Failed to seed gym data:", error);
+		throw error;
+	}
+}
 
-	// SQLを実行してテストデータを挿入
-	await db
-		.prepare(`
-    INSERT INTO gyms (
-      id, name, owner_email, created_at, updated_at
-    ) VALUES ${placeholders}
-  `)
-		.bind(...values)
-		.run();
+/**
+ * カスタムジムデータをDBに挿入する関数
+ */
+export async function seedCustomGymData(
+	db: D1Database,
+	customFixtures: SchemaTypeMap["gyms"]["insert"][],
+): Promise<void> {
+	const drizzleDb = drizzle(db);
+
+	try {
+		await drizzleDb.insert(gyms).values(customFixtures);
+	} catch (error) {
+		console.error("Failed to seed custom gym data:", error);
+		throw error;
+	}
 }
 
 /**
@@ -67,3 +87,12 @@ export async function seedGymDataFromBindings(): Promise<void> {
 		throw error;
 	}
 }
+
+// 下位互換性のため、古い形式のフィクスチャも提供
+export const legacyGymFixtures = gymFixtures.map((gym) => ({
+	id: gym.gymId,
+	name: gym.name,
+	owner_email: gym.ownerEmail,
+	created_at: new Date(gym.createdAt || "").getTime() || 1620000000,
+	updated_at: new Date(gym.updatedAt || "").getTime() || 1620000000,
+}));

@@ -166,6 +166,7 @@ describe("GymController - 単体テスト", () => {
 			const gymData = {
 				name: "新規ジム",
 				ownerEmail: "test@example.com",
+				password: "testPassword123",
 			};
 
 			const mockCtx = createMockContext({

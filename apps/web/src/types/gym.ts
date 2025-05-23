@@ -16,6 +16,7 @@ export type GymType = z.infer<typeof Gym>;
 export const CreateGymRequest = z.object({
 	name: z.string().min(1).max(100).describe("ジム名"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
+	password: z.string().min(8).max(100).describe("ジムオーナーのログインパスワード"),
 });
 
 export type CreateGymRequestType = z.infer<typeof CreateGymRequest>;
@@ -32,6 +33,7 @@ export type CreateGymResponseType = z.infer<typeof CreateGymResponse>;
 export const UpdateGymRequest = z.object({
 	name: z.string().min(1).max(100).optional().describe("ジム名"),
 	ownerEmail: z.string().email().optional().describe("オーナーのメールアドレス"),
+	password: z.string().min(8).max(100).optional().describe("ジムオーナーのログインパスワード"),
 });
 
 export type UpdateGymRequestType = z.infer<typeof UpdateGymRequest>;

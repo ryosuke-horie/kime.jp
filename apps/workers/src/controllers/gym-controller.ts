@@ -39,18 +39,21 @@ const gymListQuerySchema = z.object({
 const createGymSchema = z.object({
 	name: z.string().min(1).max(100),
 	ownerEmail: z.string().email(),
+	password: z.string().min(8).max(100),
 });
 
 // ジム更新リクエストのバリデーションスキーマ（PATCH: 部分更新）
 const updateGymSchema = z.object({
 	name: z.string().min(1).max(100).optional(),
 	ownerEmail: z.string().email().optional(),
+	password: z.string().min(8).max(100).optional(),
 });
 
 // ジム完全更新リクエストのバリデーションスキーマ（PUT: 完全更新）
 const updateGymFullSchema = z.object({
 	name: z.string().min(1).max(100),
 	ownerEmail: z.string().email(),
+	password: z.string().min(8).max(100).optional(),
 });
 
 /**
@@ -123,10 +126,10 @@ export class GymController {
 			);
 		}
 
-		const { name, ownerEmail } = parseResult.data;
+		const { name, ownerEmail, password } = parseResult.data;
 
 		try {
-			const gym = await this.gymService.createGym({ name, ownerEmail });
+			const gym = await this.gymService.createGym({ name, ownerEmail, password });
 			return c.json({ message: "ジムを作成しました", gymId: gym.gymId }, { status: 201 });
 		} catch (error) {
 			throw new ServerError("ジムの作成に失敗しました");

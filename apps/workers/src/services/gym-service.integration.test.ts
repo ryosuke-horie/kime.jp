@@ -41,6 +41,7 @@ describe("GymService - 統合テスト", () => {
 			const gym = await gymService.createGym({
 				name,
 				ownerEmail,
+				password: "testPassword123",
 			});
 
 			// ジムが作成されたことを検証

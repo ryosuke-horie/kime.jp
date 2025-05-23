@@ -37,6 +37,9 @@ const gymFormSchema = z.object({
 	ownerEmail: z.string().email({
 		message: "有効なメールアドレスを入力してください",
 	}),
+	password: z.string().min(8, {
+		message: "パスワードは8文字以上で入力してください",
+	}),
 	phone: z.string().optional(),
 	website: z
 		.string()
@@ -62,6 +65,7 @@ export default function CreateGymPage() {
 		defaultValues: {
 			name: "",
 			ownerEmail: "",
+			password: "",
 			phone: "",
 			website: "",
 			address: "",
@@ -75,6 +79,7 @@ export default function CreateGymPage() {
 			const requiredData = {
 				name: values.name,
 				ownerEmail: values.ownerEmail,
+				password: values.password,
 			};
 
 			const response = await createGym(requiredData);
@@ -139,6 +144,19 @@ export default function CreateGymPage() {
 												<FormLabel>メールアドレス *</FormLabel>
 												<FormControl>
 													<Input type="email" placeholder="連絡先メールアドレス" {...field} />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="password"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>ログインパスワード *</FormLabel>
+												<FormControl>
+													<Input type="password" placeholder="8文字以上のパスワード" {...field} />
 												</FormControl>
 												<FormMessage />
 											</FormItem>

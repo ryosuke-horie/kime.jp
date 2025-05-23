@@ -37,6 +37,13 @@ const gymFormSchema = z.object({
 	ownerEmail: z.string().email({
 		message: "有効なメールアドレスを入力してください",
 	}),
+	password: z
+		.string()
+		.min(8, {
+			message: "パスワードは8文字以上で入力してください",
+		})
+		.optional()
+		.or(z.literal("")),
 	phone: z.string().optional(),
 	website: z
 		.string()
@@ -65,6 +72,7 @@ export default function EditGymPage() {
 		defaultValues: {
 			name: "",
 			ownerEmail: "",
+			password: "",
 			phone: "",
 			website: "",
 			address: "",
@@ -125,7 +133,7 @@ export default function EditGymPage() {
 	async function onSubmit(values: GymFormValues) {
 		try {
 			// ジム更新に必要なデータを準備
-			const updateData = {
+			const updateData: any = {
 				name: values.name,
 				ownerEmail: values.ownerEmail,
 				// オプショナルフィールドを追加（APIの拡張が必要）
@@ -138,6 +146,11 @@ export default function EditGymPage() {
 				description: values.description,
 				*/
 			};
+
+			// パスワードが入力された場合のみ追加
+			if (values.password) {
+				updateData.password = values.password;
+			}
 
 			await updateGym(updateData);
 
@@ -205,6 +218,23 @@ export default function EditGymPage() {
 													<FormLabel>メールアドレス *</FormLabel>
 													<FormControl>
 														<Input type="email" placeholder="連絡先メールアドレス" {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="password"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>パスワード変更（任意）</FormLabel>
+													<FormControl>
+														<Input
+															type="password"
+															placeholder="新しいパスワード（8文字以上）"
+															{...field}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>

@@ -31,22 +31,17 @@ function getTestEnv() {
  */
 async function createTestTables(db: D1Database): Promise<void> {
 	try {
-		// gymsテーブルの作成 - SQL文を単純化
-		await db.exec(
-			"CREATE TABLE IF NOT EXISTS gyms (gym_id TEXT PRIMARY KEY, name TEXT NOT NULL, owner_email TEXT NOT NULL, password_hash TEXT, created_at TEXT, updated_at TEXT);",
-		);
+		// マイグレーションベースのアプローチに移行したため、
+		// この関数では直接テーブルを作成しない
+		// 代わりに、マイグレーションランナーを使用
+		const { applyMigrationsToTestDB } = await import("./helpers/migration-runner");
+		const result = await applyMigrationsToTestDB(db);
+		
+		if (!result.success) {
+			throw new Error("Failed to apply migrations");
+		}
 
-		// adminAccountsテーブルの作成 - SQL文を単純化
-		await db.exec(
-			"CREATE TABLE IF NOT EXISTS admin_accounts (admin_id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL, role TEXT NOT NULL, password_hash TEXT, is_active INTEGER, last_login_at TEXT, created_at TEXT, updated_at TEXT);",
-		);
-
-		// adminGymRelationshipsテーブルの作成 - SQL文を単純化
-		await db.exec(
-			"CREATE TABLE IF NOT EXISTS admin_gym_relationships (admin_id TEXT NOT NULL, gym_id TEXT NOT NULL, role TEXT NOT NULL, created_at TEXT, PRIMARY KEY (admin_id, gym_id));",
-		);
-
-		console.log("✅ Test tables created successfully");
+		console.log("✅ Test tables created successfully via migrations");
 	} catch (error) {
 		console.error("❌ Failed to create test tables:", error);
 		throw error;
@@ -125,18 +120,9 @@ async function cleanupData(db: D1Database): Promise<void> {
  */
 async function dropTestTables(db: D1Database): Promise<void> {
 	try {
-		// 参照整合性の制約があるので、順番に削除
-		const tablesToDrop = ["admin_gym_relationships", "admin_accounts", gyms.name];
-
-		for (const table of tablesToDrop) {
-			try {
-				await db.exec(`DROP TABLE IF EXISTS ${table}`);
-			} catch (err) {
-				console.warn(`⚠️ Could not drop table ${table}, it might not exist`);
-			}
-		}
-
-		console.log("✅ Test tables dropped successfully");
+		// マイグレーションランナーのリセット機能を使用
+		const { resetTestDatabase } = await import("./helpers/migration-runner");
+		await resetTestDatabase(db);
 	} catch (error) {
 		console.error("❌ Failed to drop test tables:", error);
 		throw error;
@@ -157,6 +143,9 @@ beforeAll(async () => {
 	}
 
 	try {
+		// 既存のテーブルをクリーンアップ（マイグレーションとの競合を避けるため）
+		await dropTestTables(DB);
+		
 		// テスト用のテーブルを作成
 		await createTestTables(DB);
 

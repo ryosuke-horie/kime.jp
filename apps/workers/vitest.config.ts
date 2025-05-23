@@ -1,10 +1,11 @@
 import { defineWorkersConfig } from "@cloudflare/vitest-pool-workers/config";
 import path from "path";
+import { TEST_ENV_CONFIG } from "./src/test/test-env-config";
 
 export default defineWorkersConfig({
 	test: {
-		testTimeout: 10000,
-		hookTimeout: 10000,
+		testTimeout: TEST_ENV_CONFIG.TEST_TIMEOUT,
+		hookTimeout: TEST_ENV_CONFIG.HOOK_TIMEOUT,
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}"],
 		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
@@ -26,9 +27,9 @@ export default defineWorkersConfig({
 		
 		// 環境変数の設定 - テスト環境であることを明示
 		env: {
-			NODE_ENV: "test",
-			SKIP_AUTH: "true",
-			JWT_SECRET: "test-secret-key",
+			NODE_ENV: TEST_ENV_CONFIG.NODE_ENV,
+			SKIP_AUTH: TEST_ENV_CONFIG.SKIP_AUTH,
+			JWT_SECRET: TEST_ENV_CONFIG.JWT_SECRET,
 		},
 		
 		// Cloudflare Workers の統合テスト設定
@@ -42,9 +43,7 @@ export default defineWorkersConfig({
 				},
 				// D1データベースの設定
 				d1Persist: false, // テスト間でデータを永続化しない
-				d1Databases: ['DB'],
-				// 分離されたストレージパスを指定
-				persistTo: './.wrangler/test-state',
+				d1Databases: [TEST_ENV_CONFIG.DB_BINDING],
 				// D1データベースの自動クリーンアップ
 				d1AutoReset: true,
 			},

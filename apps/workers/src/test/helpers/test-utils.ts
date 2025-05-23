@@ -12,6 +12,7 @@ import { drizzle } from "drizzle-orm/d1";
 import type { Hono } from "hono";
 import { describe, it } from "vitest";
 import * as schema from "../../db/schema";
+import { TEST_ENV_CONFIG } from "../test-env-config";
 
 /**
  * テスト環境の変数を取得するユーティリティ
@@ -21,9 +22,9 @@ export function getTestEnv() {
 	return {
 		DB: env?.DB,
 		isTestEnv: typeof env !== "undefined" && env.DB !== undefined,
-		NODE_ENV: env?.NODE_ENV || "test",
-		SKIP_AUTH: env?.SKIP_AUTH || "true",
-		JWT_SECRET: env?.JWT_SECRET || "test-secret",
+		NODE_ENV: env?.NODE_ENV || TEST_ENV_CONFIG.NODE_ENV,
+		SKIP_AUTH: env?.SKIP_AUTH || TEST_ENV_CONFIG.SKIP_AUTH,
+		JWT_SECRET: env?.JWT_SECRET || TEST_ENV_CONFIG.JWT_SECRET,
 	};
 }
 

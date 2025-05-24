@@ -138,6 +138,7 @@ export function createStaffFixture(
 		name: generateName(),
 		email: generateEmail(),
 		role: roles[Math.floor(Math.random() * roles.length)],
+		passwordHash: "default-hashed-password", // テスト用のデフォルトパスワードハッシュ
 		active: Math.random() > 0.2 ? 1 : 0,
 		createdAt: generateTimestamp(),
 		...overrides,

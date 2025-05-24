@@ -5,8 +5,8 @@
  * 仕組みを提供し、型安全なテストデータ生成機能を提供します。
  */
 
-import type { SchemaTypeMap } from "./schema-type-extractor";
 import type { MigrationChange } from "./migration-sync";
+import type { SchemaTypeMap } from "./schema-type-extractor";
 import type { SchemaReport } from "./schema-validation";
 
 // スキーマ型抽出

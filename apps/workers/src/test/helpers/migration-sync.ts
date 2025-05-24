@@ -77,7 +77,7 @@ export function detectMigrationChanges(
 			const oldTable = oldSchema[tableName];
 			const newTable = newSchema[tableName];
 			if (!oldTable || !newTable) continue;
-			
+
 			const oldFields = new Set(oldTable.fields);
 			const newFields = new Set(newTable.fields);
 
@@ -273,9 +273,14 @@ export async function backupFixtures(fixtures: Record<string, any[]>): Promise<s
 }
 
 export async function restoreFixtures(backupPath: string): Promise<Record<string, any[]>> {
-	// 実際のプロジェクトでは、バックアップファイルから読み込み
-	// ここではテスト用に空のオブジェクトを返す
-	return {};
+	try {
+		const { readFile } = await import("node:fs/promises");
+		const content = await readFile(backupPath, "utf-8");
+		return JSON.parse(content);
+	} catch (error) {
+		console.warn(`Failed to restore fixtures from ${backupPath}:`, error);
+		return {};
+	}
 }
 
 export function generateMigrationScript(

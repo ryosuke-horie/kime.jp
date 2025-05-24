@@ -63,3 +63,64 @@ export interface AuthenticatedContext {
 	/** メールアドレス */
 	email: string;
 }
+
+/**
+ * ログインリクエスト
+ */
+export interface LoginRequest {
+	/** メールアドレス */
+	email: string;
+	/** パスワード */
+	password: string;
+}
+
+/**
+ * ユーザー情報
+ */
+export interface User {
+	/** ユーザーID */
+	id: string;
+	/** メールアドレス */
+	email: string;
+	/** ジムID */
+	gymId: string;
+	/** ロール */
+	role: "owner" | "staff";
+	/** 名前 */
+	name: string;
+}
+
+/**
+ * ログイン成功レスポンス
+ */
+export interface LoginSuccessResponse {
+	/** 成功フラグ */
+	success: true;
+	/** JWTトークン */
+	token: string;
+	/** ユーザー情報 */
+	user: User;
+}
+
+/**
+ * ログイン失敗レスポンス
+ */
+export interface LoginErrorResponse {
+	/** 成功フラグ */
+	success: false;
+	/** エラーメッセージ */
+	error: "Invalid credentials" | "Account disabled";
+}
+
+/**
+ * ログインレスポンス
+ */
+export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
+
+/**
+ * /api/auth/me レスポンス
+ */
+export interface MeResponse {
+	/** ユーザー情報 */
+	user: User;
+}

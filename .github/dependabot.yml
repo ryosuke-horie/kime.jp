@@ -1,14 +1,30 @@
 version: 2
 updates:
-  # ルートディレクトリのパッケージの依存関係を管理
+  # ルートディレクトリのパッケージの依存関係を管理（モノレポ管理ツールのみ）
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
       time: "07:00"
       timezone: "Asia/Tokyo"
+    groups:
+      monorepo-tools:
+        patterns:
+          - "@biomejs/biome"
+          - "turbo"
+        update-types:
+          - "minor"
+          - "patch"
+      testing-tools:
+        patterns:
+          - "@cloudflare/vitest-pool-workers"
+          - "@vitest/coverage-istanbul"
+          - "@vitest/ui"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "chore(deps-root)"
       include: "scope"
     
   # Webアプリケーション - 依存関係
@@ -64,7 +80,7 @@ updates:
       prefix: "chore(deps-web)"
       include: "scope"
       
-  # Workersアプリケーション - 本番用依存関係
+  # Workersアプリケーション - 依存関係
   - package-ecosystem: "npm"
     directory: "/apps/workers"
     schedule:
@@ -79,18 +95,9 @@ updates:
           - "hono"
           - "uuid"
           - "zod"
-    commit-message:
-      prefix: "chore(deps-workers-prod)"
-      include: "scope"
-    
-  # Workersアプリケーション - 開発用依存関係
-  - package-ecosystem: "npm"
-    directory: "/apps/workers"
-    schedule:
-      interval: "daily"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    groups:
+        update-types:
+          - "minor"
+          - "patch"
       development-dependencies:
         patterns:
           - "@hono/vite-build"
@@ -100,25 +107,20 @@ updates:
           - "typescript"
           - "vite"
           - "wrangler"
-    commit-message:
-      prefix: "chore(deps-workers-dev)"
-      include: "scope"
-      
-  # Workersアプリケーション - テスト用依存関係
-  - package-ecosystem: "npm"
-    directory: "/apps/workers"
-    schedule:
-      interval: "daily"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    groups:
+        update-types:
+          - "minor"
+          - "patch"
       testing-dependencies:
         patterns:
           - "@cloudflare/vitest-pool-workers"
+          - "@vitest/coverage-istanbul"
           - "@vitest/coverage-v8"
           - "vitest"
+        update-types:
+          - "minor"
+          - "patch"
     commit-message:
-      prefix: "chore(deps-workers-test)"
+      prefix: "chore(deps-workers)"
       include: "scope"
     
   # GitHub Actionsの依存関係を管理

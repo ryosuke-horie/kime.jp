@@ -110,13 +110,13 @@ updates:
         update-types:
           - "minor"
           - "patch"
-      testing-dependencies:
+      vitest-ecosystem:
         patterns:
           - "@cloudflare/vitest-pool-workers"
-          - "@vitest/coverage-istanbul"
-          - "@vitest/coverage-v8"
+          - "@vitest/*"
           - "vitest"
         update-types:
+          - "major"
           - "minor"
           - "patch"
     commit-message:

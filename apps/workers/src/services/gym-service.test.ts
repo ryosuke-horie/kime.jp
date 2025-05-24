@@ -95,7 +95,7 @@ describe("GymService - 単体テスト", () => {
 			}
 
 			// 返り値を検証
-			expect(result).toHaveProperty("id");
+			expect(result).toHaveProperty("gymId");
 			expect(result).toHaveProperty("name", gymData.name);
 			expect(result).toHaveProperty("ownerEmail", gymData.ownerEmail);
 		});

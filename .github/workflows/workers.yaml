@@ -12,6 +12,17 @@ on:
       - 'package.json'                    # ルートパッケージ設定
       - 'pnpm-workspace.yaml'             # PNPM ワークスペース設定
       - 'tsconfig.base.json'              # ベースTypeScript設定
+  pull_request:
+    branches: ["main"]
+    paths:
+      - '.github/workflows/workers.yaml'  # 自身のワークフローファイル
+      - 'apps/workers/**'                 # workersアプリのソースコード全体
+      - 'biome.json'                      # Biome設定
+      - 'lefthook.yml'                    # Lefthook設定
+      - 'config/biome/**'                 # Biome設定ディレクトリ
+      - 'package.json'                    # ルートパッケージ設定
+      - 'pnpm-workspace.yaml'             # PNPM ワークスペース設定
+      - 'tsconfig.base.json'              # ベースTypeScript設定
 
 # 同一PRの古いジョブを自動的にキャンセルする設定
 concurrency:

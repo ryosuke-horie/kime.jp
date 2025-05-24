@@ -83,6 +83,17 @@ async function seedTestData() {
 				('gym-3', 'トレーニングセンターC', 'owner3@example.com', '2023-01-03T00:00:00.000Z', '2023-01-03T00:00:00.000Z')
 		`).run();
 
+		// スタッフテストデータを挿入
+		await env.DB.prepare(`
+			INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at)
+			VALUES 
+				('staff-1', 'gym-1', 'スタッフ太郎', 'staff@test.com', 'reception', '$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6', 1, '2023-01-01T00:00:00.000Z'),
+				('owner-1', 'gym-1', 'オーナー花子', 'owner@test.com', 'admin', '$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6', 1, '2023-01-01T00:00:00.000Z'),
+				('staff-2', 'gym-1', 'スタッフ次郎', 'staff2@test.com', 'reception', '$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6', 1, '2023-01-01T00:00:00.000Z'),
+				('staff-inactive', 'gym-1', '非アクティブスタッフ', 'inactive@test.com', 'reception', '$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6', 0, '2023-01-01T00:00:00.000Z'),
+				('staff-gym2', 'gym-2', 'ジム2スタッフ', 'staff-gym2@test.com', 'reception', '$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6', 1, '2023-01-02T00:00:00.000Z')
+		`).run();
+
 		console.log("Test data seeded successfully");
 	} catch (error) {
 		console.error("Failed to seed test data:", error);

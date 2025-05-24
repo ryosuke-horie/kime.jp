@@ -12,21 +12,10 @@ on:
       - 'package.json'                    # ルートパッケージ設定
       - 'pnpm-workspace.yaml'             # PNPM ワークスペース設定
       - 'tsconfig.base.json'              # ベースTypeScript設定
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      - '.github/workflows/web.yaml'      # 自身のワークフローファイル
-      - 'apps/web/**'                     # webアプリのソースコード全体
-      - 'biome.json'                      # Biome設定
-      - 'lefthook.yml'                    # Lefthook設定
-      - 'config/biome/**'                 # Biome設定ディレクトリ
-      - 'package.json'                    # ルートパッケージ設定
-      - 'pnpm-workspace.yaml'             # PNPM ワークスペース設定
-      - 'tsconfig.base.json'              # ベースTypeScript設定
 
 # 同一PRの古いジョブを自動的にキャンセルする設定
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -61,7 +50,6 @@ jobs:
     name: Web App Lint & Format & TypeCheck
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: github.event_name == 'pull_request'
     steps:
       - name: Check out code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

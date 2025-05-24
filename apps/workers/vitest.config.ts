@@ -28,7 +28,7 @@ export default defineWorkersConfig({
 		env: {
 			NODE_ENV: "test",
 			SKIP_AUTH: "true",
-			JWT_SECRET: "test-secret-key",
+			JWT_SECRET: "test-secret-key-ci",
 		},
 		
 		// Cloudflare Workers環境では不要なSSRの依存関係解決警告を抑制

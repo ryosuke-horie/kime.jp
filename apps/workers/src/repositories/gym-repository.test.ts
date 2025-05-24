@@ -95,7 +95,7 @@ describe("GymRepository - 単体テスト", () => {
 
 	describe("findById", () => {
 		itWithD1("存在するジムIDでは正しいジム情報を返すこと", async () => {
-			const gymId = gymFixtures[0]?.id;
+			const gymId = gymFixtures[0]?.gymId;
 			if (gymId) {
 				const result = await repository.findById(gymId);
 
@@ -143,7 +143,7 @@ describe("GymRepository - 単体テスト", () => {
 
 	describe("update", () => {
 		itWithD1("既存のジムを更新すること", async () => {
-			const gymId = gymFixtures[0]?.id;
+			const gymId = gymFixtures[0]?.gymId;
 			if (gymId) {
 				const updateData = {
 					name: "更新後のジム名",
@@ -156,7 +156,7 @@ describe("GymRepository - 単体テスト", () => {
 					expect(result.gymId).toBe(gymId);
 					expect(result.name).toBe(updateData.name);
 					// 元のデータから変更されていないフィールドも保持されていること
-					expect(result.ownerEmail).toBe(gymFixtures[0]?.owner_email);
+					expect(result.ownerEmail).toBe(gymFixtures[0]?.ownerEmail);
 				}
 			}
 
@@ -170,7 +170,7 @@ describe("GymRepository - 単体テスト", () => {
 		});
 
 		itWithD1("空のデータで更新を呼び出した場合は元のデータを返すこと", async () => {
-			const gymId = gymFixtures[0]?.id;
+			const gymId = gymFixtures[0]?.gymId;
 			if (gymId) {
 				const result = await repository.update(gymId, {});
 

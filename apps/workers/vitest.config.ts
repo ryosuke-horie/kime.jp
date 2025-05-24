@@ -6,13 +6,7 @@ export default defineWorkersConfig({
 		testTimeout: 10000,
 		hookTimeout: 10000,
 		include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}"],
-		exclude: [
-			"**/node_modules/**", 
-			"**/dist/**",
-			// Issue #327対応まで一時的にスキップ
-			"**/migration-sync.test.ts",
-			"**/schema-sync-integration.test.ts"
-		],
+		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
 			provider: "istanbul",
 			reporter: ["text", "json", "html"],

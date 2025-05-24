@@ -74,8 +74,12 @@ export function detectMigrationChanges(
 	// フィールドの変更を検出
 	for (const tableName of newTables) {
 		if (oldTables.has(tableName)) {
-			const oldFields = new Set(oldSchema[tableName].fields);
-			const newFields = new Set(newSchema[tableName].fields);
+			const oldTable = oldSchema[tableName];
+			const newTable = newSchema[tableName];
+			if (!oldTable || !newTable) continue;
+			
+			const oldFields = new Set(oldTable.fields);
+			const newFields = new Set(newTable.fields);
 
 			// フィールドの追加
 			for (const fieldName of newFields) {
@@ -115,8 +119,8 @@ export function detectMigrationChanges(
 			}
 
 			// 型の変更を検出
-			const oldTypes = oldSchema[tableName].types || {};
-			const newTypes = newSchema[tableName].types || {};
+			const oldTypes = oldTable.types || {};
+			const newTypes = newTable.types || {};
 
 			for (const fieldName of newFields) {
 				if (oldFields.has(fieldName)) {

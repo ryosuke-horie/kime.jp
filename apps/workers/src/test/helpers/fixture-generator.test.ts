@@ -70,9 +70,9 @@ describe("フィクスチャ生成ユーティリティ", () => {
 			const customDataArray = [{ name: "ジム1" }, { name: "ジム2" }, { name: "ジム3" }];
 			const fixtures = createMultipleFixtures("gyms", 3, customDataArray);
 
-			expect(fixtures[0].name).toBe("ジム1");
-			expect(fixtures[1].name).toBe("ジム2");
-			expect(fixtures[2].name).toBe("ジム3");
+			expect(fixtures[0]?.name).toBe("ジム1");
+			expect(fixtures[1]?.name).toBe("ジム2");
+			expect(fixtures[2]?.name).toBe("ジム3");
 		});
 	});
 

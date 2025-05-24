@@ -164,8 +164,8 @@ describe("スキーマ検証ユーティリティ", () => {
 			const report = generateSchemaReport(testFixtures);
 
 			expect(report.summary.invalidTables).toBeGreaterThan(0);
-			expect(report.tableReports.gyms.isValid).toBe(false);
-			expect(report.tableReports.gyms.errors.length).toBeGreaterThan(0);
+			expect(report.tableReports.gyms?.isValid).toBe(false);
+			expect(report.tableReports.gyms?.errors.length).toBeGreaterThan(0);
 		});
 
 		it("空のフィクスチャセットに対して適切にレポートすること", () => {

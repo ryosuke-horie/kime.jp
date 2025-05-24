@@ -272,7 +272,7 @@ export function validateSchemaConsistency<T extends TableName>(
 			const expectedType = types[field];
 			const isNullable = nullable.includes(field);
 
-			if (!checkFieldCompatibility(field, expectedType, value, isNullable)) {
+			if (expectedType && !checkFieldCompatibility(field, expectedType, value, isNullable)) {
 				errors.push(
 					`フィールド '${field}' の型が不正です。期待値: ${expectedType}, 実際の値: ${typeof value}`,
 				);
@@ -285,9 +285,15 @@ export function validateSchemaConsistency<T extends TableName>(
 		const constraintKey = `${tableName}.${field}`;
 		if (constraintKey in enumConstraints) {
 			const allowedValues = enumConstraints[constraintKey];
-			if (value !== null && value !== undefined && !allowedValues.includes(value)) {
+			if (
+				allowedValues &&
+				value !== null &&
+				value !== undefined &&
+				typeof value === "string" &&
+				!allowedValues.includes(value)
+			) {
 				errors.push(
-					`フィールド '${field}' の値が制約に違反しています。許可された値: ${allowedValues.join(", ")}, 実際の値: ${value}`,
+					`フィールド '${field}' の値が制約に違反しています。許可された値: ${allowedValues?.join(", ") || ""}, 実際の値: ${value}`,
 				);
 			}
 		}
@@ -327,7 +333,15 @@ export function checkFieldCompatibility(
 
 	switch (expectedType) {
 		case "string":
-			return typeof value === "string";
+			if (typeof value !== "string") {
+				return false;
+			}
+			// emailフィールドの場合は形式チェック
+			if (fieldName.toLowerCase().includes("email")) {
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				return emailRegex.test(value);
+			}
+			return true;
 		case "number":
 			return typeof value === "number";
 		case "boolean":
@@ -364,7 +378,7 @@ export function detectSchemaMismatch<T extends TableName>(
 			const expectedType = expectedFields[field];
 			const isNullable = nullable.includes(field);
 
-			if (!checkFieldCompatibility(field, expectedType, value, isNullable)) {
+			if (expectedType && !checkFieldCompatibility(field, expectedType, value, isNullable)) {
 				mismatches.push({
 					fieldName: field,
 					reason: "type_mismatch",
@@ -387,11 +401,17 @@ export function detectSchemaMismatch<T extends TableName>(
 		const constraintKey = `${tableName}.${field}`;
 		if (constraintKey in enumConstraints) {
 			const allowedValues = enumConstraints[constraintKey];
-			if (value !== null && value !== undefined && !allowedValues.includes(value)) {
+			if (
+				allowedValues &&
+				value !== null &&
+				value !== undefined &&
+				typeof value === "string" &&
+				!allowedValues.includes(value)
+			) {
 				mismatches.push({
 					fieldName: field,
 					reason: "constraint_violation",
-					expected: allowedValues.join(" | "),
+					expected: allowedValues?.join(" | ") || "",
 					actual: String(value),
 				});
 			}

@@ -19,10 +19,33 @@ import { gymFixtures } from "./fixtures/gym-fixtures";
  * @returns D1データベースへのアクセスを提供するオブジェクト
  */
 function getTestEnv() {
+	const isTestEnv = typeof env !== "undefined" && env.DB !== undefined;
+	const nodeEnv = process.env.NODE_ENV;
+
+	if (isTestEnv) {
+		console.log(`📋 Test environment detected: NODE_ENV=${nodeEnv}`);
+	}
+
 	return {
 		DB: env?.DB,
-		isTestEnv: typeof env !== "undefined" && env.DB !== undefined,
+		isTestEnv,
+		nodeEnv,
 	};
+}
+
+/**
+ * データベース接続を確認する関数
+ * @param db D1データベースインスタンス
+ */
+async function verifyDatabaseConnection(db: D1Database): Promise<void> {
+	try {
+		// 簡単なクエリでデータベース接続を確認
+		await db.prepare("SELECT 1 as test").first();
+		console.log("✅ Database connection verified");
+	} catch (error) {
+		console.error("❌ Database connection failed:", error);
+		throw new Error("Database connection verification failed");
+	}
 }
 
 /**
@@ -31,20 +54,28 @@ function getTestEnv() {
  */
 async function createTestTables(db: D1Database): Promise<void> {
 	try {
+		console.log("🔧 Creating test tables...");
+
+		// データベース接続を最初に確認
+		await verifyDatabaseConnection(db);
+
 		// gymsテーブルの作成 - SQL文を単純化
 		await db.exec(
 			"CREATE TABLE IF NOT EXISTS gyms (gym_id TEXT PRIMARY KEY, name TEXT NOT NULL, owner_email TEXT NOT NULL, password_hash TEXT, created_at TEXT, updated_at TEXT);",
 		);
+		console.log("  ✓ gyms table created");
 
 		// adminAccountsテーブルの作成 - SQL文を単純化
 		await db.exec(
 			"CREATE TABLE IF NOT EXISTS admin_accounts (admin_id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL, role TEXT NOT NULL, password_hash TEXT, is_active INTEGER, last_login_at TEXT, created_at TEXT, updated_at TEXT);",
 		);
+		console.log("  ✓ admin_accounts table created");
 
 		// adminGymRelationshipsテーブルの作成 - SQL文を単純化
 		await db.exec(
 			"CREATE TABLE IF NOT EXISTS admin_gym_relationships (admin_id TEXT NOT NULL, gym_id TEXT NOT NULL, role TEXT NOT NULL, created_at TEXT, PRIMARY KEY (admin_id, gym_id));",
 		);
+		console.log("  ✓ admin_gym_relationships table created");
 
 		console.log("✅ Test tables created successfully");
 	} catch (error) {
@@ -91,8 +122,12 @@ async function seedTestData(db: D1Database): Promise<void> {
  */
 async function cleanupData(db: D1Database): Promise<void> {
 	try {
+		console.log("🧹 Cleaning up test data...");
+
 		// テーブルの存在を確認してからデータを削除
+		// 参照整合性を考慮した順序で削除
 		const tables = ["admin_gym_relationships", "admin_accounts", "gyms"];
+		let cleanedTables = 0;
 
 		for (const table of tables) {
 			try {
@@ -105,14 +140,16 @@ async function cleanupData(db: D1Database): Promise<void> {
 					.first();
 
 				if (result) {
-					await db.exec(`DELETE FROM ${table}`);
+					const deleteResult = await db.exec(`DELETE FROM ${table}`);
+					console.log(`  ✓ ${table} table data cleared`);
+					cleanedTables++;
 				}
 			} catch (err) {
 				console.warn(`⚠️ Table '${table}' might not exist yet, skipping cleanup`);
 			}
 		}
 
-		console.log("✅ Database data cleaned up");
+		console.log(`✅ Database data cleaned up (${cleanedTables} tables processed)`);
 	} catch (error) {
 		console.error("❌ Failed to clean database data:", error);
 		throw error;

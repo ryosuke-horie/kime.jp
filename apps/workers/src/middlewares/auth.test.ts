@@ -9,7 +9,7 @@ describe("認証ミドルウェア", () => {
 
 	beforeEach(() => {
 		// グローバルに環境変数を設定（ビルドイン process.env へのフォールバック）
-		if (typeof globalThis !== 'undefined') {
+		if (typeof globalThis !== "undefined") {
 			(globalThis as any).process = (globalThis as any).process || {};
 			(globalThis as any).process.env = (globalThis as any).process.env || {};
 			(globalThis as any).process.env.JWT_SECRET = testSecret;
@@ -21,14 +21,17 @@ describe("認証ミドルウェア", () => {
 	describe("jwtAuth ミドルウェア", () => {
 		it("有効なJWTで認証が成功する", async () => {
 			// テスト用JWT生成（testSecretを明示的に使用）
-			const token = await generateJWT({
-				userId: "user-123",
-				email: "test@example.com",
-				gymId: "gym-456",
-				role: "owner",
-			}, testSecret);
+			const token = await generateJWT(
+				{
+					userId: "user-123",
+					email: "test@example.com",
+					gymId: "gym-456",
+					role: "owner",
+				},
+				testSecret,
+			);
 
-			app.use("/protected", jwtAuth());
+			app.use("/protected", jwtAuth(testSecret));
 			app.get("/protected", (c) => {
 				const auth = c.get("auth");
 				return c.json({ success: true, userId: auth.userId });
@@ -49,7 +52,7 @@ describe("認証ミドルウェア", () => {
 		});
 
 		it("Authorizationヘッダーがない場合401エラーになる", async () => {
-			app.use("/protected", jwtAuth());
+			app.use("/protected", jwtAuth(testSecret));
 			app.get("/protected", (c) => c.json({ success: true }));
 
 			const response = await app.request("/protected");
@@ -60,7 +63,7 @@ describe("認証ミドルウェア", () => {
 		});
 
 		it("無効なBearer形式で401エラーになる", async () => {
-			app.use("/protected", jwtAuth());
+			app.use("/protected", jwtAuth(testSecret));
 			app.get("/protected", (c) => c.json({ success: true }));
 
 			const response = await app.request("/protected", {
@@ -75,7 +78,7 @@ describe("認証ミドルウェア", () => {
 		});
 
 		it("無効なJWTで401エラーになる", async () => {
-			app.use("/protected", jwtAuth());
+			app.use("/protected", jwtAuth(testSecret));
 			app.get("/protected", (c) => c.json({ success: true }));
 
 			const response = await app.request("/protected", {
@@ -90,14 +93,17 @@ describe("認証ミドルウェア", () => {
 		});
 
 		it("認証成功時にコンテキストにauth情報が設定される", async () => {
-			const token = await generateJWT({
-				userId: "user-789",
-				email: "test2@example.com",
-				gymId: "gym-012",
-				role: "staff",
-			}, testSecret);
+			const token = await generateJWT(
+				{
+					userId: "user-789",
+					email: "test2@example.com",
+					gymId: "gym-012",
+					role: "staff",
+				},
+				testSecret,
+			);
 
-			app.use("/protected", jwtAuth());
+			app.use("/protected", jwtAuth(testSecret));
 			app.get("/protected", (c) => {
 				const auth = c.get("auth");
 				return c.json({
@@ -127,14 +133,17 @@ describe("認証ミドルウェア", () => {
 
 	describe("requireGymAccess ミドルウェア", () => {
 		it("一致するgymIdでアクセスが許可される", async () => {
-			const token = await generateJWT({
-				userId: "user-123",
-				email: "test@example.com",
-				gymId: "gym-456",
-				role: "owner",
-			}, testSecret);
+			const token = await generateJWT(
+				{
+					userId: "user-123",
+					email: "test@example.com",
+					gymId: "gym-456",
+					role: "owner",
+				},
+				testSecret,
+			);
 
-			app.use("/gym/:gymId/*", jwtAuth());
+			app.use("/gym/:gymId/*", jwtAuth(testSecret));
 			app.use("/gym/:gymId/*", requireGymAccess());
 			app.get("/gym/:gymId/dashboard", (c) => c.json({ success: true }));
 
@@ -150,14 +159,17 @@ describe("認証ミドルウェア", () => {
 		});
 
 		it("異なるgymIdで403エラーになる", async () => {
-			const token = await generateJWT({
-				userId: "user-123",
-				email: "test@example.com",
-				gymId: "gym-456",
-				role: "owner",
-			}, testSecret);
+			const token = await generateJWT(
+				{
+					userId: "user-123",
+					email: "test@example.com",
+					gymId: "gym-456",
+					role: "owner",
+				},
+				testSecret,
+			);
 
-			app.use("/gym/:gymId/*", jwtAuth());
+			app.use("/gym/:gymId/*", jwtAuth(testSecret));
 			app.use("/gym/:gymId/*", requireGymAccess());
 			app.get("/gym/:gymId/dashboard", (c) => c.json({ success: true }));
 
@@ -173,14 +185,17 @@ describe("認証ミドルウェア", () => {
 		});
 
 		it("gymIdパラメータがない場合400エラーになる", async () => {
-			const token = await generateJWT({
-				userId: "user-123",
-				email: "test@example.com",
-				gymId: "gym-456",
-				role: "owner",
-			}, testSecret);
+			const token = await generateJWT(
+				{
+					userId: "user-123",
+					email: "test@example.com",
+					gymId: "gym-456",
+					role: "owner",
+				},
+				testSecret,
+			);
 
-			app.use("/dashboard", jwtAuth());
+			app.use("/dashboard", jwtAuth(testSecret));
 			app.use("/dashboard", requireGymAccess());
 			app.get("/dashboard", (c) => c.json({ success: true }));
 
@@ -209,14 +224,17 @@ describe("認証ミドルウェア", () => {
 
 	describe("ミドルウェアの組み合わせ", () => {
 		it("jwtAuth + requireGymAccess が正常に動作する", async () => {
-			const token = await generateJWT({
-				userId: "user-123",
-				email: "test@example.com",
-				gymId: "gym-456",
-				role: "owner",
-			}, testSecret);
+			const token = await generateJWT(
+				{
+					userId: "user-123",
+					email: "test@example.com",
+					gymId: "gym-456",
+					role: "owner",
+				},
+				testSecret,
+			);
 
-			app.use("/gym/:gymId/*", jwtAuth());
+			app.use("/gym/:gymId/*", jwtAuth(testSecret));
 			app.use("/gym/:gymId/*", requireGymAccess());
 			app.get("/gym/:gymId/staff", (c) => {
 				const auth = c.get("auth");

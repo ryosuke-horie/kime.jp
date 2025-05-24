@@ -20,7 +20,7 @@ declare module "hono" {
  * JWT認証ミドルウェア
  * Authorization: Bearer <token> 形式のヘッダーからJWTを検証する
  */
-export function jwtAuth() {
+export function jwtAuth(testSecret?: string) {
 	return async (c: Context, next: Next) => {
 		const authHeader = c.req.header("Authorization");
 
@@ -39,8 +39,8 @@ export function jwtAuth() {
 			return c.json({ error: "Missing token" }, 401);
 		}
 
-		// JWT検証
-		const result = await verifyJWT(token);
+		// JWT検証（テスト環境ではtestSecretを使用）
+		const result = await verifyJWT(token, testSecret);
 		if (!result.success || !result.payload) {
 			return c.json({ error: result.error || "Invalid token" }, 401);
 		}

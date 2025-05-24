@@ -61,7 +61,7 @@ async function createTestTables(db: D1Database): Promise<void> {
 
 		// gymsテーブルの作成 - SQL文を単純化
 		await db.exec(
-			"CREATE TABLE IF NOT EXISTS gyms (gym_id TEXT PRIMARY KEY, name TEXT NOT NULL, owner_email TEXT NOT NULL, password_hash TEXT, created_at TEXT, updated_at TEXT);",
+			"CREATE TABLE IF NOT EXISTS gyms (gym_id TEXT PRIMARY KEY, name TEXT NOT NULL, owner_email TEXT NOT NULL, password_hash TEXT, phone TEXT, website TEXT, address TEXT, description TEXT, created_at TEXT, updated_at TEXT);",
 		);
 		console.log("  ✓ gyms table created");
 

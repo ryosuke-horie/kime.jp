@@ -6,6 +6,10 @@ export const Gym = z.object({
 	gymId: UUID.describe("ジムの一意識別子"),
 	name: z.string().min(1).max(100).describe("ジム名"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
+	phone: z.string().max(20).optional().describe("電話番号"),
+	website: z.string().url().optional().describe("Webサイト"),
+	address: z.string().max(200).optional().describe("住所"),
+	description: z.string().max(1000).optional().describe("説明"),
 	createdAt: ISODateTime.describe("作成日時"),
 	updatedAt: ISODateTime.describe("更新日時"),
 });
@@ -17,6 +21,10 @@ export const CreateGymRequest = z.object({
 	name: z.string().min(1).max(100).describe("ジム名"),
 	ownerEmail: z.string().email().describe("オーナーのメールアドレス"),
 	password: z.string().min(8).max(100).describe("ジムオーナーのログインパスワード"),
+	phone: z.string().max(20).optional().describe("電話番号"),
+	website: z.string().url().optional().describe("Webサイト"),
+	address: z.string().max(200).optional().describe("住所"),
+	description: z.string().max(1000).optional().describe("説明"),
 });
 
 export type CreateGymRequestType = z.infer<typeof CreateGymRequest>;
@@ -34,6 +42,10 @@ export const UpdateGymRequest = z.object({
 	name: z.string().min(1).max(100).optional().describe("ジム名"),
 	ownerEmail: z.string().email().optional().describe("オーナーのメールアドレス"),
 	password: z.string().min(8).max(100).optional().describe("ジムオーナーのログインパスワード"),
+	phone: z.string().max(20).optional().describe("電話番号"),
+	website: z.string().url().optional().describe("Webサイト"),
+	address: z.string().max(200).optional().describe("住所"),
+	description: z.string().max(1000).optional().describe("説明"),
 });
 
 export type UpdateGymRequestType = z.infer<typeof UpdateGymRequest>;

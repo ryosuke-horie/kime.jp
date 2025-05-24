@@ -72,7 +72,7 @@ export class StaffService implements IStaffService {
 			id: staff.staffId,
 			email: staff.email,
 			name: staff.name,
-			role: staff.role === "admin" ? "owner" : "staff", // スキーマとAPIのロールマッピング
+			role: staff.role === "admin" ? "owner" : "staff", // DBスキーマ（admin/reception）をAPIレベル（owner/staff）にマッピング
 			isActive: staff.active === 1,
 			createdAt: staff.createdAt || "",
 			lastLoginAt: staff.lastLoginAt || undefined,
@@ -145,7 +145,7 @@ export class StaffService implements IStaffService {
 				gymId: data.gymId,
 				name: data.name,
 				email: data.email,
-				role: "reception", // データベースでは "reception" を使用
+				role: "reception", // データベースでは "reception" を使用（APIレベルでは "staff" として扱う）
 				passwordHash,
 				active: true,
 			});
@@ -325,19 +325,26 @@ export class StaffService implements IStaffService {
 		const lowerCase = "abcdefghijkmnpqrstuvwxyz";
 		const numbers = "23456789";
 
-		password += upperCase[Math.floor(Math.random() * upperCase.length)];
-		password += lowerCase[Math.floor(Math.random() * lowerCase.length)];
-		password += numbers[Math.floor(Math.random() * numbers.length)];
+		// 暗号学的に安全な乱数生成を使用
+		const randomInt = (max: number) => {
+			const array = new Uint32Array(1);
+			crypto.getRandomValues(array);
+			return array[0]! % max;
+		};
+
+		password += upperCase[randomInt(upperCase.length)];
+		password += lowerCase[randomInt(lowerCase.length)];
+		password += numbers[randomInt(numbers.length)];
 
 		// 残りの5文字をランダムに生成
 		for (let i = 3; i < 8; i++) {
-			password += chars[Math.floor(Math.random() * chars.length)];
+			password += chars[randomInt(chars.length)];
 		}
 
-		// 文字列をシャッフル
+		// 文字列をシャッフル（暗号学的に安全な方法）
 		return password
 			.split("")
-			.sort(() => Math.random() - 0.5)
+			.sort(() => (randomInt(2) === 0 ? -1 : 1))
 			.join("");
 	}
 

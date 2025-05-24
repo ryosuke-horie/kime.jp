@@ -58,6 +58,22 @@ async function seedTestData() {
 			)
 		`).run();
 
+		// staffテーブルの作成
+		await env.DB.prepare(`
+			CREATE TABLE IF NOT EXISTS staff (
+				staff_id TEXT PRIMARY KEY,
+				gym_id TEXT NOT NULL,
+				name TEXT NOT NULL,
+				email TEXT NOT NULL,
+				role TEXT NOT NULL CHECK(role IN ('admin', 'reception')) DEFAULT 'reception',
+				password_hash TEXT NOT NULL,
+				active INTEGER NOT NULL DEFAULT 1,
+				last_login_at TEXT,
+				created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+				FOREIGN KEY (gym_id) REFERENCES gyms(gym_id) ON DELETE CASCADE
+			)
+		`).run();
+
 		// テストデータを挿入
 		await env.DB.prepare(`
 			INSERT OR IGNORE INTO gyms (gym_id, name, owner_email, created_at, updated_at)

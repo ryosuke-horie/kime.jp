@@ -77,6 +77,12 @@ async function createTestTables(db: D1Database): Promise<void> {
 		);
 		console.log("  ✓ admin_gym_relationships table created");
 
+		// staffテーブルの作成
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS staff (staff_id TEXT PRIMARY KEY, gym_id TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, role TEXT NOT NULL, password_hash TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, last_login_at TEXT, created_at TEXT);",
+		);
+		console.log("  ✓ staff table created");
+
 		console.log("✅ Test tables created successfully");
 	} catch (error) {
 		console.error("❌ Failed to create test tables:", error);
@@ -126,7 +132,7 @@ async function cleanupData(db: D1Database): Promise<void> {
 
 		// テーブルの存在を確認してからデータを削除
 		// 参照整合性を考慮した順序で削除
-		const tables = ["admin_gym_relationships", "admin_accounts", "gyms"];
+		const tables = ["staff", "admin_gym_relationships", "admin_accounts", "gyms"];
 		let cleanedTables = 0;
 
 		for (const table of tables) {
@@ -163,7 +169,7 @@ async function cleanupData(db: D1Database): Promise<void> {
 async function dropTestTables(db: D1Database): Promise<void> {
 	try {
 		// 参照整合性の制約があるので、順番に削除
-		const tablesToDrop = ["admin_gym_relationships", "admin_accounts", gyms.name];
+		const tablesToDrop = ["staff", "admin_gym_relationships", "admin_accounts", gyms.name];
 
 		for (const table of tablesToDrop) {
 			try {

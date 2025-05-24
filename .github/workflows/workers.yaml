@@ -55,6 +55,10 @@ jobs:
 
       - name: Test
         run: pnpm --filter=workers test
+        env:
+          NODE_ENV: test
+          SKIP_AUTH: true
+          JWT_SECRET: test-secret-key-ci
 
   # Lint・Format・TypeCheckのジョブ（PRのみ実行）
   workers-lint:

@@ -19,11 +19,17 @@ updates:
       time: "07:00"
       timezone: "Asia/Tokyo"
     groups:
+      # radix-ui関連パッケージを専用グループで管理
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+        update-types:
+          - "minor"
+          - "patch"
       production-dependencies:
         patterns:
           - "@auth/core"
           - "@hookform/resolvers"
-          - "@radix-ui/*"
           - "class-variance-authority"
           - "clsx"
           - "cmdk"

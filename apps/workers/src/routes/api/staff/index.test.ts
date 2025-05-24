@@ -61,7 +61,7 @@ describe("スタッフ管理API - 統合テスト", () => {
 		// 実際の有効なJWTトークンを生成
 		ownerAuthToken = await generateJWT(
 			{
-				userId: "gym-1",
+				userId: "owner-1",
 				email: "owner@test.com",
 				gymId: "gym-1",
 				role: "owner",
@@ -292,7 +292,10 @@ describe("スタッフ管理API - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(200);
 
-			const data = await res.json();
+			const data = (await res.json()) as {
+				message: string;
+				staff: { name: string; email: string };
+			};
 			expect(data).toHaveProperty("message");
 			expect(data).toHaveProperty("staff");
 			expect(data.staff.name).toBe(updateData.name);
@@ -323,7 +326,10 @@ describe("スタッフ管理API - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(200);
 
-			const data = await res.json();
+			const data = (await res.json()) as {
+				message: string;
+				staff: { name: string; email: string };
+			};
 			expect(data).toHaveProperty("message");
 			expect(data).toHaveProperty("staff");
 			expect(data.staff.name).toBe(updateData.name);
@@ -397,14 +403,14 @@ describe("スタッフ管理API - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(200);
 
-			const data = await res.json();
+			const data = (await res.json()) as { message: string };
 			expect(data).toHaveProperty("message");
 			expect(data.message).toBe("スタッフを削除しました");
 		});
 
 		itWithD1("オーナーが自分自身を削除しようとすると400エラーになること", async () => {
 			// リクエスト作成（自分自身のIDで削除）
-			const req = createTestRequest("/api/staff/gym-1", {
+			const req = createTestRequest("/api/staff/owner-1", {
 				method: "DELETE",
 				headers: {
 					Authorization: `Bearer ${ownerAuthToken}`,
@@ -461,7 +467,7 @@ describe("スタッフ管理API - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(200);
 
-			const data = await res.json();
+			const data = (await res.json()) as { message: string };
 			expect(data).toHaveProperty("message");
 			expect(data.message).toBe("パスワードを変更しました");
 		});
@@ -490,7 +496,7 @@ describe("スタッフ管理API - 統合テスト", () => {
 			// レスポンス検証
 			expect(res.status).toBe(200);
 
-			const data = await res.json();
+			const data = (await res.json()) as { message: string };
 			expect(data).toHaveProperty("message");
 			expect(data.message).toBe("パスワードを変更しました");
 		});

@@ -115,6 +115,20 @@ async function seedTestData(db: D1Database): Promise<void> {
 			);
 		}
 
+		// スタッフテストデータを挿入 - PBKDF2ハッシュを使用
+		const pbkdf2Hash = "vQ+08EWS3Aoo8A4Q0JVk1A==:Du0SUOrY+warqJA4nluv7pb6dzq6C3nOD9UFq+bIhMs="; // password123
+		const staffInserts = [
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-1', 'gym-1', 'スタッフ太郎', 'staff@test.com', 'reception', '${pbkdf2Hash}', 1, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('owner-1', 'gym-1', 'オーナー花子', 'owner@test.com', 'admin', '${pbkdf2Hash}', 1, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-2', 'gym-1', 'スタッフ次郎', 'staff2@test.com', 'reception', '${pbkdf2Hash}', 1, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-inactive', 'gym-1', '非アクティブスタッフ', 'inactive@test.com', 'reception', '${pbkdf2Hash}', 0, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-gym2', 'gym-2', 'ジム2スタッフ', 'staff-gym2@test.com', 'reception', '${pbkdf2Hash}', 1, '2023-01-02T00:00:00.000Z');`,
+		];
+
+		for (const sql of staffInserts) {
+			await db.exec(sql);
+		}
+
 		console.log("✅ Test data seeded successfully");
 	} catch (error) {
 		console.error("❌ Failed to seed test data:", error);

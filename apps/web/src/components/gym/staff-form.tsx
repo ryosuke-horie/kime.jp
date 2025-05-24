@@ -88,9 +88,9 @@ export function StaffForm({
 		},
 	});
 
-	// フォームを選択
-	const form = isEditMode ? updateForm : createForm;
-	const formControl = isEditMode ? updateForm.control : createForm.control;
+	// フォームを選択（型の問題を回避するためコメントアウト）
+	// const form = isEditMode ? updateForm : createForm;
+	// const formControl = isEditMode ? updateForm.control : createForm.control;
 
 	// スタッフデータが変更されたときにフォームを更新
 	React.useEffect(() => {
@@ -114,22 +114,22 @@ export function StaffForm({
 	}, [isOpen, createForm, updateForm]);
 
 	// フォーム送信ハンドラー
-	const handleSubmit = async (data: CreateStaffFormData | UpdateStaffFormData) => {
-		if (isCreateMode) {
-			const createData: StaffCreateRequest = {
-				name: data.name,
-				email: data.email,
-				role: "staff",
-			};
-			await onSubmit(createData);
-		} else {
-			const updateData: StaffUpdateRequest = {
-				name: data.name,
-				email: data.email,
-				isActive: (data as UpdateStaffFormData).isActive,
-			};
-			await onSubmit(updateData);
-		}
+	const handleCreateSubmit = async (data: CreateStaffFormData) => {
+		const createData: StaffCreateRequest = {
+			name: data.name,
+			email: data.email,
+			role: "staff",
+		};
+		await onSubmit(createData);
+	};
+
+	const handleUpdateSubmit = async (data: UpdateStaffFormData) => {
+		const updateData: StaffUpdateRequest = {
+			name: data.name,
+			email: data.email,
+			isActive: data.isActive,
+		};
+		await onSubmit(updateData);
 	};
 
 	// パスワードをクリップボードにコピー
@@ -211,40 +211,84 @@ export function StaffForm({
 					</Alert>
 				)}
 
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-						<FormField
-							control={form.control}
-							name="name"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>氏名 *</FormLabel>
-									<FormControl>
-										<Input placeholder="田中太郎" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+				{isCreateMode ? (
+					<Form {...createForm}>
+						<form onSubmit={createForm.handleSubmit(handleCreateSubmit)} className="space-y-4">
+							<FormField
+								control={createForm.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>氏名 *</FormLabel>
+										<FormControl>
+											<Input placeholder="田中太郎" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>メールアドレス *</FormLabel>
-									<FormControl>
-										<Input type="email" placeholder="staff@example.com" {...field} />
-									</FormControl>
-									<FormDescription>
-										ログイン時に使用するメールアドレスを入力してください
-									</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+							<FormField
+								control={createForm.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>メールアドレス *</FormLabel>
+										<FormControl>
+											<Input type="email" placeholder="staff@example.com" {...field} />
+										</FormControl>
+										<FormDescription>
+											ログイン時に使用するメールアドレスを入力してください
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-						{isEditMode && (
+							<DialogFooter>
+								<Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
+									キャンセル
+								</Button>
+								<Button type="submit" disabled={isLoading}>
+									{isLoading ? "処理中..." : "スタッフを追加"}
+								</Button>
+							</DialogFooter>
+						</form>
+					</Form>
+				) : (
+					<Form {...updateForm}>
+						<form onSubmit={updateForm.handleSubmit(handleUpdateSubmit)} className="space-y-4">
+							<FormField
+								control={updateForm.control}
+								name="name"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>氏名 *</FormLabel>
+										<FormControl>
+											<Input placeholder="田中太郎" {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={updateForm.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>メールアドレス *</FormLabel>
+										<FormControl>
+											<Input type="email" placeholder="staff@example.com" {...field} />
+										</FormControl>
+										<FormDescription>
+											ログイン時に使用するメールアドレスを入力してください
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
 							<FormField
 								control={updateForm.control}
 								name="isActive"
@@ -262,18 +306,18 @@ export function StaffForm({
 									</FormItem>
 								)}
 							/>
-						)}
 
-						<DialogFooter>
-							<Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-								キャンセル
-							</Button>
-							<Button type="submit" disabled={isLoading}>
-								{isLoading ? "処理中..." : isCreateMode ? "スタッフを追加" : "変更を保存"}
-							</Button>
-						</DialogFooter>
-					</form>
-				</Form>
+							<DialogFooter>
+								<Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
+									キャンセル
+								</Button>
+								<Button type="submit" disabled={isLoading}>
+									{isLoading ? "処理中..." : "変更を保存"}
+								</Button>
+							</DialogFooter>
+						</form>
+					</Form>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

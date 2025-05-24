@@ -5,6 +5,17 @@ import { createMultipleFixtures, createStaffFixture } from "../helpers/fixture-g
 import type { SchemaTypeMap } from "../helpers/schema-type-extractor";
 
 /**
+ * テスト用定数：デフォルトパスワード
+ */
+export const TEST_PASSWORD = "password123";
+
+/**
+ * テスト用定数：ハッシュ化されたデフォルトパスワード（PBKDF2形式）
+ */
+export const TEST_PASSWORD_HASH =
+	"vQ+08EWS3Aoo8A4Q0JVk1A==:Du0SUOrY+warqJA4nluv7pb6dzq6C3nOD9UFq+bIhMs=";
+
+/**
  * テスト用のスタッフデータフィクスチャ（型安全）
  */
 export const staffFixtures: SchemaTypeMap["staff"]["insert"][] = [
@@ -14,7 +25,7 @@ export const staffFixtures: SchemaTypeMap["staff"]["insert"][] = [
 		name: "スタッフ太郎",
 		email: "staff@test.com",
 		role: "reception",
-		passwordHash: "$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6", // "password123"のハッシュ
+		passwordHash: TEST_PASSWORD_HASH, // "password123"のハッシュ
 		active: 1,
 	}),
 	createStaffFixture({
@@ -23,7 +34,7 @@ export const staffFixtures: SchemaTypeMap["staff"]["insert"][] = [
 		name: "オーナー花子",
 		email: "owner@test.com",
 		role: "admin",
-		passwordHash: "$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6", // "password123"のハッシュ
+		passwordHash: TEST_PASSWORD_HASH, // "password123"のハッシュ
 		active: 1,
 	}),
 	createStaffFixture({
@@ -32,7 +43,7 @@ export const staffFixtures: SchemaTypeMap["staff"]["insert"][] = [
 		name: "スタッフ次郎",
 		email: "staff2@test.com",
 		role: "reception",
-		passwordHash: "$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6", // "password123"のハッシュ
+		passwordHash: TEST_PASSWORD_HASH, // "password123"のハッシュ
 		active: 1,
 	}),
 	createStaffFixture({
@@ -41,7 +52,7 @@ export const staffFixtures: SchemaTypeMap["staff"]["insert"][] = [
 		name: "非アクティブスタッフ",
 		email: "inactive@test.com",
 		role: "reception",
-		passwordHash: "$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6", // "password123"のハッシュ
+		passwordHash: TEST_PASSWORD_HASH, // "password123"のハッシュ
 		active: 0,
 	}),
 	createStaffFixture({
@@ -50,7 +61,7 @@ export const staffFixtures: SchemaTypeMap["staff"]["insert"][] = [
 		name: "ジム2スタッフ",
 		email: "staff-gym2@test.com",
 		role: "reception",
-		passwordHash: "$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6", // "password123"のハッシュ
+		passwordHash: TEST_PASSWORD_HASH, // "password123"のハッシュ
 		active: 1,
 	}),
 ];
@@ -122,13 +133,3 @@ export async function createStaffFixtureWithHashedPassword(
 		passwordHash,
 	});
 }
-
-/**
- * テスト用定数：デフォルトパスワード
- */
-export const TEST_PASSWORD = "password123";
-
-/**
- * テスト用定数：ハッシュ化されたデフォルトパスワード
- */
-export const TEST_PASSWORD_HASH = "$2b$10$XJe0cYLK2qQ8.0gNOi6/DeSBUOWVEVgShsyTXhNzX.wZgPgVmOOT6";

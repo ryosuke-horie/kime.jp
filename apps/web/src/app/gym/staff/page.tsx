@@ -56,9 +56,9 @@ export default function StaffPage() {
 	});
 
 	// 状態更新ヘルパー
-	const updateState = (updates: Partial<StaffPageState>) => {
+	const updateState = React.useCallback((updates: Partial<StaffPageState>) => {
 		setState((prev) => ({ ...prev, ...updates }));
-	};
+	}, []);
 
 	// スタッフ一覧を取得
 	const fetchStaff = React.useCallback(async () => {
@@ -81,7 +81,7 @@ export default function StaffPage() {
 		} finally {
 			updateState({ isLoading: false });
 		}
-	}, [token]);
+	}, [token, updateState]);
 
 	// 初回データ取得
 	React.useEffect(() => {
@@ -112,7 +112,7 @@ export default function StaffPage() {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json() as { error?: string };
+				const errorData = (await response.json()) as { error?: string };
 				throw new Error(errorData.error || "スタッフの作成に失敗しました");
 			}
 
@@ -147,7 +147,7 @@ export default function StaffPage() {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json() as { error?: string };
+				const errorData = (await response.json()) as { error?: string };
 				throw new Error(errorData.error || "スタッフの更新に失敗しました");
 			}
 
@@ -173,7 +173,7 @@ export default function StaffPage() {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json() as { error?: string };
+				const errorData = (await response.json()) as { error?: string };
 				throw new Error(errorData.error || "スタッフの削除に失敗しました");
 			}
 
@@ -201,7 +201,7 @@ export default function StaffPage() {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json() as { error?: string };
+				const errorData = (await response.json()) as { error?: string };
 				throw new Error(errorData.error || "パスワードの変更に失敗しました");
 			}
 
@@ -330,7 +330,9 @@ export default function StaffPage() {
 			<StaffForm
 				isOpen={state.showCreateForm}
 				onClose={handleCloseCreateForm}
-				onSubmit={handleCreateStaff as (data: StaffCreateRequest | StaffUpdateRequest) => Promise<void>}
+				onSubmit={
+					handleCreateStaff as (data: StaffCreateRequest | StaffUpdateRequest) => Promise<void>
+				}
 				isLoading={state.isLoading}
 				mode="create"
 				temporaryPassword={state.temporaryPassword}

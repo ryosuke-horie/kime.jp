@@ -12,7 +12,7 @@ database_id = "test_db" # 実際のIDはローカル環境でのみ使用され�
 [vars]
 NODE_ENV = "test"
 SKIP_AUTH = "true"
-JWT_SECRET = "test-secret-key"
+JWT_SECRET = "test-secret-key-ci"
 
 # ローカルテスト環境の一時D1データベースを使用
 [dev]

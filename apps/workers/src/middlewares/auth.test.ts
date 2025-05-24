@@ -8,20 +8,25 @@ describe("認証ミドルウェア", () => {
 	const testSecret = "test-secret-key-ci";
 
 	beforeEach(() => {
-		// テスト用の環境変数を確実に設定
+		// グローバルに環境変数を設定（ビルドイン process.env へのフォールバック）
+		if (typeof globalThis !== 'undefined') {
+			(globalThis as any).process = (globalThis as any).process || {};
+			(globalThis as any).process.env = (globalThis as any).process.env || {};
+			(globalThis as any).process.env.JWT_SECRET = testSecret;
+		}
 		process.env.JWT_SECRET = testSecret;
 		app = new Hono();
 	});
 
 	describe("jwtAuth ミドルウェア", () => {
 		it("有効なJWTで認証が成功する", async () => {
-			// テスト用JWT生成（環境変数を使用して一貫性を保つ）
+			// テスト用JWT生成（testSecretを明示的に使用）
 			const token = await generateJWT({
 				userId: "user-123",
 				email: "test@example.com",
 				gymId: "gym-456",
 				role: "owner",
-			});
+			}, testSecret);
 
 			app.use("/protected", jwtAuth());
 			app.get("/protected", (c) => {
@@ -90,7 +95,7 @@ describe("認証ミドルウェア", () => {
 				email: "test2@example.com",
 				gymId: "gym-012",
 				role: "staff",
-			});
+			}, testSecret);
 
 			app.use("/protected", jwtAuth());
 			app.get("/protected", (c) => {
@@ -127,7 +132,7 @@ describe("認証ミドルウェア", () => {
 				email: "test@example.com",
 				gymId: "gym-456",
 				role: "owner",
-			});
+			}, testSecret);
 
 			app.use("/gym/:gymId/*", jwtAuth());
 			app.use("/gym/:gymId/*", requireGymAccess());
@@ -150,7 +155,7 @@ describe("認証ミドルウェア", () => {
 				email: "test@example.com",
 				gymId: "gym-456",
 				role: "owner",
-			});
+			}, testSecret);
 
 			app.use("/gym/:gymId/*", jwtAuth());
 			app.use("/gym/:gymId/*", requireGymAccess());
@@ -173,7 +178,7 @@ describe("認証ミドルウェア", () => {
 				email: "test@example.com",
 				gymId: "gym-456",
 				role: "owner",
-			});
+			}, testSecret);
 
 			app.use("/dashboard", jwtAuth());
 			app.use("/dashboard", requireGymAccess());
@@ -209,7 +214,7 @@ describe("認証ミドルウェア", () => {
 				email: "test@example.com",
 				gymId: "gym-456",
 				role: "owner",
-			});
+			}, testSecret);
 
 			app.use("/gym/:gymId/*", jwtAuth());
 			app.use("/gym/:gymId/*", requireGymAccess());

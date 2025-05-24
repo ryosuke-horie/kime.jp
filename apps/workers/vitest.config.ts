@@ -31,6 +31,18 @@ export default defineWorkersConfig({
 			JWT_SECRET: "test-secret-key",
 		},
 		
+		// Cloudflare Workers環境では不要なSSRの依存関係解決警告を抑制
+		// @cloudflare/vitest-pool-workersが自動的にchaiをSSR optimizeDepsに追加するが、
+		// workers環境ではSSRは使用しないため、この設定で警告を抑制
+		deps: {
+			optimizer: {
+				ssr: {
+					// SSRの依存関係最適化を無効化（Cloudflare Workers では不要）
+					enabled: false,
+				},
+			},
+		},
+		
 		// Cloudflare Workers の統合テスト設定
 		// 単体テストのみを実行する場合は以下の設定をコメントアウトし、
 		// environment: 'node' を追加

@@ -205,7 +205,10 @@ describe("認証API - 統合テスト", () => {
 		let validToken: string;
 
 		beforeEach(async () => {
-			if (!isD1Available() || !env.DB) return;
+			if (!isD1Available() || !env.DB) {
+				test.skip("D1データベースが使用できないためテストをスキップ");
+				return;
+			}
 
 			// 事前にログインしてトークンを取得
 			const loginData = {

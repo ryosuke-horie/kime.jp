@@ -329,7 +329,7 @@ export class StaffService implements IStaffService {
 		const randomInt = (max: number) => {
 			const array = new Uint32Array(1);
 			crypto.getRandomValues(array);
-			return array[0]! % max;
+			return (array[0] ?? 0) % max;
 		};
 
 		password += upperCase[randomInt(upperCase.length)];

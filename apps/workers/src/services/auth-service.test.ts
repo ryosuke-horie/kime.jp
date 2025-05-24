@@ -21,7 +21,7 @@ describe("AuthService - 統合テスト", () => {
 		}
 
 		// 実際のテストデータベースを使用
-		db = drizzle(env.DB!, { schema });
+		db = drizzle(env.DB as D1Database, { schema });
 		authService = new AuthService(db);
 	});
 

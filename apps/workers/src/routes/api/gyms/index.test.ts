@@ -10,6 +10,10 @@ interface GymResponse {
 	gymId: string;
 	name: string;
 	ownerEmail: string;
+	phone?: string | null;
+	website?: string | null;
+	address?: string | null;
+	description?: string | null;
 	createdAt: string | null;
 	updatedAt: string | null;
 }
@@ -517,6 +521,100 @@ describe("ジムAPI - 統合テスト", () => {
 
 			// レスポンス検証
 			expect(res.status).toBe(404);
+		});
+	});
+
+	// 拡張フィールドの統合テスト
+	describe("拡張フィールド - 統合テスト", () => {
+		itWithD1("拡張フィールドを含むジムを作成できること", async () => {
+			// 全ての新しいフィールドを含むテストデータ
+			const gymDataWithExtendedFields = {
+				name: "完全装備ジム",
+				ownerEmail: "full-owner@example.com",
+				password: "testPassword123",
+				phone: "03-1234-5678",
+				website: "https://example-gym.com",
+				address: "東京都渋谷区1-2-3",
+				description: "最新設備を完備したフィットネスジムです。",
+			};
+
+			// リクエスト作成
+			const req = createTestRequest("/api/gyms", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: gymDataWithExtendedFields as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(201);
+
+			const data = (await res.json()) as { message: string; gymId: string };
+			expect(data).toHaveProperty("gymId");
+
+			// 作成されたジムをGETリクエストで確認
+			const getReq = createTestRequest(`/api/gyms/${data.gymId}`);
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(200);
+
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
+
+			// 基本フィールドの検証
+			expect(getGymData.gym.name).toBe(gymDataWithExtendedFields.name);
+			expect(getGymData.gym.ownerEmail).toBe(gymDataWithExtendedFields.ownerEmail);
+
+			// 拡張フィールドの検証
+			expect(getGymData.gym.phone).toBe(gymDataWithExtendedFields.phone);
+			expect(getGymData.gym.website).toBe(gymDataWithExtendedFields.website);
+			expect(getGymData.gym.address).toBe(gymDataWithExtendedFields.address);
+			expect(getGymData.gym.description).toBe(gymDataWithExtendedFields.description);
+		});
+
+		itWithD1("拡張フィールドを含むジム情報を更新できること", async () => {
+			// 既存ジムの更新データ（拡張フィールドのみ）
+			const updateData = {
+				phone: "03-9999-8888",
+				website: "https://updated-gym.com",
+				address: "東京都新宿区4-5-6 更新ビル",
+				description: "リニューアルした最新のフィットネス施設です。",
+			};
+
+			// 既存のジムIDを使用（テストデータから）
+			const gymId = "gym-1";
+
+			// PATCH リクエスト作成
+			const req = createTestRequest(`/api/gyms/${gymId}`, {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: updateData as Record<string, unknown>,
+			});
+
+			// リクエスト実行
+			if (!env.DB) return;
+			const res = await app.fetch(req, { DB: env.DB });
+
+			// レスポンス検証
+			expect(res.status).toBe(200);
+
+			// 更新されたジムをGETリクエストで確認
+			const getReq = createTestRequest(`/api/gyms/${gymId}`);
+			const getRes = await app.fetch(getReq, { DB: env.DB });
+			expect(getRes.status).toBe(200);
+
+			const getGymData = (await getRes.json()) as { gym: GymResponse };
+
+			// 拡張フィールドの更新を検証
+			expect(getGymData.gym.phone).toBe(updateData.phone);
+			expect(getGymData.gym.website).toBe(updateData.website);
+			expect(getGymData.gym.address).toBe(updateData.address);
+			expect(getGymData.gym.description).toBe(updateData.description);
 		});
 	});
 });

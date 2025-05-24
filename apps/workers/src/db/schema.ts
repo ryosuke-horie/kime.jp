@@ -8,6 +8,10 @@ export const gyms = sqliteTable("gyms", {
 	name: text("name").notNull(),
 	ownerEmail: text("owner_email").notNull(),
 	passwordHash: text("password_hash"),
+	phone: text("phone"),
+	website: text("website"),
+	address: text("address"),
+	description: text("description"),
 	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 	updatedAt: text("updated_at").default("CURRENT_TIMESTAMP"),
 });

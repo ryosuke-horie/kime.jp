@@ -21,6 +21,10 @@ async function seedTestData() {
 				name TEXT NOT NULL,
 				owner_email TEXT NOT NULL,
 				password_hash TEXT,
+				phone TEXT,
+				website TEXT,
+				address TEXT,
+				description TEXT,
 				created_at TEXT DEFAULT CURRENT_TIMESTAMP,
 				updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 			)

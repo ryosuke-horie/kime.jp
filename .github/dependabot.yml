@@ -11,7 +11,7 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     
-  # Webアプリケーション - 本番用依存関係
+  # Webアプリケーション - 依存関係
   - package-ecosystem: "npm"
     directory: "/apps/web"
     schedule:
@@ -19,11 +19,17 @@ updates:
       time: "07:00"
       timezone: "Asia/Tokyo"
     groups:
+      # radix-ui関連パッケージを専用グループで管理
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+        update-types:
+          - "minor"
+          - "patch"
       production-dependencies:
         patterns:
           - "@auth/core"
           - "@hookform/resolvers"
-          - "@radix-ui/*"
           - "class-variance-authority"
           - "clsx"
           - "cmdk"
@@ -43,18 +49,6 @@ updates:
           - "tailwind-merge"
           - "vaul"
           - "zod"
-    commit-message:
-      prefix: "chore(deps-web-prod)"
-      include: "scope"
-      
-  # Webアプリケーション - 開発用依存関係
-  - package-ecosystem: "npm"
-    directory: "/apps/web"
-    schedule:
-      interval: "daily"
-      time: "07:00"
-      timezone: "Asia/Tokyo"
-    groups:
       development-dependencies:
         patterns:
           - "@cloudflare/workers-types"
@@ -64,9 +58,10 @@ updates:
           - "tailwindcss"
           - "tw-animate-css"
           - "typescript"
+          - "vitest"
           - "wrangler"
     commit-message:
-      prefix: "chore(deps-web-dev)"
+      prefix: "chore(deps-web)"
       include: "scope"
       
   # Workersアプリケーション - 本番用依存関係

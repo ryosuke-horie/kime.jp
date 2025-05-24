@@ -136,15 +136,11 @@ export default function EditGymPage() {
 			const updateData: any = {
 				name: values.name,
 				ownerEmail: values.ownerEmail,
-				// オプショナルフィールドを追加（APIの拡張が必要）
-				// 現時点ではAPIでサポートされていないフィールドのため、
-				// バックエンドでこれらのフィールドが実装されるまでコメントアウトして保存
-				/*
+				// 拡張フィールド（APIで対応済み）
 				phone: values.phone,
 				website: values.website,
 				address: values.address,
 				description: values.description,
-				*/
 			};
 
 			// パスワードが入力された場合のみ追加

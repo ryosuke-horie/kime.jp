@@ -81,10 +81,10 @@ export default function CreateGymPage() {
 				ownerEmail: values.ownerEmail,
 				password: values.password,
 				// 拡張フィールド（APIで対応済み）
-				phone: values.phone,
-				website: values.website,
-				address: values.address,
-				description: values.description,
+				phone: values.phone || undefined,
+				website: values.website || undefined,
+				address: values.address || undefined,
+				description: values.description || undefined,
 			};
 
 			const response = await createGym(gymData);

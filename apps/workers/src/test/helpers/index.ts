@@ -5,6 +5,7 @@
  * 仕組みを提供し、型安全なテストデータ生成機能を提供します。
  */
 
+import type { Gym, Member } from "../../db";
 import type { MigrationChange } from "./migration-sync";
 import type { SchemaTypeMap } from "./schema-type-extractor";
 import type { SchemaReport } from "./schema-validation";
@@ -109,14 +110,14 @@ export async function setupTypeSafeTestData(
 		includeBookings?: boolean;
 	},
 ): Promise<{
-	gyms: any[];
-	members: any[];
+	gyms: Gym[];
+	members: Member[];
 }> {
 	const { gymCount = 3, memberCount = 5 } = options || {};
 
 	// TODO: 実際の実装では適切なフィクスチャ生成を行う
-	const generatedGyms: any[] = [];
-	const generatedMembers: any[] = [];
+	const generatedGyms: Gym[] = [];
+	const generatedMembers: Member[] = [];
 
 	// DB投入は実際のテストで実行
 	return {
@@ -146,9 +147,9 @@ export async function performSchemaSync(
 
 	// TODO: 実際の実装では適切なバックアップ、同期、検証を行う
 	const backupPath: string | undefined = createBackup ? "backup-path" : undefined;
-	const migrationChanges: any[] = [];
+	const migrationChanges: MigrationChange[] = [];
 	const updatedFixtures = currentFixtures;
-	const validationReport: any = {
+	const validationReport: SchemaReport = {
 		summary: { totalTables: 0, validTables: 0, invalidTables: 0, totalFixtures: 0 },
 		tableReports: {},
 	};

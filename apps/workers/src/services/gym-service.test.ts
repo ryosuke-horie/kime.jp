@@ -51,8 +51,12 @@ describe("GymService - 単体テスト", () => {
 
 			// 返り値を検証
 			expect(result).toBeDefined();
-			if (result && gymFixtures[0]?.gymId) {
-				expect(result.gymId).toBe(gymFixtures[0].gymId);
+			const expectedGym = gymFixtures[0];
+			expect(expectedGym).toBeDefined();
+			if (result && expectedGym) {
+				expect(result.gymId).toBe(expectedGym.gymId);
+				expect(result.name).toBe(expectedGym.name);
+				expect(result.ownerEmail).toBe(expectedGym.ownerEmail);
 			}
 		});
 

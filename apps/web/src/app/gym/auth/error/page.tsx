@@ -45,10 +45,11 @@ function ErrorContent() {
 	const searchParams = useSearchParams();
 	const error = searchParams.get("error") || "Default";
 
-	const errorInfo = errorMessages[error] ?? errorMessages.Default ?? {
-		title: "認証エラー",
-		description: "認証中にエラーが発生しました。しばらく時間をおいてから再度お試しください。",
-	};
+	const errorInfo = errorMessages[error] ??
+		errorMessages.Default ?? {
+			title: "認証エラー",
+			description: "認証中にエラーが発生しました。しばらく時間をおいてから再度お試しください。",
+		};
 
 	/**
 	 * ページリロード

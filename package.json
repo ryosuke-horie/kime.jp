@@ -21,7 +21,7 @@
 		"@vitest/ui": "^3.1.2",
 		"turbo": "latest"
 	},
-	"packageManager": "pnpm@10.10.0",
+	"packageManager": "pnpm@10.11.0",
 	"dependencies": {
 		"@asteasolutions/zod-to-openapi": "^7.3.0"
 	}

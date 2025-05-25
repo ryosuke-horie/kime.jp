@@ -63,10 +63,17 @@ const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
 	};
 
 	// リクエスト実行
-	return fetch(url, {
+	const response = await fetch(url, {
 		...options,
 		headers,
 	});
+
+	// HTTPエラーステータスコードをチェック
+	if (!response.ok) {
+		throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+	}
+
+	return response;
 };
 
 // 以下はReact QueryやSWRを使った実装サンプル

@@ -99,11 +99,13 @@ export const staff = sqliteTable("staff", {
 		.notNull()
 		.references(() => gyms.gymId),
 	name: text("name").notNull(),
-	email: text("email"),
+	email: text("email").notNull(),
 	role: text("role", { enum: ["admin", "reception"] })
 		.notNull()
 		.default("reception"),
+	passwordHash: text("password_hash").notNull(),
 	active: integer("active").notNull().default(1),
+	lastLoginAt: text("last_login_at"),
 	createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 });
 

@@ -2,8 +2,8 @@ import { eq } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import { gyms } from "../db/schema";
 import type { JWTPayload, LoginRequest, LoginResponse, User } from "../types/auth";
-import { generateJWT } from "../utils/jwt";
-import { comparePassword } from "../utils/password";
+import * as jwtUtils from "../utils/jwt";
+import * as passwordUtils from "../utils/password";
 
 export class AuthService {
 	constructor(private db: DrizzleD1Database) {}
@@ -31,7 +31,7 @@ export class AuthService {
 		}
 
 		// パスワード検証
-		const isPasswordValid = await comparePassword(request.password, gym.passwordHash);
+		const isPasswordValid = await passwordUtils.comparePassword(request.password, gym.passwordHash);
 		if (!isPasswordValid) {
 			return {
 				success: false,
@@ -41,7 +41,7 @@ export class AuthService {
 
 		// JWTトークン生成
 		const isTestEnv = process.env.NODE_ENV === "test";
-		const token = await generateJWT(
+		const token = await jwtUtils.generateJWT(
 			{
 				userId: gym.gymId,
 				email: gym.ownerEmail,

@@ -20,7 +20,8 @@
 		"migrate:production": "drizzle-kit migrate",
 		"migrate:development": "wrangler d1 migrations apply kime_mvp --local",
 		"migrate:test": "wrangler d1 migrations apply kime_mvp_test --local --config=wrangler.test.toml",
-		"studio": "drizzle-kit studio"
+		"studio": "drizzle-kit studio",
+		"sync-migrations": "tsx scripts/sync-migrations.ts"
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.5.0",

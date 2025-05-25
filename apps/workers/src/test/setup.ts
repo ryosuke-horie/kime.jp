@@ -77,6 +77,12 @@ async function createTestTables(db: D1Database): Promise<void> {
 		);
 		console.log("  ✓ admin_gym_relationships table created");
 
+		// staffテーブルの作成
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS staff (staff_id TEXT PRIMARY KEY, gym_id TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, role TEXT NOT NULL, password_hash TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, last_login_at TEXT, created_at TEXT);",
+		);
+		console.log("  ✓ staff table created");
+
 		console.log("✅ Test tables created successfully");
 	} catch (error) {
 		console.error("❌ Failed to create test tables:", error);
@@ -109,6 +115,20 @@ async function seedTestData(db: D1Database): Promise<void> {
 			);
 		}
 
+		// スタッフテストデータを挿入 - PBKDF2ハッシュを使用
+		const pbkdf2Hash = "vQ+08EWS3Aoo8A4Q0JVk1A==:Du0SUOrY+warqJA4nluv7pb6dzq6C3nOD9UFq+bIhMs="; // password123
+		const staffInserts = [
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-1', 'gym-1', 'スタッフ太郎', 'staff@test.com', 'reception', '${pbkdf2Hash}', 1, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('owner-1', 'gym-1', 'オーナー花子', 'owner@test.com', 'admin', '${pbkdf2Hash}', 1, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-2', 'gym-1', 'スタッフ次郎', 'staff2@test.com', 'reception', '${pbkdf2Hash}', 1, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-inactive', 'gym-1', '非アクティブスタッフ', 'inactive@test.com', 'reception', '${pbkdf2Hash}', 0, '2023-01-01T00:00:00.000Z');`,
+			`INSERT OR IGNORE INTO staff (staff_id, gym_id, name, email, role, password_hash, active, created_at) VALUES ('staff-gym2', 'gym-2', 'ジム2スタッフ', 'staff-gym2@test.com', 'reception', '${pbkdf2Hash}', 1, '2023-01-02T00:00:00.000Z');`,
+		];
+
+		for (const sql of staffInserts) {
+			await db.exec(sql);
+		}
+
 		console.log("✅ Test data seeded successfully");
 	} catch (error) {
 		console.error("❌ Failed to seed test data:", error);
@@ -126,7 +146,7 @@ async function cleanupData(db: D1Database): Promise<void> {
 
 		// テーブルの存在を確認してからデータを削除
 		// 参照整合性を考慮した順序で削除
-		const tables = ["admin_gym_relationships", "admin_accounts", "gyms"];
+		const tables = ["staff", "admin_gym_relationships", "admin_accounts", "gyms"];
 		let cleanedTables = 0;
 
 		for (const table of tables) {
@@ -163,7 +183,7 @@ async function cleanupData(db: D1Database): Promise<void> {
 async function dropTestTables(db: D1Database): Promise<void> {
 	try {
 		// 参照整合性の制約があるので、順番に削除
-		const tablesToDrop = ["admin_gym_relationships", "admin_accounts", gyms.name];
+		const tablesToDrop = ["staff", "admin_gym_relationships", "admin_accounts", gyms.name];
 
 		for (const table of tablesToDrop) {
 			try {

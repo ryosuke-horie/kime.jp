@@ -76,13 +76,18 @@ export default function CreateGymPage() {
 	// フォーム送信処理
 	async function onSubmit(values: GymFormValues) {
 		try {
-			const requiredData = {
+			const gymData = {
 				name: values.name,
 				ownerEmail: values.ownerEmail,
 				password: values.password,
+				// 拡張フィールド（APIで対応済み）
+				phone: values.phone,
+				website: values.website,
+				address: values.address,
+				description: values.description,
 			};
 
-			const response = await createGym(requiredData);
+			const response = await createGym(gymData);
 
 			toast.success("ジムを登録しました", {
 				description: `ジムID: ${response.gymId}`,

@@ -10,14 +10,14 @@ importers:
     dependencies:
       '@asteasolutions/zod-to-openapi':
         specifier: ^7.3.0
-        version: 7.3.2(zod@3.25.48)
+        version: 7.3.2(zod@3.25.49)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.8.24
-        version: 0.8.34(@cloudflare/workers-types@4.20250601.0)(@vitest/runner@3.2.0)(@vitest/snapshot@3.2.0)(vitest@3.2.0)
+        version: 0.8.34(@cloudflare/workers-types@4.20250603.0)(@vitest/runner@3.2.0)(@vitest/snapshot@3.2.0)(vitest@3.2.0)
       '@vitest/coverage-istanbul':
         specifier: ^3.2.0
         version: 3.2.0(vitest@3.2.0)
@@ -115,7 +115,7 @@ importers:
         specifier: ^1.2.4
         version: 1.2.7(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tanstack/react-query':
-        specifier: ^5.77.2
+        specifier: ^5.79.2
         version: 5.79.2(react@19.1.0)
       class-variance-authority:
         specifier: ^0.7.1
@@ -154,7 +154,7 @@ importers:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.56.3
+        specifier: ^7.57.0
         version: 7.57.0(react@19.1.0)
       react-resizable-panels:
         specifier: ^3.0.2
@@ -163,7 +163,7 @@ importers:
         specifier: ^2.15.3
         version: 2.15.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       sonner:
-        specifier: ^2.0.4
+        specifier: ^2.0.5
         version: 2.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tailwind-merge:
         specifier: ^3.2.0
@@ -172,15 +172,15 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.1.5(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       zod:
-        specifier: ^3.25.46
-        version: 3.25.48
+        specifier: ^3.25.49
+        version: 3.25.49
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20250525.0
-        version: 4.20250601.0
+        version: 4.20250603.0
       '@opennextjs/cloudflare':
         specifier: ~1.0.0-beta.0 || ^1.0.0
-        version: 1.1.0(wrangler@4.18.0(@cloudflare/workers-types@4.20250601.0))
+        version: 1.1.0(wrangler@4.18.0(@cloudflare/workers-types@4.20250603.0))
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.8
@@ -203,20 +203,20 @@ importers:
         specifier: ^5
         version: 5.8.3
       vitest:
-        specifier: ^3.1.4
+        specifier: ^3.2.0
         version: 3.2.0(@types/node@22.15.29)(@vitest/ui@3.2.0)(happy-dom@17.4.6)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.19.4)(yaml@2.8.0)
       wrangler:
         specifier: ^4.12.0
-        version: 4.18.0(@cloudflare/workers-types@4.20250601.0)
+        version: 4.18.0(@cloudflare/workers-types@4.20250603.0)
 
   apps/workers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.7.0
-        version: 0.7.0(hono@4.7.11)(zod@3.25.48)
+        version: 0.7.0(hono@4.7.11)(zod@3.25.49)
       drizzle-orm:
         specifier: ^0.44.1
-        version: 0.44.1(@cloudflare/workers-types@4.20250601.0)(@types/better-sqlite3@7.6.13)
+        version: 0.44.1(@cloudflare/workers-types@4.20250603.0)(@types/better-sqlite3@7.6.13)
       hono:
         specifier: ^4.7.11
         version: 4.7.11
@@ -224,12 +224,12 @@ importers:
         specifier: ^11.1.0
         version: 11.1.0
       zod:
-        specifier: ^3.25.46
-        version: 3.25.48
+        specifier: ^3.25.49
+        version: 3.25.49
     devDependencies:
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.8.30
-        version: 0.8.34(@cloudflare/workers-types@4.20250601.0)(@vitest/runner@3.2.0)(@vitest/snapshot@3.2.0)(vitest@3.2.0)
+        version: 0.8.34(@cloudflare/workers-types@4.20250603.0)(@vitest/runner@3.2.0)(@vitest/snapshot@3.2.0)(vitest@3.2.0)
       '@hono/vite-build':
         specifier: ^1.5.0
         version: 1.6.2(hono@4.7.11)
@@ -265,7 +265,7 @@ importers:
         version: 3.2.0(@types/node@22.15.29)(@vitest/ui@3.2.0)(happy-dom@17.4.6)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.19.4)(yaml@2.8.0)
       wrangler:
         specifier: ^4.15.2
-        version: 4.18.0(@cloudflare/workers-types@4.20250601.0)
+        version: 4.18.0(@cloudflare/workers-types@4.20250603.0)
 
 packages:
 
@@ -809,8 +809,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@4.20250601.0':
-    resolution: {integrity: sha512-foAgsuo+u+swy5I+xzPwo4MquPhLZW0fuLLsl4uZlZv2k10WziSvZ4wTIkK/AADFtCVRjLNduTT8E/b7DDoInA==}
+  '@cloudflare/workers-types@4.20250603.0':
+    resolution: {integrity: sha512-62g5wVdXiRRu9sfC9fmwgZfE9W0rWy2txlgRKn1Xx1NWHshSdh4RWMX6gO4EBKPqgwlHKaMuSPZ1qM0hHsq7bA==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -4738,11 +4738,8 @@ packages:
   zod@3.22.3:
     resolution: {integrity: sha512-EjIevzuJRiRPbVH4mGc8nApb/lVLKVpmUhAaR5R5doKGfAnGJ6Gr3CViAVjP+4FWSxCsybeWQdcgCtbX+7oZug==}
 
-  zod@3.25.46:
-    resolution: {integrity: sha512-IqRxcHEIjqLd4LNS/zKffB3Jzg3NwqJxQQ0Ns7pdrvgGkwQsEBdEQcOHaBVqvvZArShRzI39+aMST3FBGmTrLQ==}
-
-  zod@3.25.48:
-    resolution: {integrity: sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q==}
+  zod@3.25.49:
+    resolution: {integrity: sha512-JMMPMy9ZBk3XFEdbM3iL1brx4NUSejd6xr3ELrrGEfGb355gjhiAWtG3K5o+AViV/3ZfkIrCzXsZn6SbLwTR8Q==}
 
 snapshots:
 
@@ -4792,10 +4789,10 @@ snapshots:
       '@ast-grep/napi-win32-ia32-msvc': 0.35.0
       '@ast-grep/napi-win32-x64-msvc': 0.35.0
 
-  '@asteasolutions/zod-to-openapi@7.3.2(zod@3.25.48)':
+  '@asteasolutions/zod-to-openapi@7.3.2(zod@3.25.49)':
     dependencies:
       openapi3-ts: 4.4.0
-      zod: 3.25.48
+      zod: 3.25.49
 
   '@auth/core@0.39.1':
     dependencies:
@@ -5915,7 +5912,7 @@ snapshots:
     optionalDependencies:
       workerd: 1.20250525.0
 
-  '@cloudflare/vitest-pool-workers@0.8.34(@cloudflare/workers-types@4.20250601.0)(@vitest/runner@3.2.0)(@vitest/snapshot@3.2.0)(vitest@3.2.0)':
+  '@cloudflare/vitest-pool-workers@0.8.34(@cloudflare/workers-types@4.20250603.0)(@vitest/runner@3.2.0)(@vitest/snapshot@3.2.0)(vitest@3.2.0)':
     dependencies:
       '@vitest/runner': 3.2.0
       '@vitest/snapshot': 3.2.0
@@ -5925,8 +5922,8 @@ snapshots:
       miniflare: 4.20250525.0
       semver: 7.7.1
       vitest: 3.2.0(@types/node@22.15.29)(@vitest/ui@3.2.0)(happy-dom@17.4.6)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.19.4)(yaml@2.8.0)
-      wrangler: 4.18.0(@cloudflare/workers-types@4.20250601.0)
-      zod: 3.25.46
+      wrangler: 4.18.0(@cloudflare/workers-types@4.20250603.0)
+      zod: 3.25.49
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - bufferutil
@@ -5947,7 +5944,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20250525.0':
     optional: true
 
-  '@cloudflare/workers-types@4.20250601.0': {}
+  '@cloudflare/workers-types@4.20250603.0': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -6225,10 +6222,10 @@ snapshots:
     dependencies:
       hono: 4.7.11
 
-  '@hono/zod-validator@0.7.0(hono@4.7.11)(zod@3.25.48)':
+  '@hono/zod-validator@0.7.0(hono@4.7.11)(zod@3.25.49)':
     dependencies:
       hono: 4.7.11
-      zod: 3.25.48
+      zod: 3.25.49
 
   '@hookform/resolvers@5.0.1(react-hook-form@7.57.0(react@19.1.0))':
     dependencies:
@@ -6504,14 +6501,14 @@ snapshots:
       - aws-crt
       - supports-color
 
-  '@opennextjs/cloudflare@1.1.0(wrangler@4.18.0(@cloudflare/workers-types@4.20250601.0))':
+  '@opennextjs/cloudflare@1.1.0(wrangler@4.18.0(@cloudflare/workers-types@4.20250603.0))':
     dependencies:
       '@dotenvx/dotenvx': 1.31.0
       '@opennextjs/aws': 3.6.4
       enquirer: 2.4.1
       glob: 11.0.1
       ts-tqdm: 0.8.6
-      wrangler: 4.18.0(@cloudflare/workers-types@4.20250601.0)
+      wrangler: 4.18.0(@cloudflare/workers-types@4.20250603.0)
     transitivePeerDependencies:
       - aws-crt
       - supports-color
@@ -8304,9 +8301,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.1(@cloudflare/workers-types@4.20250601.0)(@types/better-sqlite3@7.6.13):
+  drizzle-orm@0.44.1(@cloudflare/workers-types@4.20250603.0)(@types/better-sqlite3@7.6.13):
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20250601.0
+      '@cloudflare/workers-types': 4.20250603.0
       '@types/better-sqlite3': 7.6.13
 
   dunder-proto@1.0.1:
@@ -9723,7 +9720,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250525.0
       '@cloudflare/workerd-windows-64': 1.20250525.0
 
-  wrangler@4.18.0(@cloudflare/workers-types@4.20250601.0):
+  wrangler@4.18.0(@cloudflare/workers-types@4.20250603.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.3.2(unenv@2.0.0-rc.17)(workerd@1.20250525.0)
@@ -9734,7 +9731,7 @@ snapshots:
       unenv: 2.0.0-rc.17
       workerd: 1.20250525.0
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20250601.0
+      '@cloudflare/workers-types': 4.20250603.0
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil
@@ -9774,6 +9771,4 @@ snapshots:
 
   zod@3.22.3: {}
 
-  zod@3.25.46: {}
-
-  zod@3.25.48: {}
+  zod@3.25.49: {}

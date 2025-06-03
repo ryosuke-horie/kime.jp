@@ -31,7 +31,7 @@
 		"zod": "^3.25.49"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.8.30",
+		"@cloudflare/vitest-pool-workers": "^0.8.36",
 		"@hono/vite-build": "^1.5.0",
 		"@types/node": "^22.15.18",
 		"@types/uuid": "^10.0.0",

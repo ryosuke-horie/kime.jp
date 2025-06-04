@@ -37,7 +37,7 @@ vi.mock("@tanstack/react-query", () => ({
 describe("API フック (簡単なテスト)", () => {
 	test("フックモジュールが正常にインポートできる", async () => {
 		const hooks = await import("./use-api");
-		
+
 		expect(hooks.useHealthApi).toBeDefined();
 		expect(hooks.useGymsApi).toBeDefined();
 		expect(hooks.useGymApi).toBeDefined();
@@ -48,7 +48,7 @@ describe("API フック (簡単なテスト)", () => {
 
 	test("フック関数が関数として定義されている", async () => {
 		const hooks = await import("./use-api");
-		
+
 		expect(typeof hooks.useHealthApi).toBe("function");
 		expect(typeof hooks.useGymsApi).toBe("function");
 		expect(typeof hooks.useGymApi).toBe("function");

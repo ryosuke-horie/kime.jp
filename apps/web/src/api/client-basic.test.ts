@@ -1,8 +1,8 @@
+import { vi } from "vitest";
 /**
  * APIクライアントの基本テスト
  */
 import { ApiClient } from "./client";
-import { vi } from "vitest";
 
 // モック設定
 global.fetch = vi.fn();

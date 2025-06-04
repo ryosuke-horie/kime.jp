@@ -1,9 +1,9 @@
+import { getSession } from "next-auth/react";
+import { vi } from "vitest";
 /**
  * 認証ユーティリティのテスト
  */
 import { getAuthToken } from "./auth";
-import { getSession } from "next-auth/react";
-import { vi } from "vitest";
 
 // next-auth/reactをモック
 vi.mock("next-auth/react", () => ({
@@ -55,16 +55,16 @@ describe("認証ユーティリティ", () => {
 
 			const token = await getAuthToken();
 			expect(token).toBeTruthy();
-			
+
 			if (token) {
 				const parts = token.split(".");
 				expect(parts).toHaveLength(3); // header.payload.signature
-				
+
 				// ヘッダーをデコードして確認
 				const header = JSON.parse(atob(parts[0]));
 				expect(header.alg).toBe("HS256");
 				expect(header.typ).toBe("JWT");
-				
+
 				// ペイロードをデコードして確認
 				const payload = JSON.parse(atob(parts[1]));
 				expect(payload.sub).toBe("user456");
@@ -89,7 +89,7 @@ describe("認証ユーティリティ", () => {
 
 			const token = await getAuthToken();
 			expect(token).toBeTruthy();
-			
+
 			if (token) {
 				const parts = token.split(".");
 				const payload = JSON.parse(atob(parts[1]));

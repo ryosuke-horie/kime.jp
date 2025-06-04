@@ -1,9 +1,9 @@
+import { handleError } from "@/components/ui/error-handler";
+import { vi } from "vitest";
 /**
  * エラーハンドリング高階関数のテスト
  */
 import { withErrorHandling } from "./with-error-handling";
-import { handleError } from "@/components/ui/error-handler";
-import { vi } from "vitest";
 
 // error-handlerをモック
 vi.mock("@/components/ui/error-handler", () => ({

@@ -11,9 +11,9 @@ beforeAll(async () => {
 	if (typeof global.ReadableStream === "undefined") {
 		try {
 			const streams = await import("node:stream/web");
-			global.ReadableStream = streams.ReadableStream;
-			global.WritableStream = streams.WritableStream;
-			global.TransformStream = streams.TransformStream;
+			global.ReadableStream = streams.ReadableStream as any;
+			global.WritableStream = streams.WritableStream as any;
+			global.TransformStream = streams.TransformStream as any;
 		} catch (error) {
 			console.warn("Failed to import Web Streams API polyfill:", error);
 		}
@@ -23,9 +23,9 @@ beforeAll(async () => {
 	if (typeof global.Request === "undefined") {
 		try {
 			const undici = await import("undici");
-			global.Request = undici.Request;
-			global.Response = undici.Response;
-			global.Headers = undici.Headers;
+			global.Request = undici.Request as any;
+			global.Response = undici.Response as any;
+			global.Headers = undici.Headers as any;
 		} catch (error) {
 			console.warn("Failed to import undici polyfill:", error);
 		}

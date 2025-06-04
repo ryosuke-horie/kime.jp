@@ -61,12 +61,12 @@ describe("認証ユーティリティ", () => {
 				expect(parts).toHaveLength(3); // header.payload.signature
 
 				// ヘッダーをデコードして確認
-				const header = JSON.parse(atob(parts[0]));
+				const header = JSON.parse(atob(parts[0] || ""));
 				expect(header.alg).toBe("HS256");
 				expect(header.typ).toBe("JWT");
 
 				// ペイロードをデコードして確認
-				const payload = JSON.parse(atob(parts[1]));
+				const payload = JSON.parse(atob(parts[1] || ""));
 				expect(payload.sub).toBe("user456");
 				expect(payload.name).toBe("Another User");
 				expect(payload.email).toBe("another@example.com");
@@ -92,7 +92,7 @@ describe("認証ユーティリティ", () => {
 
 			if (token) {
 				const parts = token.split(".");
-				const payload = JSON.parse(atob(parts[1]));
+				const payload = JSON.parse(atob(parts[1] || ""));
 				expect(payload.sub).toBe("user789");
 				expect(payload.email).toBe("minimal@example.com");
 				expect(payload.name).toBeUndefined();

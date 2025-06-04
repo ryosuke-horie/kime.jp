@@ -19,7 +19,13 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"types": ["@cloudflare/workers-types/2023-07-01", "react", "react-dom"]
+		"types": [
+			"@cloudflare/workers-types/2023-07-01",
+			"react",
+			"react-dom",
+			"vitest/globals",
+			"@testing-library/jest-dom"
+		]
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 	"exclude": ["node_modules", "src/types/**/*.ts"]

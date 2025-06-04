@@ -15,9 +15,9 @@
 			"*/node_modules",
 			"*/cloudflare-env.d.ts",
 			"*/worker-configuration.d.ts",
-            "apps/web/src/components/ui/**/*",
-            "apps/web/src/hooks/use-mobile.ts",
-            "apps/workers/**/*.config.ts"
+			"apps/web/src/components/ui/**/*",
+			"apps/web/src/hooks/use-mobile.ts",
+			"apps/workers/**/*.config.ts"
 		]
 	},
 	"formatter": {

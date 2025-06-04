@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 /**
  * API統合テスト
@@ -7,6 +7,22 @@ import { http, HttpResponse } from "msw";
  */
 import React from "react";
 import { server } from "../../mocks/server";
+
+// CI環境でのDOM問題回避のためのユーティリティ関数
+const getByText = (container: HTMLElement, text: string | RegExp) => {
+	const elements = Array.from(container.querySelectorAll('*')).filter(el => {
+		const textContent = el.textContent;
+		if (typeof text === 'string') {
+			return textContent?.includes(text);
+		} else {
+			return text.test(textContent || '');
+		}
+	});
+	if (elements.length === 0) {
+		throw new Error(`Unable to find element with text: ${text}`);
+	}
+	return elements[0];
+};
 
 // テスト用のコンポーネント
 const TestComponent = () => {
@@ -64,22 +80,22 @@ describe("API統合テスト", () => {
 	test("ジム一覧データを正常に取得できる", async () => {
 		const queryClient = createTestQueryClient();
 
-		render(
+		const { container } = render(
 			<QueryClientProvider client={queryClient}>
 				<TestComponent />
 			</QueryClientProvider>,
 		);
 
 		// ローディング状態の確認
-		expect(screen.getByText("Loading...")).toBeInTheDocument();
+		expect(getByText(container, "Loading...")).toBeInTheDocument();
 
 		// データが取得されて表示されることを確認
 		await waitFor(() => {
-			expect(screen.getByText("ジム一覧")).toBeInTheDocument();
+			expect(getByText(container, "ジム一覧")).toBeInTheDocument();
 		});
 
-		expect(screen.getByText("テストジム1")).toBeInTheDocument();
-		expect(screen.getByText("テストジム2")).toBeInTheDocument();
+		expect(getByText(container, "テストジム1")).toBeInTheDocument();
+		expect(getByText(container, "テストジム2")).toBeInTheDocument();
 	});
 
 	test("APIエラー時にエラーメッセージが表示される", async () => {
@@ -95,7 +111,7 @@ describe("API統合テスト", () => {
 
 		const queryClient = createTestQueryClient();
 
-		render(
+		const { container } = render(
 			<QueryClientProvider client={queryClient}>
 				<TestComponent />
 			</QueryClientProvider>,
@@ -103,7 +119,7 @@ describe("API統合テスト", () => {
 
 		// エラーメッセージが表示されることを確認
 		await waitFor(() => {
-			expect(screen.getByText(/Error:/)).toBeInTheDocument();
+			expect(getByText(container, /Error:/)).toBeInTheDocument();
 		});
 	});
 

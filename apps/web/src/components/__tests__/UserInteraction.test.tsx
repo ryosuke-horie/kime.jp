@@ -2,10 +2,19 @@
  * ユーザーインタラクションテストの実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { describe, expect, it } from "vitest";
+
+// CI環境でのDOM問題回避のためのユーティリティ
+const getByTestId = (container: HTMLElement, testId: string) => {
+	const element = container.querySelector(`[data-testid="${testId}"]`);
+	if (!element) {
+		throw new Error(`Unable to find element with testId: ${testId}`);
+	}
+	return element;
+};
 
 // テスト用のカウンターコンポーネント
 function Counter() {
@@ -109,111 +118,111 @@ describe("ユーザーインタラクションテスト", () => {
 			await new Promise((resolve) => setTimeout(resolve, 100));
 			expect(container.innerHTML).toBeTruthy();
 
-			// 初期状態の確認
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 0");
+			// container から直接クエリ（CI環境でのscreen問題回避）
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 0");
 
 			// 増加ボタンのクリック
-			await user.click(screen.getByTestId("increment"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 1");
+			await user.click(getByTestId(container, "increment"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 1");
 
-			await user.click(screen.getByTestId("increment"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 2");
+			await user.click(getByTestId(container, "increment"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 2");
 
 			// 減少ボタンのクリック
-			await user.click(screen.getByTestId("decrement"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 1");
+			await user.click(getByTestId(container, "decrement"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 1");
 
 			// リセットボタンのクリック
-			await user.click(screen.getByTestId("reset"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 0");
+			await user.click(getByTestId(container, "reset"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 0");
 		});
 
 		it("複数回の操作が正しく動作する", async () => {
 			const user = userEvent.setup();
-			render(<Counter />);
+			const { container } = render(<Counter />);
 
 			// 複数回のクリック
-			await user.click(screen.getByTestId("increment"));
-			await user.click(screen.getByTestId("increment"));
-			await user.click(screen.getByTestId("increment"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 3");
+			await user.click(getByTestId(container, "increment"));
+			await user.click(getByTestId(container, "increment"));
+			await user.click(getByTestId(container, "increment"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 3");
 
-			await user.click(screen.getByTestId("decrement"));
-			await user.click(screen.getByTestId("decrement"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 1");
+			await user.click(getByTestId(container, "decrement"));
+			await user.click(getByTestId(container, "decrement"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 1");
 		});
 	});
 
 	describe("Toggle", () => {
 		it("トグルボタンで状態が切り替わる", async () => {
 			const user = userEvent.setup();
-			render(<Toggle />);
+			const { container } = render(<Toggle />);
 
 			// 初期状態の確認
-			expect(screen.getByTestId("status")).toHaveTextContent("状態: OFF");
-			expect(screen.getByTestId("toggle")).toHaveTextContent("ONに切り替え");
+			expect(getByTestId(container, "status")).toHaveTextContent("状態: OFF");
+			expect(getByTestId(container, "toggle")).toHaveTextContent("ONに切り替え");
 
 			// ONに切り替え
-			await user.click(screen.getByTestId("toggle"));
-			expect(screen.getByTestId("status")).toHaveTextContent("状態: ON");
-			expect(screen.getByTestId("toggle")).toHaveTextContent("OFFに切り替え");
+			await user.click(getByTestId(container, "toggle"));
+			expect(getByTestId(container, "status")).toHaveTextContent("状態: ON");
+			expect(getByTestId(container, "toggle")).toHaveTextContent("OFFに切り替え");
 
 			// OFFに切り替え
-			await user.click(screen.getByTestId("toggle"));
-			expect(screen.getByTestId("status")).toHaveTextContent("状態: OFF");
-			expect(screen.getByTestId("toggle")).toHaveTextContent("ONに切り替え");
+			await user.click(getByTestId(container, "toggle"));
+			expect(getByTestId(container, "status")).toHaveTextContent("状態: OFF");
+			expect(getByTestId(container, "toggle")).toHaveTextContent("ONに切り替え");
 		});
 	});
 
 	describe("InputForm", () => {
 		it("フォーム入力と送信が正しく動作する", async () => {
 			const user = userEvent.setup();
-			render(<InputForm />);
+			const { container } = render(<InputForm />);
 
 			// フォーム要素の存在確認
-			expect(screen.getByTestId("name-input")).toBeInTheDocument();
-			expect(screen.getByTestId("email-input")).toBeInTheDocument();
-			expect(screen.getByTestId("submit")).toBeInTheDocument();
+			expect(getByTestId(container, "name-input")).toBeInTheDocument();
+			expect(getByTestId(container, "email-input")).toBeInTheDocument();
+			expect(getByTestId(container, "submit")).toBeInTheDocument();
 
 			// 入力操作
-			await user.type(screen.getByTestId("name-input"), "田中太郎");
-			await user.type(screen.getByTestId("email-input"), "tanaka@example.com");
+			await user.type(getByTestId(container, "name-input"), "田中太郎");
+			await user.type(getByTestId(container, "email-input"), "tanaka@example.com");
 
 			// 入力値の確認
-			expect(screen.getByTestId("name-input")).toHaveValue("田中太郎");
-			expect(screen.getByTestId("email-input")).toHaveValue("tanaka@example.com");
+			expect(getByTestId(container, "name-input")).toHaveValue("田中太郎");
+			expect(getByTestId(container, "email-input")).toHaveValue("tanaka@example.com");
 
 			// フォーム送信
-			await user.click(screen.getByTestId("submit"));
+			await user.click(getByTestId(container, "submit"));
 
 			// 送信結果の確認
-			expect(screen.getByTestId("success")).toHaveTextContent(
+			expect(getByTestId(container, "success")).toHaveTextContent(
 				"送信完了: 田中太郎 (tanaka@example.com)",
 			);
 		});
 
 		it("部分的な入力でも送信できる", async () => {
 			const user = userEvent.setup();
-			render(<InputForm />);
+			const { container } = render(<InputForm />);
 
 			// 名前のみ入力
-			await user.type(screen.getByTestId("name-input"), "佐藤");
-			await user.click(screen.getByTestId("submit"));
+			await user.type(getByTestId(container, "name-input"), "佐藤");
+			await user.click(getByTestId(container, "submit"));
 
-			expect(screen.getByTestId("success")).toHaveTextContent("送信完了: 佐藤 ()");
+			expect(getByTestId(container, "success")).toHaveTextContent("送信完了: 佐藤 ()");
 		});
 
 		it("キーボード操作でフォーム送信できる", async () => {
 			const user = userEvent.setup();
-			render(<InputForm />);
+			const { container } = render(<InputForm />);
 
-			await user.type(screen.getByTestId("name-input"), "キーボードユーザー");
-			await user.type(screen.getByTestId("email-input"), "keyboard@example.com");
+			await user.type(getByTestId(container, "name-input"), "キーボードユーザー");
+			await user.type(getByTestId(container, "email-input"), "keyboard@example.com");
 
 			// Enterキーでフォーム送信
 			await user.keyboard("{Enter}");
 
-			expect(screen.getByTestId("success")).toHaveTextContent(
+			expect(getByTestId(container, "success")).toHaveTextContent(
 				"送信完了: キーボードユーザー (keyboard@example.com)",
 			);
 		});
@@ -222,7 +231,7 @@ describe("ユーザーインタラクションテスト", () => {
 	describe("複合的なユーザーインタラクション", () => {
 		it("複数のコンポーネントが同時に動作する", async () => {
 			const user = userEvent.setup();
-			render(
+			const { container } = render(
 				<div>
 					<Counter />
 					<Toggle />
@@ -230,19 +239,19 @@ describe("ユーザーインタラクションテスト", () => {
 			);
 
 			// カウンターの操作
-			await user.click(screen.getByTestId("increment"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 1");
+			await user.click(getByTestId(container, "increment"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 1");
 
 			// トグルの操作
-			await user.click(screen.getByTestId("toggle"));
-			expect(screen.getByTestId("status")).toHaveTextContent("状態: ON");
+			await user.click(getByTestId(container, "toggle"));
+			expect(getByTestId(container, "status")).toHaveTextContent("状態: ON");
 
 			// カウンターの追加操作
-			await user.click(screen.getByTestId("increment"));
-			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 2");
+			await user.click(getByTestId(container, "increment"));
+			expect(getByTestId(container, "count")).toHaveTextContent("カウント: 2");
 
 			// 両方の状態が独立して管理されていることを確認
-			expect(screen.getByTestId("status")).toHaveTextContent("状態: ON");
+			expect(getByTestId(container, "status")).toHaveTextContent("状態: ON");
 		});
 	});
 });

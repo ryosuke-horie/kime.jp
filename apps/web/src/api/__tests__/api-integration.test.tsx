@@ -10,13 +10,12 @@ import { server } from "../../mocks/server";
 
 // CI環境でのDOM問題回避のためのユーティリティ関数
 const getByText = (container: HTMLElement, text: string | RegExp) => {
-	const elements = Array.from(container.querySelectorAll('*')).filter(el => {
+	const elements = Array.from(container.querySelectorAll("*")).filter((el) => {
 		const textContent = el.textContent;
-		if (typeof text === 'string') {
+		if (typeof text === "string") {
 			return textContent?.includes(text);
-		} else {
-			return text.test(textContent || '');
 		}
+		return text.test(textContent || "");
 	});
 	if (elements.length === 0) {
 		throw new Error(`Unable to find element with text: ${text}`);

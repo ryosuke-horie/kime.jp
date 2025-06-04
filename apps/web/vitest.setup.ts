@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom";
 import { cleanup } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
-import "whatwg-fetch";
 
 // MSW サーバーセットアップ（条件付き）
 let server: any = null;
@@ -20,15 +19,9 @@ beforeAll(async () => {
 	}
 
 	// Request/Response API ポリフィル（MSW用）
+	// JSDOM環境ではfetch APIが標準で利用可能
 	if (typeof global.Request === "undefined") {
-		try {
-			const undici = await import("undici");
-			global.Request = undici.Request as any;
-			global.Response = undici.Response as any;
-			global.Headers = undici.Headers as any;
-		} catch (error) {
-			console.warn("Failed to import undici polyfill:", error);
-		}
+		console.warn("Request API not available - relying on JSDOM fetch implementation");
 	}
 
 	// React DOM の初期化確認

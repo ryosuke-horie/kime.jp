@@ -1,12 +1,36 @@
 import "@testing-library/jest-dom";
 import { cleanup } from "@testing-library/react";
-import { afterAll, afterEach, beforeAll } from "vitest";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import "whatwg-fetch";
 
 // MSW サーバーセットアップ（条件付き）
 let server: any = null;
 
 beforeAll(async () => {
+	// Web API ポリフィルの初期化
+	if (typeof global.ReadableStream === "undefined") {
+		try {
+			const streams = await import("node:stream/web");
+			global.ReadableStream = streams.ReadableStream;
+			global.WritableStream = streams.WritableStream;
+			global.TransformStream = streams.TransformStream;
+		} catch (error) {
+			console.warn("Failed to import Web Streams API polyfill:", error);
+		}
+	}
+
+	// Request/Response API ポリフィル（MSW用）
+	if (typeof global.Request === "undefined") {
+		try {
+			const undici = await import("undici");
+			global.Request = undici.Request;
+			global.Response = undici.Response;
+			global.Headers = undici.Headers;
+		} catch (error) {
+			console.warn("Failed to import undici polyfill:", error);
+		}
+	}
+
 	// MSWが有効な場合のみ初期化（環境変数で制御）
 	if (process.env.DISABLE_MSW !== "true") {
 		try {
@@ -60,21 +84,6 @@ if (typeof global.TextDecoder === "undefined") {
 	global.TextDecoder = TextDecoder as any;
 }
 
-// Web Streams API ポリフィル
-if (typeof global.ReadableStream === "undefined") {
-	const { ReadableStream, WritableStream, TransformStream } = require("node:stream/web");
-	global.ReadableStream = ReadableStream;
-	global.WritableStream = WritableStream;
-	global.TransformStream = TransformStream;
-}
-
-// Request/Response API ポリフィル（MSW用）
-if (typeof global.Request === "undefined") {
-	const { Request, Response, Headers } = require("undici");
-	global.Request = Request;
-	global.Response = Response;
-	global.Headers = Headers;
-}
 
 // グローバル設定
 global.ResizeObserver = vi.fn().mockImplementation(() => ({

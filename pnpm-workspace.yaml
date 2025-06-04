@@ -2,6 +2,7 @@ packages:
   - apps/*
 ignoredBuiltDependencies:
   - '@biomejs/biome'
+  - msw
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild

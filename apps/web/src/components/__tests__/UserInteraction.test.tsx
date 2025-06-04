@@ -4,8 +4,8 @@
  */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
 import React from "react";
+import { describe, expect, it } from "vitest";
 
 // テスト用のカウンターコンポーネント
 function Counter() {
@@ -14,25 +14,13 @@ function Counter() {
 	return (
 		<div>
 			<p data-testid="count">カウント: {count}</p>
-			<button
-				data-testid="increment"
-				onClick={() => setCount(count + 1)}
-				type="button"
-			>
+			<button data-testid="increment" onClick={() => setCount(count + 1)} type="button">
 				増加
 			</button>
-			<button
-				data-testid="decrement"
-				onClick={() => setCount(count - 1)}
-				type="button"
-			>
+			<button data-testid="decrement" onClick={() => setCount(count - 1)} type="button">
 				減少
 			</button>
-			<button
-				data-testid="reset"
-				onClick={() => setCount(0)}
-				type="button"
-			>
+			<button data-testid="reset" onClick={() => setCount(0)} type="button">
 				リセット
 			</button>
 		</div>
@@ -46,11 +34,7 @@ function Toggle() {
 	return (
 		<div>
 			<p data-testid="status">状態: {isOn ? "ON" : "OFF"}</p>
-			<button
-				data-testid="toggle"
-				onClick={() => setIsOn(!isOn)}
-				type="button"
-			>
+			<button data-testid="toggle" onClick={() => setIsOn(!isOn)} type="button">
 				{isOn ? "OFF" : "ON"}に切り替え
 			</button>
 		</div>

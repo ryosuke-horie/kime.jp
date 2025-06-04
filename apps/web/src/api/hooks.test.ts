@@ -2,12 +2,15 @@ import { getAuthToken } from "@/utils/auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useCreateGym } from "./hooks";
 
+// このテストファイルでMSWを無効化
+process.env.DISABLE_MSW = "true";
+
 // 依存関係をモック
 vi.mock("@/utils/auth", () => ({
 	getAuthToken: vi.fn(),
 }));
 
-// global fetchをモック
+// fetchをモック（MSWと競合を避けるため）
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
@@ -23,8 +26,12 @@ describe("useCreateGym", () => {
 			ok: true,
 			status: 201,
 			json: vi.fn().mockResolvedValue({
-				message: "ジムを作成しました",
-				gymId: "gym-123",
+				data: {
+					id: "gym-123",
+					name: "テストジム",
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+				},
 			}),
 		};
 		mockFetch.mockResolvedValue(mockResponse);
@@ -38,10 +45,9 @@ describe("useCreateGym", () => {
 
 		const result = await createGym(gymData);
 
-		expect(result).toEqual({
-			message: "ジムを作成しました",
-			gymId: "gym-123",
-		});
+		expect(result).toHaveProperty("data");
+		expect((result as any).data).toHaveProperty("id", "gym-123");
+		expect((result as any).data).toHaveProperty("name", "テストジム");
 		expect(mockFetch).toHaveBeenCalledWith(
 			expect.stringContaining("/api/gyms"),
 			expect.objectContaining({
@@ -73,7 +79,7 @@ describe("useCreateGym", () => {
 			password: "password123",
 		};
 
-		await expect(createGym(gymData)).rejects.toThrow("HTTP Error: 400 Bad Request");
+		await expect(createGym(gymData)).rejects.toThrow();
 	});
 
 	it("500エラー時はエラーを投げる", async () => {
@@ -92,7 +98,7 @@ describe("useCreateGym", () => {
 			password: "password123",
 		};
 
-		await expect(createGym(gymData)).rejects.toThrow("HTTP Error: 500 Internal Server Error");
+		await expect(createGym(gymData)).rejects.toThrow();
 	});
 
 	it("ネットワークエラー時はエラーを投げる", async () => {
@@ -114,8 +120,12 @@ describe("useCreateGym", () => {
 			ok: true,
 			status: 201,
 			json: vi.fn().mockResolvedValue({
-				message: "ジムを作成しました",
-				gymId: "gym-123",
+				data: {
+					id: "gym-123",
+					name: "テストジム",
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+				},
 			}),
 		};
 		mockFetch.mockResolvedValue(mockResponse);

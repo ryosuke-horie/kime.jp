@@ -2,9 +2,9 @@
  * カスタムフックテストの実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // カウンターフック
 function useCounter(initialValue = 0) {
@@ -95,7 +95,7 @@ function useApi<T>(url: string): ApiResponse<T> {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 			const result = await response.json();
-			setData(result);
+			setData(result as T);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Unknown error");
 			setData(null);
@@ -266,10 +266,7 @@ describe("カスタムフックテスト", () => {
 			});
 
 			expect(result.current[0]).toBe("new-value");
-			expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-				"test-key",
-				'"new-value"',
-			);
+			expect(mockLocalStorage.setItem).toHaveBeenCalledWith("test-key", '"new-value"');
 		});
 
 		it("関数による値の更新が正しく動作する", () => {
@@ -373,12 +370,9 @@ describe("カスタムフックテスト", () => {
 
 	describe("useDebounce", () => {
 		it("デバウンス機能が正しく動作する", async () => {
-			const { result, rerender } = renderHook(
-				({ value, delay }) => useDebounce(value, delay),
-				{
-					initialProps: { value: "initial", delay: 500 },
-				},
-			);
+			const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+				initialProps: { value: "initial", delay: 500 },
+			});
 
 			expect(result.current).toBe("initial");
 
@@ -398,12 +392,9 @@ describe("カスタムフックテスト", () => {
 		});
 
 		it("複数回の変更で最新の値のみが反映される", async () => {
-			const { result, rerender } = renderHook(
-				({ value, delay }) => useDebounce(value, delay),
-				{
-					initialProps: { value: "initial", delay: 500 },
-				},
-			);
+			const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+				initialProps: { value: "initial", delay: 500 },
+			});
 
 			// 連続で値を変更
 			rerender({ value: "first", delay: 500 });

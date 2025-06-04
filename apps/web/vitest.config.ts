@@ -9,14 +9,14 @@ export default defineConfig({
 		environment: "jsdom",
 		globals: true,
 		setupFiles: ["./vitest.setup.ts"],
-
-		// パフォーマンス最適化設定
-		pool: "vmThreads",
+		pool: "forks",
 		poolOptions: {
-			vmThreads: {
-				maxThreads: 4,
-				minThreads: 1,
+			forks: {
+				isolate: false,
 			},
+		},
+		env: {
+			NODE_OPTIONS: "--experimental-global-webcrypto",
 		},
 
 		// カバレッジ設定

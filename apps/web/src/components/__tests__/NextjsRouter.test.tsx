@@ -4,8 +4,8 @@
  */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi, beforeEach } from "vitest";
 import React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Next.js App Routerのモック
 vi.mock("next/navigation", () => ({
@@ -14,7 +14,7 @@ vi.mock("next/navigation", () => ({
 	usePathname: vi.fn(),
 }));
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 // テスト用のナビゲーションコンポーネント
 function NavigationComponent() {
@@ -41,29 +41,15 @@ function NavigationComponent() {
 	return (
 		<div>
 			<p data-testid="current-path">現在のパス: {pathname}</p>
-			<p data-testid="search-params">
-				クエリパラメータ: {searchParams?.get("q") || "なし"}
-			</p>
+			<p data-testid="search-params">クエリパラメータ: {searchParams?.get("q") || "なし"}</p>
 
-			<button
-				data-testid="navigate-home"
-				onClick={() => handleNavigate("/")}
-				type="button"
-			>
+			<button data-testid="navigate-home" onClick={() => handleNavigate("/")} type="button">
 				ホームへ
 			</button>
-			<button
-				data-testid="navigate-about"
-				onClick={() => handleNavigate("/about")}
-				type="button"
-			>
+			<button data-testid="navigate-about" onClick={() => handleNavigate("/about")} type="button">
 				About
 			</button>
-			<button
-				data-testid="replace-contact"
-				onClick={() => handleReplace("/contact")}
-				type="button"
-			>
+			<button data-testid="replace-contact" onClick={() => handleReplace("/contact")} type="button">
 				お問い合わせ（置換）
 			</button>
 			<button data-testid="back-button" onClick={handleBack} type="button">
@@ -132,7 +118,22 @@ describe("Next.jsルーターモックテスト", () => {
 		vi.mocked(usePathname).mockReturnValue("/");
 
 		// useSearchParamsのモック設定
-		vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams());
+		const mockSearchParams = {
+			get: vi.fn(),
+			has: vi.fn(),
+			keys: vi.fn(),
+			values: vi.fn(),
+			entries: vi.fn(),
+			forEach: vi.fn(),
+			toString: vi.fn(),
+			append: vi.fn(),
+			delete: vi.fn(),
+			set: vi.fn(),
+			sort: vi.fn(),
+			size: 0,
+			[Symbol.iterator]: vi.fn(),
+		};
+		vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 	});
 
 	describe("NavigationComponent", () => {
@@ -141,9 +142,7 @@ describe("Next.jsルーターモックテスト", () => {
 
 			render(<NavigationComponent />);
 
-			expect(screen.getByTestId("current-path")).toHaveTextContent(
-				"現在のパス: /dashboard",
-			);
+			expect(screen.getByTestId("current-path")).toHaveTextContent("現在のパス: /dashboard");
 		});
 
 		it("ナビゲーションボタンがrouter.pushを呼び出す", async () => {
@@ -182,14 +181,26 @@ describe("Next.jsルーターモックテスト", () => {
 		});
 
 		it("URLパラメータが正しく表示される", () => {
-			const mockSearchParams = new URLSearchParams("q=vitest");
-			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams);
+			const mockSearchParams = {
+				get: vi.fn().mockReturnValue("vitest"),
+				has: vi.fn(),
+				keys: vi.fn(),
+				values: vi.fn(),
+				entries: vi.fn(),
+				forEach: vi.fn(),
+				toString: vi.fn().mockReturnValue("q=vitest"),
+				append: vi.fn(),
+				delete: vi.fn(),
+				set: vi.fn(),
+				sort: vi.fn(),
+				size: 1,
+				[Symbol.iterator]: vi.fn(),
+			};
+			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
 			render(<NavigationComponent />);
 
-			expect(screen.getByTestId("search-params")).toHaveTextContent(
-				"クエリパラメータ: vitest",
-			);
+			expect(screen.getByTestId("search-params")).toHaveTextContent("クエリパラメータ: vitest");
 		});
 	});
 
@@ -211,14 +222,26 @@ describe("Next.jsルーターモックテスト", () => {
 		});
 
 		it("現在の検索クエリが表示される", () => {
-			const mockSearchParams = new URLSearchParams("q=現在の検索");
-			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams);
+			const mockSearchParams = {
+				get: vi.fn().mockReturnValue("現在の検索"),
+				has: vi.fn(),
+				keys: vi.fn(),
+				values: vi.fn(),
+				entries: vi.fn(),
+				forEach: vi.fn(),
+				toString: vi.fn().mockReturnValue("q=現在の検索"),
+				append: vi.fn(),
+				delete: vi.fn(),
+				set: vi.fn(),
+				sort: vi.fn(),
+				size: 1,
+				[Symbol.iterator]: vi.fn(),
+			};
+			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
 			render(<SearchComponent />);
 
-			expect(screen.getByTestId("current-query")).toHaveTextContent(
-				"現在の検索: 現在の検索",
-			);
+			expect(screen.getByTestId("current-query")).toHaveTextContent("現在の検索: 現在の検索");
 		});
 
 		it("空の検索でも送信できる", async () => {
@@ -263,18 +286,28 @@ describe("Next.jsルーターモックテスト", () => {
 
 		it("パスとクエリパラメータの組み合わせ", () => {
 			vi.mocked(usePathname).mockReturnValue("/products");
-			const mockSearchParams = new URLSearchParams("category=electronics&sort=price");
-			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams);
+			const mockSearchParams = {
+				get: vi.fn().mockReturnValue(null),
+				has: vi.fn(),
+				keys: vi.fn(),
+				values: vi.fn(),
+				entries: vi.fn(),
+				forEach: vi.fn(),
+				toString: vi.fn().mockReturnValue("category=electronics&sort=price"),
+				append: vi.fn(),
+				delete: vi.fn(),
+				set: vi.fn(),
+				sort: vi.fn(),
+				size: 2,
+				[Symbol.iterator]: vi.fn(),
+			};
+			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
 			render(<NavigationComponent />);
 
-			expect(screen.getByTestId("current-path")).toHaveTextContent(
-				"現在のパス: /products",
-			);
+			expect(screen.getByTestId("current-path")).toHaveTextContent("現在のパス: /products");
 			// 最初のクエリパラメータのみ表示される（コンポーネントの仕様）
-			expect(screen.getByTestId("search-params")).toHaveTextContent(
-				"クエリパラメータ: なし",
-			);
+			expect(screen.getByTestId("search-params")).toHaveTextContent("クエリパラメータ: なし");
 		});
 	});
 });

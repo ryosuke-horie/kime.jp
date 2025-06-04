@@ -22,7 +22,7 @@ const waitForTestId = async (container: HTMLElement, testId: string, timeout = 3
 	while (Date.now() - start < timeout) {
 		const element = container.querySelector(`[data-testid="${testId}"]`);
 		if (element) return element;
-		await new Promise(resolve => setTimeout(resolve, 50));
+		await new Promise((resolve) => setTimeout(resolve, 50));
 	}
 	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
 };
@@ -198,15 +198,15 @@ describe("ユーザーインタラクションテスト", () => {
 			// 入力操作（CI環境での安定性向上）
 			const nameInput = getByTestId(container, "name-input") as HTMLInputElement;
 			const emailInput = getByTestId(container, "email-input") as HTMLInputElement;
-			
+
 			// より確実な入力方法
 			await user.clear(nameInput);
 			await user.type(nameInput, "田中太郎");
-			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
-			
+			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
+
 			await user.clear(emailInput);
 			await user.type(emailInput, "tanaka@example.com");
-			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
+			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
 
 			// 入力値の確認
 			expect(nameInput).toHaveValue("田中太郎");
@@ -217,9 +217,7 @@ describe("ユーザーインタラクションテスト", () => {
 
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
-			expect(successElement).toHaveTextContent(
-				"送信完了: 田中太郎 (tanaka@example.com)",
-			);
+			expect(successElement).toHaveTextContent("送信完了: 田中太郎 (tanaka@example.com)");
 		});
 
 		it("部分的な入力でも送信できる", async () => {
@@ -230,11 +228,11 @@ describe("ユーザーインタラクションテスト", () => {
 			const nameInput = getByTestId(container, "name-input") as HTMLInputElement;
 			await user.clear(nameInput);
 			await user.type(nameInput, "佐藤");
-			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
-			
+			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
+
 			// 入力値確認
 			expect(nameInput).toHaveValue("佐藤");
-			
+
 			await user.click(getByTestId(container, "submit"));
 
 			// 送信結果の確認（非同期要素の待機）
@@ -249,14 +247,14 @@ describe("ユーザーインタラクションテスト", () => {
 			// 入力操作（CI環境での安定性向上）
 			const nameInput = getByTestId(container, "name-input") as HTMLInputElement;
 			const emailInput = getByTestId(container, "email-input") as HTMLInputElement;
-			
+
 			await user.clear(nameInput);
 			await user.type(nameInput, "キーボードユーザー");
-			await new Promise(resolve => setTimeout(resolve, 100));
-			
+			await new Promise((resolve) => setTimeout(resolve, 100));
+
 			await user.clear(emailInput);
 			await user.type(emailInput, "keyboard@example.com");
-			await new Promise(resolve => setTimeout(resolve, 100));
+			await new Promise((resolve) => setTimeout(resolve, 100));
 
 			// 入力値確認
 			expect(nameInput).toHaveValue("キーボードユーザー");

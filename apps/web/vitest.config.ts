@@ -15,6 +15,13 @@ export default defineConfig({
 				isolate: false,
 			},
 		},
+		environmentOptions: {
+			jsdom: {
+				url: "http://localhost:3000",
+				pretendToBeVisual: true,
+				resources: "usable",
+			},
+		},
 		env: {
 			NODE_OPTIONS: "--experimental-global-webcrypto",
 		},

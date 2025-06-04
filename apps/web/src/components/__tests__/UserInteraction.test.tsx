@@ -90,7 +90,15 @@ describe("ユーザーインタラクションテスト", () => {
 	describe("Counter", () => {
 		it("ボタンクリックでカウントが増減する", async () => {
 			const user = userEvent.setup();
-			render(<Counter />);
+			const { container } = render(<Counter />);
+			
+			// DOMの存在確認とデバッグ
+			expect(container).toBeTruthy();
+			if (!container.innerHTML) {
+				console.error("Container is empty:", container);
+				console.error("Document body:", document.body.innerHTML);
+			}
+			expect(container.innerHTML).toBeTruthy();
 
 			// 初期状態の確認
 			expect(screen.getByTestId("count")).toHaveTextContent("カウント: 0");

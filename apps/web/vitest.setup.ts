@@ -84,7 +84,6 @@ if (typeof global.TextDecoder === "undefined") {
 	global.TextDecoder = TextDecoder as any;
 }
 
-
 // グローバル設定
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
 	observe: vi.fn(),

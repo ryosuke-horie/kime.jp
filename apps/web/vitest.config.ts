@@ -16,7 +16,6 @@ export default defineConfig({
 			vmThreads: {
 				maxThreads: 4,
 				minThreads: 1,
-				isolate: false, // 安全な場合のみ
 			},
 		},
 

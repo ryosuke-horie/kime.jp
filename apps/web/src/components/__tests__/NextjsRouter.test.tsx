@@ -2,7 +2,27 @@
  * Next.jsルーターモックのテスト実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
+
+// CI環境でのDOM問題回避のためのユーティリティ
+const getByTestId = (container: HTMLElement, testId: string) => {
+	const element = container.querySelector(`[data-testid="${testId}"]`);
+	if (!element) {
+		throw new Error(`Unable to find element with testId: ${testId}`);
+	}
+	return element;
+};
+
+// CI環境での非同期DOM要素取得
+const waitForTestId = async (container: HTMLElement, testId: string, timeout = 3000) => {
+	const start = Date.now();
+	while (Date.now() - start < timeout) {
+		const element = container.querySelector(`[data-testid="${testId}"]`);
+		if (element) return element;
+		await new Promise(resolve => setTimeout(resolve, 50));
+	}
+	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
+};
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -140,43 +160,43 @@ describe("Next.jsルーターモックテスト", () => {
 		it("現在のパスが正しく表示される", () => {
 			vi.mocked(usePathname).mockReturnValue("/dashboard");
 
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			expect(screen.getByTestId("current-path")).toHaveTextContent("現在のパス: /dashboard");
+			expect(getByTestId(container, "current-path")).toHaveTextContent("現在のパス: /dashboard");
 		});
 
 		it("ナビゲーションボタンがrouter.pushを呼び出す", async () => {
 			const user = userEvent.setup();
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			await user.click(screen.getByTestId("navigate-home"));
+			await user.click(getByTestId(container, "navigate-home"));
 			expect(mockPush).toHaveBeenCalledWith("/");
 
-			await user.click(screen.getByTestId("navigate-about"));
+			await user.click(getByTestId(container, "navigate-about"));
 			expect(mockPush).toHaveBeenCalledWith("/about");
 		});
 
 		it("置換ボタンがrouter.replaceを呼び出す", async () => {
 			const user = userEvent.setup();
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			await user.click(screen.getByTestId("replace-contact"));
+			await user.click(getByTestId(container, "replace-contact"));
 			expect(mockReplace).toHaveBeenCalledWith("/contact");
 		});
 
 		it("戻るボタンがrouter.backを呼び出す", async () => {
 			const user = userEvent.setup();
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			await user.click(screen.getByTestId("back-button"));
+			await user.click(getByTestId(container, "back-button"));
 			expect(mockBack).toHaveBeenCalledTimes(1);
 		});
 
 		it("更新ボタンがrouter.refreshを呼び出す", async () => {
 			const user = userEvent.setup();
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			await user.click(screen.getByTestId("refresh-button"));
+			await user.click(getByTestId(container, "refresh-button"));
 			expect(mockRefresh).toHaveBeenCalledTimes(1);
 		});
 
@@ -198,22 +218,25 @@ describe("Next.jsルーターモックテスト", () => {
 			};
 			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			expect(screen.getByTestId("search-params")).toHaveTextContent("クエリパラメータ: vitest");
+			expect(getByTestId(container, "search-params")).toHaveTextContent("クエリパラメータ: vitest");
 		});
 	});
 
 	describe("SearchComponent", () => {
 		it("検索フォームが正しく動作する", async () => {
 			const user = userEvent.setup();
-			render(<SearchComponent />);
+			const { container } = render(<SearchComponent />);
 
-			// 検索キーワードを入力
-			await user.type(screen.getByTestId("search-input"), "テストキーワード");
+			// 検索キーワードを入力（CI環境での安定性向上）
+			const searchInput = getByTestId(container, "search-input") as HTMLInputElement;
+			await user.clear(searchInput);
+			await user.type(searchInput, "テストキーワード");
+			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
 
 			// 検索ボタンをクリック
-			await user.click(screen.getByTestId("search-submit"));
+			await user.click(getByTestId(container, "search-submit"));
 
 			// router.pushが正しいURLで呼び出されることを確認
 			expect(mockPush).toHaveBeenCalledWith(
@@ -239,25 +262,30 @@ describe("Next.jsルーターモックテスト", () => {
 			};
 			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
-			render(<SearchComponent />);
+			const { container } = render(<SearchComponent />);
 
-			expect(screen.getByTestId("current-query")).toHaveTextContent("現在の検索: 現在の検索");
+			expect(getByTestId(container, "current-query")).toHaveTextContent("現在の検索: 現在の検索");
 		});
 
 		it("空の検索でも送信できる", async () => {
 			const user = userEvent.setup();
-			render(<SearchComponent />);
+			const { container } = render(<SearchComponent />);
 
-			await user.click(screen.getByTestId("search-submit"));
+			await user.click(getByTestId(container, "search-submit"));
 
 			expect(mockPush).toHaveBeenCalledWith("/search?q=");
 		});
 
 		it("Enterキーで検索が実行される", async () => {
 			const user = userEvent.setup();
-			render(<SearchComponent />);
+			const { container } = render(<SearchComponent />);
 
-			await user.type(screen.getByTestId("search-input"), "キーボード検索");
+			// 検索キーワードを入力（CI環境での安定性向上）
+			const searchInput = getByTestId(container, "search-input") as HTMLInputElement;
+			await user.clear(searchInput);
+			await user.type(searchInput, "キーボード検索");
+			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
+			
 			await user.keyboard("{Enter}");
 
 			expect(mockPush).toHaveBeenCalledWith(
@@ -269,12 +297,12 @@ describe("Next.jsルーターモックテスト", () => {
 	describe("複雑なルーティングシナリオ", () => {
 		it("複数のルーティング操作が順次実行される", async () => {
 			const user = userEvent.setup();
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
 			// 複数のナビゲーション操作
-			await user.click(screen.getByTestId("navigate-about"));
-			await user.click(screen.getByTestId("navigate-home"));
-			await user.click(screen.getByTestId("replace-contact"));
+			await user.click(getByTestId(container, "navigate-about"));
+			await user.click(getByTestId(container, "navigate-home"));
+			await user.click(getByTestId(container, "replace-contact"));
 
 			// 呼び出し回数と順序を確認
 			expect(mockPush).toHaveBeenCalledTimes(2);
@@ -303,11 +331,11 @@ describe("Next.jsルーターモックテスト", () => {
 			};
 			vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
 
-			render(<NavigationComponent />);
+			const { container } = render(<NavigationComponent />);
 
-			expect(screen.getByTestId("current-path")).toHaveTextContent("現在のパス: /products");
+			expect(getByTestId(container, "current-path")).toHaveTextContent("現在のパス: /products");
 			// 最初のクエリパラメータのみ表示される（コンポーネントの仕様）
-			expect(screen.getByTestId("search-params")).toHaveTextContent("クエリパラメータ: なし");
+			expect(getByTestId(container, "search-params")).toHaveTextContent("クエリパラメータ: なし");
 		});
 	});
 });

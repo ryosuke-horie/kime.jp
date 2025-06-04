@@ -14,12 +14,13 @@ const getByTestId = (container: HTMLElement, testId: string) => {
 };
 
 // CI環境での非同期DOM要素取得
+// @ts-expect-error - 将来のために保持、現在は未使用
 const waitForTestId = async (container: HTMLElement, testId: string, timeout = 3000) => {
 	const start = Date.now();
 	while (Date.now() - start < timeout) {
 		const element = container.querySelector(`[data-testid="${testId}"]`);
 		if (element) return element;
-		await new Promise(resolve => setTimeout(resolve, 50));
+		await new Promise((resolve) => setTimeout(resolve, 50));
 	}
 	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
 };
@@ -233,7 +234,7 @@ describe("Next.jsルーターモックテスト", () => {
 			const searchInput = getByTestId(container, "search-input") as HTMLInputElement;
 			await user.clear(searchInput);
 			await user.type(searchInput, "テストキーワード");
-			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
+			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
 
 			// 検索ボタンをクリック
 			await user.click(getByTestId(container, "search-submit"));
@@ -284,8 +285,8 @@ describe("Next.jsルーターモックテスト", () => {
 			const searchInput = getByTestId(container, "search-input") as HTMLInputElement;
 			await user.clear(searchInput);
 			await user.type(searchInput, "キーボード検索");
-			await new Promise(resolve => setTimeout(resolve, 100)); // CI環境での待機
-			
+			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
+
 			await user.keyboard("{Enter}");
 
 			expect(mockPush).toHaveBeenCalledWith(

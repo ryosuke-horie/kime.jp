@@ -142,7 +142,8 @@ export class GymService implements IGymService {
 				});
 			} catch (error) {
 				// 管理者関連のエラーはログに記録するが、ジム作成自体は成功とする
-				console.error("Failed to create admin account or gym relationship:", error);
+				console.error("管理者アカウント作成またはジム関連付けエラー:", error);
+				console.error("ジムID:", gymId, "オーナーメール:", data.ownerEmail);
 			}
 		}
 

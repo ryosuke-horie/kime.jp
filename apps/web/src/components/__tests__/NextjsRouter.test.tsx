@@ -13,17 +13,6 @@ const getByTestId = (container: HTMLElement, testId: string) => {
 	return element;
 };
 
-// CI環境での非同期DOM要素取得
-// @ts-expect-error - 将来のために保持、現在は未使用
-const waitForTestId = async (container: HTMLElement, testId: string, timeout = 3000) => {
-	const start = Date.now();
-	while (Date.now() - start < timeout) {
-		const element = container.querySelector(`[data-testid="${testId}"]`);
-		if (element) return element;
-		await new Promise((resolve) => setTimeout(resolve, 50));
-	}
-	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
-};
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";

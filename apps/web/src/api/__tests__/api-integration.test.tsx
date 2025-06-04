@@ -61,7 +61,7 @@ const createTestQueryClient = () =>
 	});
 
 describe("API統合テスト", () => {
-	test.skip("ジム一覧データを正常に取得できる", async () => {
+	test("ジム一覧データを正常に取得できる", async () => {
 		const queryClient = createTestQueryClient();
 
 		render(
@@ -82,7 +82,7 @@ describe("API統合テスト", () => {
 		expect(screen.getByText("テストジム2")).toBeInTheDocument();
 	});
 
-	test.skip("APIエラー時にエラーメッセージが表示される", async () => {
+	test("APIエラー時にエラーメッセージが表示される", async () => {
 		// エラーレスポンスを返すハンドラーに一時的に変更
 		server.use(
 			http.get("/api/gyms", () => {

@@ -86,18 +86,27 @@ function InputForm() {
 	);
 }
 
-describe.skip("ユーザーインタラクションテスト", () => {
+describe("ユーザーインタラクションテスト", () => {
 	describe("Counter", () => {
 		it("ボタンクリックでカウントが増減する", async () => {
 			const user = userEvent.setup();
 			const { container } = render(<Counter />);
-			
+
 			// DOMの存在確認とデバッグ
 			expect(container).toBeTruthy();
+			console.log("Container HTML:", container.innerHTML);
+			console.log("Document ready state:", document.readyState);
+			console.log("Window object exists:", typeof window !== "undefined");
+			
 			if (!container.innerHTML) {
 				console.error("Container is empty:", container);
 				console.error("Document body:", document.body.innerHTML);
+				// React DevToolsがある場合の追加情報
+				console.error("React render attempt");
 			}
+			
+			// waitForも試す
+			await new Promise(resolve => setTimeout(resolve, 100));
 			expect(container.innerHTML).toBeTruthy();
 
 			// 初期状態の確認

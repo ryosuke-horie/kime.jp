@@ -31,6 +31,13 @@ beforeAll(async () => {
 		}
 	}
 
+	// React DOM の初期化確認
+	if (typeof window !== "undefined" && typeof document !== "undefined") {
+		// JSDOM環境での強制リフレッシュ
+		document.body.innerHTML = "";
+		console.log("JSDOM environment initialized successfully");
+	}
+
 	// MSWが有効な場合のみ初期化（環境変数で制御）
 	if (process.env.DISABLE_MSW !== "true") {
 		try {

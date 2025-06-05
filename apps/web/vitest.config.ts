@@ -32,7 +32,7 @@ export default defineConfig({
 		// カバレッジ設定
 		coverage: {
 			provider: "v8",
-			reporter: ["text", "json", "html", "lcov"],
+			reporter: ["text", "json", "json-summary", "html", "lcov"],
 			exclude: ["coverage/**", "dist/**", "**/*.d.ts", "**/.next/**", "**/vitest.config.{js,ts}"],
 			thresholds: {
 				global: {

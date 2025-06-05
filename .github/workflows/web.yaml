@@ -29,6 +29,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# GitHub Token の権限設定
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   # テストのみのジョブ（push・PRの両方で実行）
   web-test:
@@ -53,8 +58,38 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Test
-        run: pnpm --filter=web test
+      - name: Test with Coverage
+        run: pnpm --filter=web test:coverage
+
+      - name: Comment Coverage on PR
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f apps/web/coverage/coverage-summary.json ]; then
+            # カバレッジデータを抽出
+            TOTAL_LINES=$(jq -r '.total.lines.pct' apps/web/coverage/coverage-summary.json)
+            TOTAL_STATEMENTS=$(jq -r '.total.statements.pct' apps/web/coverage/coverage-summary.json)
+            TOTAL_FUNCTIONS=$(jq -r '.total.functions.pct' apps/web/coverage/coverage-summary.json)
+            TOTAL_BRANCHES=$(jq -r '.total.branches.pct' apps/web/coverage/coverage-summary.json)
+            
+            # PRコメント作成
+            COMMENT="## 📊 Web App Test Coverage Report
+            
+            | Metric | Coverage |
+            |--------|----------|
+            | Lines | ${TOTAL_LINES}% |
+            | Statements | ${TOTAL_STATEMENTS}% |
+            | Functions | ${TOTAL_FUNCTIONS}% |
+            | Branches | ${TOTAL_BRANCHES}% |
+            
+            Generated on: $(date)"
+            
+            # GitHub CLIを使用してPRにコメント投稿
+            gh pr comment ${{ github.event.number }} --body "$COMMENT"
+          else
+            echo "Coverage summary file not found"
+          fi
 
   # Lint・Format・TypeCheckのジョブ（PRのみ実行）
   web-lint:
@@ -86,3 +121,4 @@ jobs:
 
       - name: Type Check
         run: pnpm --filter=web typecheck
+

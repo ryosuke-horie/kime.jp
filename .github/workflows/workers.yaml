@@ -60,15 +60,35 @@ jobs:
           SKIP_AUTH: true
           JWT_SECRET: test-secret-key-ci
 
-      - name: Upload Coverage Reports
-        uses: actions/upload-artifact@v4
+      - name: Comment Coverage on PR
         if: github.event_name == 'pull_request'
-        with:
-          name: workers-coverage
-          path: |
-            apps/workers/coverage/coverage-summary.json
-            apps/workers/coverage/lcov.info
-          retention-days: 5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f apps/workers/coverage/coverage-summary.json ]; then
+            # カバレッジデータを抽出
+            TOTAL_LINES=$(jq -r '.total.lines.pct' apps/workers/coverage/coverage-summary.json)
+            TOTAL_STATEMENTS=$(jq -r '.total.statements.pct' apps/workers/coverage/coverage-summary.json)
+            TOTAL_FUNCTIONS=$(jq -r '.total.functions.pct' apps/workers/coverage/coverage-summary.json)
+            TOTAL_BRANCHES=$(jq -r '.total.branches.pct' apps/workers/coverage/coverage-summary.json)
+            
+            # PRコメント作成
+            COMMENT="## 📊 Workers App Test Coverage Report
+            
+            | Metric | Coverage |
+            |--------|----------|
+            | Lines | ${TOTAL_LINES}% |
+            | Statements | ${TOTAL_STATEMENTS}% |
+            | Functions | ${TOTAL_FUNCTIONS}% |
+            | Branches | ${TOTAL_BRANCHES}% |
+            
+            Generated on: $(date)"
+            
+            # PRにコメント投稿
+            gh pr comment ${{ github.event.number }} --body "$COMMENT"
+          else
+            echo "Coverage summary file not found"
+          fi
 
   # Lint・Format・TypeCheckのジョブ（PRのみ実行）
   workers-lint:
@@ -101,28 +121,3 @@ jobs:
       - name: Type Check
         run: pnpm --filter=workers typecheck
 
-  # カバレッジレポートをPRコメントとして投稿（PRのみ実行）
-  workers-coverage-comment:
-    name: Workers App Coverage Comment
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    needs: workers-test
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Download Coverage Reports
-        uses: actions/download-artifact@v4
-        with:
-          name: workers-coverage
-
-      - name: Coverage Comment
-        uses: MishaKav/jest-coverage-comment@main
-        with:
-          coverage-summary-path: coverage-summary.json
-          title: Workers App Test Coverage
-          summary-title: Workers App Coverage Summary
-          badge-title: Workers Coverage
-          hide-comment: false
-          create-new-comment: false
-          hide-summary: false

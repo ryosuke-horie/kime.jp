@@ -181,23 +181,23 @@ describe("ユーザーインタラクションテスト", () => {
 
 			// より確実な入力方法
 			await user.clear(nameInput);
-			await user.type(nameInput, "田中太郎");
+			await user.type(nameInput, "John Doe");
 			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
 
 			await user.clear(emailInput);
-			await user.type(emailInput, "tanaka@example.com");
+			await user.type(emailInput, "john.doe@example.com");
 			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
 
 			// 入力値の確認
-			expect(nameInput).toHaveValue("田中太郎");
-			expect(emailInput).toHaveValue("tanaka@example.com");
+			expect(nameInput).toHaveValue("John Doe");
+			expect(emailInput).toHaveValue("john.doe@example.com");
 
 			// フォーム送信
 			await user.click(getByTestId(container, "submit"));
 
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
-			expect(successElement).toHaveTextContent("送信完了: 田中太郎 (tanaka@example.com)");
+			expect(successElement).toHaveTextContent("送信完了: John Doe (john.doe@example.com)");
 		});
 
 		it("部分的な入力でも送信できる", async () => {
@@ -207,17 +207,17 @@ describe("ユーザーインタラクションテスト", () => {
 			// 名前のみ入力（CI環境での安定性向上）
 			const nameInput = getByTestId(container, "name-input") as HTMLInputElement;
 			await user.clear(nameInput);
-			await user.type(nameInput, "佐藤");
+			await user.type(nameInput, "Sato");
 			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
 
 			// 入力値確認
-			expect(nameInput).toHaveValue("佐藤");
+			expect(nameInput).toHaveValue("Sato");
 
 			await user.click(getByTestId(container, "submit"));
 
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
-			expect(successElement).toHaveTextContent("送信完了: 佐藤 ()");
+			expect(successElement).toHaveTextContent("送信完了: Sato ()");
 		});
 
 		it("キーボード操作でフォーム送信できる", async () => {
@@ -229,7 +229,7 @@ describe("ユーザーインタラクションテスト", () => {
 			const emailInput = getByTestId(container, "email-input") as HTMLInputElement;
 
 			await user.clear(nameInput);
-			await user.type(nameInput, "キーボードユーザー");
+			await user.type(nameInput, "Keyboard User");
 			await new Promise((resolve) => setTimeout(resolve, 100));
 
 			await user.clear(emailInput);
@@ -237,7 +237,7 @@ describe("ユーザーインタラクションテスト", () => {
 			await new Promise((resolve) => setTimeout(resolve, 100));
 
 			// 入力値確認
-			expect(nameInput).toHaveValue("キーボードユーザー");
+			expect(nameInput).toHaveValue("Keyboard User");
 			expect(emailInput).toHaveValue("keyboard@example.com");
 
 			// Enterキーでフォーム送信
@@ -246,7 +246,7 @@ describe("ユーザーインタラクションテスト", () => {
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
 			expect(successElement).toHaveTextContent(
-				"送信完了: キーボードユーザー (keyboard@example.com)",
+				"送信完了: Keyboard User (keyboard@example.com)",
 			);
 		});
 	});

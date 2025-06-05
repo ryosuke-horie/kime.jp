@@ -2,9 +2,10 @@
  * カスタムフックテストの実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, waitFor } from "@testing-library/react";
 import * as React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { renderHookWithProviders } from "../../test/test-utils";
 
 // カウンターフック
 function useCounter(initialValue = 0) {
@@ -161,17 +162,17 @@ function useWindowSize() {
 describe("カスタムフックテスト", () => {
 	describe("useCounter", () => {
 		it("初期値が正しく設定される", () => {
-			const { result } = renderHook(() => useCounter(5));
+			const { result } = renderHookWithProviders(() => useCounter(5));
 			expect(result.current.count).toBe(5);
 		});
 
 		it("初期値が指定されない場合は0になる", () => {
-			const { result } = renderHook(() => useCounter());
+			const { result } = renderHookWithProviders(() => useCounter());
 			expect(result.current.count).toBe(0);
 		});
 
 		it("incrementが正しく動作する", () => {
-			const { result } = renderHook(() => useCounter(0));
+			const { result } = renderHookWithProviders(() => useCounter(0));
 
 			act(() => {
 				result.current.increment();
@@ -187,7 +188,7 @@ describe("カスタムフックテスト", () => {
 		});
 
 		it("decrementが正しく動作する", () => {
-			const { result } = renderHook(() => useCounter(5));
+			const { result } = renderHookWithProviders(() => useCounter(5));
 
 			act(() => {
 				result.current.decrement();
@@ -197,7 +198,7 @@ describe("カスタムフックテスト", () => {
 		});
 
 		it("resetが正しく動作する", () => {
-			const { result } = renderHook(() => useCounter(10));
+			const { result } = renderHookWithProviders(() => useCounter(10));
 
 			act(() => {
 				result.current.increment();
@@ -214,7 +215,7 @@ describe("カスタムフックテスト", () => {
 		});
 
 		it("setValueが正しく動作する", () => {
-			const { result } = renderHook(() => useCounter(0));
+			const { result } = renderHookWithProviders(() => useCounter(0));
 
 			act(() => {
 				result.current.setValue(100);
@@ -242,7 +243,7 @@ describe("カスタムフックテスト", () => {
 		it("初期値が正しく設定される", () => {
 			mockLocalStorage.getItem.mockReturnValue(null);
 
-			const { result } = renderHook(() => useLocalStorage("test-key", "initial"));
+			const { result } = renderHookWithProviders(() => useLocalStorage("test-key", "initial"));
 
 			expect(result.current[0]).toBe("initial");
 			expect(mockLocalStorage.getItem).toHaveBeenCalledWith("test-key");
@@ -251,7 +252,7 @@ describe("カスタムフックテスト", () => {
 		it("ローカルストレージの値が正しく読み込まれる", () => {
 			mockLocalStorage.getItem.mockReturnValue('"stored-value"');
 
-			const { result } = renderHook(() => useLocalStorage("test-key", "initial"));
+			const { result } = renderHookWithProviders(() => useLocalStorage("test-key", "initial"));
 
 			expect(result.current[0]).toBe("stored-value");
 		});
@@ -259,7 +260,7 @@ describe("カスタムフックテスト", () => {
 		it("値の設定が正しく動作する", () => {
 			mockLocalStorage.getItem.mockReturnValue(null);
 
-			const { result } = renderHook(() => useLocalStorage("test-key", "initial"));
+			const { result } = renderHookWithProviders(() => useLocalStorage("test-key", "initial"));
 
 			act(() => {
 				result.current[1]("new-value");
@@ -272,7 +273,7 @@ describe("カスタムフックテスト", () => {
 		it("関数による値の更新が正しく動作する", () => {
 			mockLocalStorage.getItem.mockReturnValue("5");
 
-			const { result } = renderHook(() => useLocalStorage("test-key", 0));
+			const { result } = renderHookWithProviders(() => useLocalStorage("test-key", 0));
 
 			act(() => {
 				result.current[1]((prev) => prev + 1);
@@ -284,7 +285,7 @@ describe("カスタムフックテスト", () => {
 		it("値の削除が正しく動作する", () => {
 			mockLocalStorage.getItem.mockReturnValue('"stored-value"');
 
-			const { result } = renderHook(() => useLocalStorage("test-key", "initial"));
+			const { result } = renderHookWithProviders(() => useLocalStorage("test-key", "initial"));
 
 			act(() => {
 				result.current[2](); // removeValue
@@ -310,7 +311,7 @@ describe("カスタムフックテスト", () => {
 				json: async () => mockData,
 			});
 
-			const { result } = renderHook(() => useApi<typeof mockData>("/api/users"));
+			const { result } = renderHookWithProviders(() => useApi<typeof mockData>("/api/users"));
 
 			// 初期状態の確認
 			expect(result.current.loading).toBe(true);
@@ -330,7 +331,7 @@ describe("カスタムフックテスト", () => {
 		it("エラー時に適切にエラーが設定される", async () => {
 			mockFetch.mockRejectedValueOnce(new Error("Network error"));
 
-			const { result } = renderHook(() => useApi("/api/users"));
+			const { result } = renderHookWithProviders(() => useApi("/api/users"));
 
 			await waitFor(() => {
 				expect(result.current.loading).toBe(false);
@@ -347,7 +348,7 @@ describe("カスタムフックテスト", () => {
 				json: async () => mockData,
 			});
 
-			const { result } = renderHook(() => useApi<typeof mockData>("/api/users"));
+			const { result } = renderHookWithProviders(() => useApi<typeof mockData>("/api/users"));
 
 			await waitFor(() => {
 				expect(result.current.loading).toBe(false);
@@ -370,9 +371,12 @@ describe("カスタムフックテスト", () => {
 
 	describe("useDebounce", () => {
 		it("デバウンス機能が正しく動作する", async () => {
-			const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
-				initialProps: { value: "initial", delay: 500 },
-			});
+			const { result, rerender } = renderHookWithProviders(
+				({ value, delay }: { value: string; delay: number }) => useDebounce(value, delay),
+				{
+					initialProps: { value: "initial", delay: 500 },
+				},
+			);
 
 			expect(result.current).toBe("initial");
 
@@ -392,9 +396,12 @@ describe("カスタムフックテスト", () => {
 		});
 
 		it("複数回の変更で最新の値のみが反映される", async () => {
-			const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
-				initialProps: { value: "initial", delay: 500 },
-			});
+			const { result, rerender } = renderHookWithProviders(
+				({ value, delay }: { value: string; delay: number }) => useDebounce(value, delay),
+				{
+					initialProps: { value: "initial", delay: 500 },
+				},
+			);
 
 			// 連続で値を変更
 			rerender({ value: "first", delay: 500 });
@@ -428,14 +435,14 @@ describe("カスタムフックテスト", () => {
 				value: 768,
 			});
 
-			const { result } = renderHook(() => useWindowSize());
+			const { result } = renderHookWithProviders(() => useWindowSize());
 
 			expect(result.current.width).toBe(1024);
 			expect(result.current.height).toBe(768);
 		});
 
 		it("ウィンドウリサイズ時に値が更新される", () => {
-			const { result } = renderHook(() => useWindowSize());
+			const { result } = renderHookWithProviders(() => useWindowSize());
 
 			// ウィンドウサイズを変更
 			Object.defineProperty(window, "innerWidth", {

@@ -2,30 +2,10 @@
  * ユーザーインタラクションテストの実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
-import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { describe, expect, it } from "vitest";
-
-// CI環境でのDOM問題回避のためのユーティリティ
-const getByTestId = (container: HTMLElement, testId: string) => {
-	const element = container.querySelector(`[data-testid="${testId}"]`);
-	if (!element) {
-		throw new Error(`Unable to find element with testId: ${testId}`);
-	}
-	return element;
-};
-
-// CI環境での非同期DOM要素取得
-const waitForTestId = async (container: HTMLElement, testId: string, timeout = 3000) => {
-	const start = Date.now();
-	while (Date.now() - start < timeout) {
-		const element = container.querySelector(`[data-testid="${testId}"]`);
-		if (element) return element;
-		await new Promise((resolve) => setTimeout(resolve, 50));
-	}
-	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
-};
+import { getByTestId, render, waitForTestId } from "../../test/test-utils";
 
 // テスト用のカウンターコンポーネント
 function Counter() {

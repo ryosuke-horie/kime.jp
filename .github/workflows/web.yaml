@@ -29,6 +29,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# GitHub Token の権限設定
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   # テストのみのジョブ（push・PRの両方で実行）
   web-test:

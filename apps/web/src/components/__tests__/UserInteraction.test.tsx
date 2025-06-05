@@ -2,6 +2,7 @@
  * ユーザーインタラクションテストの実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
+import { fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { describe, expect, it } from "vitest";
@@ -179,14 +180,12 @@ describe("ユーザーインタラクションテスト", () => {
 			const nameInput = getByTestId(container, "name-input") as HTMLInputElement;
 			const emailInput = getByTestId(container, "email-input") as HTMLInputElement;
 
-			// より確実な入力方法
+			// CI環境対応の入力方法
 			await user.clear(nameInput);
-			await user.type(nameInput, "John Doe");
-			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
+			fireEvent.change(nameInput, { target: { value: "John Doe" } });
 
 			await user.clear(emailInput);
-			await user.type(emailInput, "john.doe@example.com");
-			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
+			fireEvent.change(emailInput, { target: { value: "john.doe@example.com" } });
 
 			// 入力値の確認
 			expect(nameInput).toHaveValue("John Doe");
@@ -207,8 +206,7 @@ describe("ユーザーインタラクションテスト", () => {
 			// 名前のみ入力（CI環境での安定性向上）
 			const nameInput = getByTestId(container, "name-input") as HTMLInputElement;
 			await user.clear(nameInput);
-			await user.type(nameInput, "Sato");
-			await new Promise((resolve) => setTimeout(resolve, 100)); // CI環境での待機
+			fireEvent.change(nameInput, { target: { value: "Sato" } });
 
 			// 入力値確認
 			expect(nameInput).toHaveValue("Sato");
@@ -229,12 +227,10 @@ describe("ユーザーインタラクションテスト", () => {
 			const emailInput = getByTestId(container, "email-input") as HTMLInputElement;
 
 			await user.clear(nameInput);
-			await user.type(nameInput, "Keyboard User");
-			await new Promise((resolve) => setTimeout(resolve, 100));
+			fireEvent.change(nameInput, { target: { value: "Keyboard User" } });
 
 			await user.clear(emailInput);
-			await user.type(emailInput, "keyboard@example.com");
-			await new Promise((resolve) => setTimeout(resolve, 100));
+			fireEvent.change(emailInput, { target: { value: "keyboard@example.com" } });
 
 			// 入力値確認
 			expect(nameInput).toHaveValue("Keyboard User");

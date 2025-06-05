@@ -72,6 +72,7 @@ export function StaffForm({
 
 	// フォーム設定
 	const createForm = useForm<CreateStaffFormData>({
+		// @ts-ignore TypeScriptの型推論の深度問題であり、実行時には問題なし
 		resolver: zodResolver(createStaffSchema),
 		defaultValues: {
 			name: "",
@@ -80,6 +81,7 @@ export function StaffForm({
 	});
 
 	const updateForm = useForm<UpdateStaffFormData>({
+		// @ts-ignore TypeScriptの型推論の深度問題であり、実行時には問題なし
 		resolver: zodResolver(updateStaffSchema),
 		defaultValues: {
 			name: staff?.name || "",

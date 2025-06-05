@@ -3,7 +3,7 @@
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
 import { act, renderHook, waitFor } from "@testing-library/react";
-import React from "react";
+import * as React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // カウンターフック

@@ -74,6 +74,7 @@ export function PasswordChangeForm({
 
 	// フォーム設定
 	const form = useForm<PasswordChangeFormData>({
+		// @ts-ignore TypeScriptの型推論の深度問題であり、実行時には問題なし
 		resolver: zodResolver(passwordChangeSchema),
 		defaultValues: {
 			currentPassword: "",

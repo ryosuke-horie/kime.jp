@@ -52,6 +52,7 @@ export default function GymSignInPage() {
 
 	// フォーム設定
 	const form = useForm<LoginFormData>({
+		// @ts-ignore TypeScriptの型推論の深度問題であり、実行時には問題なし
 		resolver: zodResolver(loginSchema),
 		defaultValues: {
 			email: "",

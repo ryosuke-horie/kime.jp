@@ -5,7 +5,7 @@ import { http, HttpResponse } from "msw";
  * API統合テスト
  * MSWを使用してAPIリクエストとレスポンスをテストする
  */
-import React from "react";
+import * as React from "react";
 import { server } from "../../mocks/server";
 
 // CI環境でのDOM問題回避のためのユーティリティ関数

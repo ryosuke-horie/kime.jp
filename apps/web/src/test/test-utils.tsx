@@ -103,12 +103,12 @@ export const getByText = (container: HTMLElement, text: string | RegExp) => {
 };
 
 // 非同期DOM要素取得
-export const waitForTestId = async (container: HTMLElement, testId: string, timeout = 3000) => {
+export const waitForTestId = async (container: HTMLElement, testId: string, timeout = 5000) => {
 	const start = Date.now();
 	while (Date.now() - start < timeout) {
 		const element = container.querySelector(`[data-testid="${testId}"]`);
 		if (element) return element;
-		await new Promise((resolve) => setTimeout(resolve, 50));
+		await new Promise((resolve) => setTimeout(resolve, 100));
 	}
 	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
 };

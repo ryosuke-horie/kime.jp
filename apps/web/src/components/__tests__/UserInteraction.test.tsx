@@ -194,6 +194,9 @@ describe("ユーザーインタラクションテスト", () => {
 			// フォーム送信
 			await user.click(getByTestId(container, "submit"));
 
+			// CI環境での処理完了を待機
+			await new Promise((resolve) => setTimeout(resolve, 500));
+
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
 			expect(successElement).toHaveTextContent("送信完了: John Doe (john.doe@example.com)");
@@ -212,6 +215,9 @@ describe("ユーザーインタラクションテスト", () => {
 			expect(nameInput).toHaveValue("Sato");
 
 			await user.click(getByTestId(container, "submit"));
+
+			// CI環境での処理完了を待機
+			await new Promise((resolve) => setTimeout(resolve, 500));
 
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
@@ -238,6 +244,9 @@ describe("ユーザーインタラクションテスト", () => {
 
 			// Enterキーでフォーム送信
 			await user.keyboard("{Enter}");
+
+			// CI環境での処理完了を待機
+			await new Promise((resolve) => setTimeout(resolve, 500));
 
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");

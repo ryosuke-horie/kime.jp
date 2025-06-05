@@ -117,6 +117,95 @@ describe("GymService - 単体テスト", () => {
 				}),
 			).rejects.toThrow("Failed to create gym");
 		});
+
+		it("管理者リポジトリありでオーナーアカウントと関連付けを作成すること", async () => {
+			// AdminRepositoryをモック
+			const mockAdminRepository = {
+				findOrCreateAdminAccount: vi.fn().mockResolvedValue("admin-123"),
+				createGymRelationship: vi.fn().mockResolvedValue(true),
+			};
+
+			// AdminRepositoryありのサービスを作成
+			const gymServiceWithAdmin = new GymService(mockRepository, mockAdminRepository as any);
+
+			const gymData = {
+				name: "テストジム",
+				ownerEmail: "owner@example.com",
+				password: "testPassword123",
+			};
+
+			const result = await gymServiceWithAdmin.createGym(gymData);
+
+			// ジムが作成されたことを検証
+			expect(result).toBeDefined();
+
+			// 管理者アカウント作成が呼び出されたことを検証
+			expect(mockAdminRepository.findOrCreateAdminAccount).toHaveBeenCalledWith({
+				email: gymData.ownerEmail,
+				name: `${gymData.name}オーナー`,
+				role: "admin",
+			});
+
+			// ジム関連付けが呼び出されたことを検証
+			expect(mockAdminRepository.createGymRelationship).toHaveBeenCalledWith({
+				adminId: "admin-123",
+				gymId: expect.any(String),
+				role: "owner",
+			});
+		});
+
+		it("管理者アカウント作成でエラーが発生してもジム作成は成功すること", async () => {
+			// AdminRepositoryをモック（エラーをスロー）
+			const mockAdminRepository = {
+				findOrCreateAdminAccount: vi.fn().mockRejectedValue(new Error("Admin creation failed")),
+				createGymRelationship: vi.fn(),
+			};
+
+			// AdminRepositoryありのサービスを作成
+			const gymServiceWithAdmin = new GymService(mockRepository, mockAdminRepository as any);
+
+			const gymData = {
+				name: "テストジム",
+				ownerEmail: "owner@example.com",
+				password: "testPassword123",
+			};
+
+			// エラーが発生してもジム作成は成功することを検証
+			const result = await gymServiceWithAdmin.createGym(gymData);
+			expect(result).toBeDefined();
+			expect(result.name).toBe(gymData.name);
+
+			// 管理者アカウント作成が試行されたことを検証
+			expect(mockAdminRepository.findOrCreateAdminAccount).toHaveBeenCalled();
+			// 関連付けは呼び出されないことを検証
+			expect(mockAdminRepository.createGymRelationship).not.toHaveBeenCalled();
+		});
+
+		it("ジム関連付け作成でエラーが発生してもジム作成は成功すること", async () => {
+			// AdminRepositoryをモック（関連付けでエラー）
+			const mockAdminRepository = {
+				findOrCreateAdminAccount: vi.fn().mockResolvedValue("admin-123"),
+				createGymRelationship: vi.fn().mockRejectedValue(new Error("Relationship creation failed")),
+			};
+
+			// AdminRepositoryありのサービスを作成
+			const gymServiceWithAdmin = new GymService(mockRepository, mockAdminRepository as any);
+
+			const gymData = {
+				name: "テストジム",
+				ownerEmail: "owner@example.com",
+				password: "testPassword123",
+			};
+
+			// エラーが発生してもジム作成は成功することを検証
+			const result = await gymServiceWithAdmin.createGym(gymData);
+			expect(result).toBeDefined();
+			expect(result.name).toBe(gymData.name);
+
+			// 両方のメソッドが呼び出されたことを検証
+			expect(mockAdminRepository.findOrCreateAdminAccount).toHaveBeenCalled();
+			expect(mockAdminRepository.createGymRelationship).toHaveBeenCalled();
+		});
 	});
 
 	describe("updateGym", () => {

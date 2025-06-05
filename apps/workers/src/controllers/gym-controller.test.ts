@@ -216,6 +216,26 @@ describe("GymController - 単体テスト", () => {
 				}),
 			);
 		});
+
+		it("サービスでエラーが発生した場合はServerErrorをスローすること", async () => {
+			const gymData = {
+				name: "新規ジム",
+				ownerEmail: "test@example.com",
+				password: "testPassword123",
+			};
+
+			const mockCtx = createMockContext({
+				body: gymData,
+			});
+
+			// サービスがエラーをスローするようにモック
+			mockService.createGym = vi.fn().mockRejectedValue(new Error("Database connection failed"));
+
+			// ServerErrorが再スローされることを確認
+			await expect(controller.createGym(mockCtx as unknown as AppContext)).rejects.toThrow(
+				ServerError,
+			);
+		});
 	});
 
 	describe("updateGym", () => {

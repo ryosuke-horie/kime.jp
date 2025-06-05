@@ -376,7 +376,7 @@ describe("フォームバリデーションテスト", () => {
 	});
 
 	describe("フォーム送信", () => {
-		it.skip("有効なデータで送信が成功する", async () => {
+		it("有効なデータで送信が成功する", async () => {
 			const user = userEvent.setup();
 			const mockSubmit = vi.fn().mockResolvedValue(undefined);
 			render(<UserRegistrationForm onSubmit={mockSubmit} />);

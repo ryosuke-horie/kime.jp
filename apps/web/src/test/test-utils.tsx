@@ -79,11 +79,18 @@ export const renderHookWithProviders = <T, TProps = any>(
 	return renderHook(hook, { wrapper, initialProps });
 };
 
-// CI環境でのDOM問題回避のためのユーティリティ関数
+// 標準のReact Testing Libraryのqueryを使用した安定したユーティリティ関数
 export const getByTestId = (container: HTMLElement, testId: string) => {
-	const element = container.querySelector(`[data-testid="${testId}"]`);
+	const element = container.querySelector(`[data-testid="${testId}"]`) as HTMLElement;
 	if (!element) {
-		throw new Error(`Unable to find element with testId: ${testId}`);
+		// デバッグ情報を提供
+		const allTestIds = Array.from(container.querySelectorAll("[data-testid]"))
+			.map((el) => el.getAttribute("data-testid"))
+			.filter(Boolean);
+
+		throw new Error(
+			`Unable to find element with testId: ${testId}\nAvailable testIds: ${allTestIds.join(", ")}\nContainer HTML: ${container.innerHTML}`,
+		);
 	}
 	return element;
 };
@@ -97,20 +104,34 @@ export const getByText = (container: HTMLElement, text: string | RegExp) => {
 		return text.test(textContent || "");
 	});
 	if (elements.length === 0) {
-		throw new Error(`Unable to find element with text: ${text}`);
+		throw new Error(
+			`Unable to find element with text: ${text}\nContainer HTML: ${container.innerHTML}`,
+		);
 	}
-	return elements[0];
+	return elements[0] as HTMLElement;
 };
 
-// 非同期DOM要素取得
+// React Testing LibraryのwaitForを使用した安定した非同期要素取得
 export const waitForTestId = async (container: HTMLElement, testId: string, timeout = 5000) => {
-	const start = Date.now();
-	while (Date.now() - start < timeout) {
-		const element = container.querySelector(`[data-testid="${testId}"]`);
-		if (element) return element;
-		await new Promise((resolve) => setTimeout(resolve, 100));
+	const { waitFor } = await import("@testing-library/react");
+
+	let element: HTMLElement | null = null;
+
+	await waitFor(
+		() => {
+			element = container.querySelector(`[data-testid="${testId}"]`) as HTMLElement;
+			if (!element) {
+				throw new Error(`Element with testId "${testId}" not found`);
+			}
+			return element;
+		},
+		{ timeout },
+	);
+
+	if (!element) {
+		throw new Error(`Element with testId "${testId}" not found after ${timeout}ms`);
 	}
-	throw new Error(`Unable to find element with testId: ${testId} within ${timeout}ms`);
+	return element;
 };
 
 // re-export everything

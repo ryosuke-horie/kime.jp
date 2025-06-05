@@ -68,20 +68,17 @@ jobs:
             TOTAL_FUNCTIONS=$(jq -r '.total.functions.pct' apps/web/coverage/coverage-summary.json)
             TOTAL_BRANCHES=$(jq -r '.total.branches.pct' apps/web/coverage/coverage-summary.json)
             
-            # PRコメント作成
-            COMMENT="## 📊 Web App Test Coverage Report
+            # PRコメント作成（JSON用にエスケープ）
+            COMMENT="## 📊 Web App Test Coverage Report\\n\\n| Metric | Coverage |\\n|--------|----------|\\n| Lines | ${TOTAL_LINES}% |\\n| Statements | ${TOTAL_STATEMENTS}% |\\n| Functions | ${TOTAL_FUNCTIONS}% |\\n| Branches | ${TOTAL_BRANCHES}% |\\n\\nGenerated on: $(date)"
             
-            | Metric | Coverage |
-            |--------|----------|
-            | Lines | ${TOTAL_LINES}% |
-            | Statements | ${TOTAL_STATEMENTS}% |
-            | Functions | ${TOTAL_FUNCTIONS}% |
-            | Branches | ${TOTAL_BRANCHES}% |
-            
-            Generated on: $(date)"
-            
-            # PRにコメント投稿
-            gh pr comment ${{ github.event.number }} --body "$COMMENT"
+            # GitHub API を使用してPRにコメント投稿
+            curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.number }}/comments \
+              -d "{\"body\":\"$COMMENT\"}"
           else
             echo "Coverage summary file not found"
           fi

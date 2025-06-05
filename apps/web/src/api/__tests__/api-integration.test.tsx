@@ -1,5 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, waitFor } from "@testing-library/react";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 /**
  * API統合テスト
@@ -7,21 +6,7 @@ import { http, HttpResponse } from "msw";
  */
 import * as React from "react";
 import { server } from "../../mocks/server";
-
-// CI環境でのDOM問題回避のためのユーティリティ関数
-const getByText = (container: HTMLElement, text: string | RegExp) => {
-	const elements = Array.from(container.querySelectorAll("*")).filter((el) => {
-		const textContent = el.textContent;
-		if (typeof text === "string") {
-			return textContent?.includes(text);
-		}
-		return text.test(textContent || "");
-	});
-	if (elements.length === 0) {
-		throw new Error(`Unable to find element with text: ${text}`);
-	}
-	return elements[0];
-};
+import { createTestQueryClient, getByText, render, waitFor } from "../../test/test-utils";
 
 // テスト用のコンポーネント
 const TestComponent = () => {
@@ -66,14 +51,7 @@ const TestComponent = () => {
 	);
 };
 
-const createTestQueryClient = () =>
-	new QueryClient({
-		defaultOptions: {
-			queries: {
-				retry: false,
-			},
-		},
-	});
+// createTestQueryClient は test-utils から import済み
 
 describe("API統合テスト", () => {
 	test("ジム一覧データを正常に取得できる", async () => {

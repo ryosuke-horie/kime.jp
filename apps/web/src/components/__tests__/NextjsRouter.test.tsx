@@ -2,20 +2,10 @@
  * Next.jsルーターモックのテスト実装例
  * Issue #360 フロントエンドテスト環境構築の実装例
  */
-import { render } from "@testing-library/react";
-
-// CI環境でのDOM問題回避のためのユーティリティ
-const getByTestId = (container: HTMLElement, testId: string) => {
-	const element = container.querySelector(`[data-testid="${testId}"]`);
-	if (!element) {
-		throw new Error(`Unable to find element with testId: ${testId}`);
-	}
-	return element;
-};
-
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getByTestId, render } from "../../test/test-utils";
 
 // Next.js App Routerのモック
 vi.mock("next/navigation", () => ({

@@ -24,32 +24,72 @@ beforeAll(async () => {
 		console.warn("Request API not available - relying on JSDOM fetch implementation");
 	}
 
-	// React DOM の初期化確認
+	// React DOM の初期化確認と環境設定
 	if (typeof window !== "undefined" && typeof document !== "undefined") {
 		// JSDOM環境での強制リフレッシュ
 		document.body.innerHTML = "";
+
+		// React 18 DOM初期化の問題回避
+		if (!(global as any).IS_REACT_ACT_ENVIRONMENT) {
+			(global as any).IS_REACT_ACT_ENVIRONMENT = true;
+		}
+
 		console.log("JSDOM environment initialized successfully");
 	}
+
+	// Next.js App Routerのグローバルモック設定
+	vi.mock("next/navigation", () => ({
+		useRouter: vi.fn(() => ({
+			push: vi.fn(),
+			replace: vi.fn(),
+			back: vi.fn(),
+			forward: vi.fn(),
+			refresh: vi.fn(),
+			prefetch: vi.fn(),
+		})),
+		useSearchParams: vi.fn(() => ({
+			get: vi.fn(),
+			has: vi.fn(),
+			keys: vi.fn(),
+			values: vi.fn(),
+			entries: vi.fn(),
+			forEach: vi.fn(),
+			toString: vi.fn(),
+			append: vi.fn(),
+			delete: vi.fn(),
+			set: vi.fn(),
+			sort: vi.fn(),
+			size: 0,
+			[Symbol.iterator]: vi.fn(),
+		})),
+		usePathname: vi.fn(() => "/"),
+		useParams: vi.fn(() => ({})),
+	}));
 
 	// MSWが有効な場合のみ初期化（環境変数で制御）
 	if (process.env.DISABLE_MSW !== "true") {
 		try {
-			const { server: mswServer } = await import("./src/mocks/server");
+			const { server: mswServer, startServer } = await import("./src/mocks/server");
 			server = mswServer;
-			server.listen({
-				onUnhandledRequest: "bypass",
-			});
+			startServer();
 		} catch (error) {
 			console.warn("MSW server could not be initialized:", error);
 		}
 	}
 });
 
-afterEach(() => {
+afterEach(async () => {
 	cleanup();
 	vi.clearAllMocks();
+
+	// MSWサーバーのリセット
 	if (server) {
-		server.resetHandlers();
+		try {
+			const { resetServer } = await import("./src/mocks/server");
+			resetServer();
+		} catch (error) {
+			console.warn("Failed to reset MSW server:", error);
+		}
 	}
 });
 
@@ -67,9 +107,15 @@ vi.mock("../src/types/index", async () => {
 	};
 });
 
-afterAll(() => {
+afterAll(async () => {
+	// MSWサーバーの安全な停止
 	if (server) {
-		server.close();
+		try {
+			const { stopServer } = await import("./src/mocks/server");
+			stopServer();
+		} catch (error) {
+			console.warn("Failed to stop MSW server:", error);
+		}
 	}
 });
 

@@ -9,7 +9,7 @@ export default defineWorkersConfig({
 		exclude: ["**/node_modules/**", "**/dist/**"],
 		coverage: {
 			provider: "istanbul",
-			reporter: ["text", "json", "html"],
+			reporter: ["text", "json", "json-summary", "html"],
 			reportsDirectory: "./coverage",
 			exclude: ["**/node_modules/**", "**/test/**", "**/db/**", "**/vite.config.ts"],
 		},

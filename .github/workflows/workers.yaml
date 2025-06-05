@@ -53,12 +53,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Test
-        run: pnpm --filter=workers test
+      - name: Test with Coverage
+        run: pnpm --filter=workers test:coverage
         env:
           NODE_ENV: test
           SKIP_AUTH: true
           JWT_SECRET: test-secret-key-ci
+
+      - name: Upload Coverage Reports
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: workers-coverage
+          path: |
+            apps/workers/coverage/coverage-summary.json
+            apps/workers/coverage/lcov.info
+          retention-days: 5
 
   # Lint・Format・TypeCheckのジョブ（PRのみ実行）
   workers-lint:
@@ -90,3 +100,29 @@ jobs:
 
       - name: Type Check
         run: pnpm --filter=workers typecheck
+
+  # カバレッジレポートをPRコメントとして投稿（PRのみ実行）
+  workers-coverage-comment:
+    name: Workers App Coverage Comment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: workers-test
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Download Coverage Reports
+        uses: actions/download-artifact@v4
+        with:
+          name: workers-coverage
+
+      - name: Coverage Comment
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          coverage-summary-path: coverage-summary.json
+          title: Workers App Test Coverage
+          summary-title: Workers App Coverage Summary
+          badge-title: Workers Coverage
+          hide-comment: false
+          create-new-comment: false
+          hide-summary: false

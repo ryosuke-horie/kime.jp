@@ -53,8 +53,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Test
-        run: pnpm --filter=web test
+      - name: Test with Coverage
+        run: pnpm --filter=web test:coverage
+
+      - name: Upload Coverage Reports
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: web-coverage
+          path: |
+            coverage/coverage-summary.json
+            coverage/lcov.info
+          retention-days: 5
 
   # Lint・Format・TypeCheckのジョブ（PRのみ実行）
   web-lint:
@@ -86,3 +96,29 @@ jobs:
 
       - name: Type Check
         run: pnpm --filter=web typecheck
+
+  # カバレッジレポートをPRコメントとして投稿（PRのみ実行）
+  web-coverage-comment:
+    name: Web App Coverage Comment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: web-test
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Download Coverage Reports
+        uses: actions/download-artifact@v4
+        with:
+          name: web-coverage
+
+      - name: Coverage Comment
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          coverage-summary-path: coverage-summary.json
+          title: Web App Test Coverage
+          summary-title: Web App Coverage Summary
+          badge-title: Web Coverage
+          hide-comment: false
+          create-new-comment: false
+          hide-summary: false

@@ -94,7 +94,7 @@ jobs:
   # Lint・Format・TypeCheckのジョブ（PRのみ実行）
   web-lint:
     name: Web App Lint & Format & TypeCheck
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 20
     steps:
       - name: Check out code

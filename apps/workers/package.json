@@ -25,10 +25,10 @@
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.7.0",
-		"drizzle-orm": "^0.44.1",
+		"drizzle-orm": "^0.44.2",
 		"hono": "^4.7.11",
 		"uuid": "^11.1.0",
-		"zod": "^3.25.50"
+		"zod": "^3.25.51"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.36",

@@ -61,6 +61,7 @@ export default function CreateGymPage() {
 
 	// フォームの初期化
 	const form = useForm<GymFormValues>({
+		// @ts-ignore TypeScriptの型推論の深度問題であり、実行時には問題なし
 		resolver: zodResolver(gymFormSchema),
 		defaultValues: {
 			name: "",

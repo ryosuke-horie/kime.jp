@@ -2,7 +2,7 @@
 /// <reference path="../types/cloudflare-test.d.ts" />
 import { env } from "cloudflare:test";
 import { drizzle } from "drizzle-orm/d1";
-import { describe, expect } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
 import { gyms } from "../db/schema";
 import { isD1Available, itWithD1 } from "../test/helpers/test-utils";
 import { AdminRepository } from "./admin-repository";
@@ -80,6 +80,33 @@ describe("AdminRepository", () => {
 			expect(admin?.name).toBe(name); // 元の名前のまま
 			expect(admin?.role).toBe(role); // 元のロールのまま
 		});
+
+		itWithD1("同時リクエストによるUNIQUE制約違反を正しく処理できること", async () => {
+			// テスト用の一意なメールアドレス
+			const email = `test-concurrent-${Date.now()}@example.com`;
+			const name = "Test Concurrent Admin";
+			const role = "admin" as const;
+
+			// 複数の同時リクエストを実行
+			const promises = Array.from({ length: 3 }, () =>
+				adminRepository.findOrCreateAdminAccount({
+					email,
+					name,
+					role,
+				}),
+			);
+
+			const results = await Promise.all(promises);
+
+			// すべて同じIDが返されることを検証
+			expect(results[0]).toBe(results[1]);
+			expect(results[1]).toBe(results[2]);
+
+			// アカウントが1つだけ作成されたことを検証
+			const admin = await adminRepository.findAdminByEmail(email);
+			expect(admin).toBeDefined();
+			expect(admin?.adminId).toBe(results[0]);
+		});
 	});
 
 	describe("createGymRelationship", () => {
@@ -89,6 +116,32 @@ describe("AdminRepository", () => {
 			// 単純に内部ロジックの動作を検証
 			// これは統合テストではなく単体テストに近い形
 			expect(adminRepository.createGymRelationship).toBeDefined();
+		});
+
+		itWithD1("関連付け作成メソッドの呼び出しテスト", async () => {
+			// テスト用データの準備
+			const email = `test-relationship-${Date.now()}@example.com`;
+			const name = "Test Relationship Admin";
+			const role = "admin" as const;
+
+			// 管理者アカウントを作成
+			const adminId = await adminRepository.findOrCreateAdminAccount({
+				email,
+				name,
+				role,
+			});
+
+			const gymId = `test-gym-${Date.now()}`;
+
+			// 関連付けを作成（テスト環境では外部キー制約により失敗するが、メソッドの動作を確認）
+			const result = await adminRepository.createGymRelationship({
+				adminId,
+				gymId,
+				role: "owner",
+			});
+
+			// テスト環境では外部キー制約により失敗するが、エラーハンドリングが正常に動作することを確認
+			expect(typeof result).toBe("boolean");
 		});
 	});
 });

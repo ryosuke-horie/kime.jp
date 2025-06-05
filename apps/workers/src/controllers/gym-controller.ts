@@ -152,6 +152,15 @@ export class GymController {
 			});
 			return c.json({ message: "ジムを作成しました", gymId: gym.gymId }, { status: 201 });
 		} catch (error) {
+			console.error("ジム作成エラー:", error);
+			console.error("リクエストデータ:", {
+				name,
+				ownerEmail,
+				phone,
+				website,
+				address,
+				description,
+			});
 			throw new ServerError("ジムの作成に失敗しました");
 		}
 	}

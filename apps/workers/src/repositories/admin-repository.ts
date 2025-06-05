@@ -85,20 +85,47 @@ export class AdminRepository implements IAdminRepository {
 		const adminId = uuidv4();
 		const now = new Date().toISOString();
 
-		await this.db
-			.insert(adminAccounts)
-			.values({
-				adminId,
-				email: data.email,
-				name: data.name,
-				role: data.role,
-				isActive: 1,
-				createdAt: now,
-				updatedAt: now,
-			})
-			.execute();
+		try {
+			await this.db
+				.insert(adminAccounts)
+				.values({
+					adminId,
+					email: data.email,
+					name: data.name,
+					role: data.role,
+					isActive: 1,
+					createdAt: now,
+					updatedAt: now,
+				})
+				.execute();
 
-		return adminId;
+			return adminId;
+		} catch (error) {
+			// UNIQUE制約違反の場合は、再度検索して既存のアカウントIDを返す
+			// 競合状態で複数のリクエストが同時に同じメールアドレスでアカウント作成を試みた場合に対応
+			if (error instanceof Error) {
+				const errorMessage = error.message || "";
+				const causeMessage = (error as any).cause?.message || "";
+
+				// Drizzle ORMのUNIQUE制約違反エラーを検出
+				if (
+					errorMessage.includes("UNIQUE") ||
+					causeMessage.includes("UNIQUE") ||
+					errorMessage.includes("SQLITE_CONSTRAINT") ||
+					causeMessage.includes("SQLITE_CONSTRAINT")
+				) {
+					console.warn("UNIQUE制約違反を検出、既存アカウントを再検索:", errorMessage);
+					const retryExistingAdmin = await this.findAdminByEmail(data.email);
+					if (retryExistingAdmin) {
+						return retryExistingAdmin.adminId;
+					}
+				}
+			}
+
+			// その他のエラーは再スロー
+			console.error("管理者アカウント作成エラー:", error);
+			throw error;
+		}
 	}
 
 	/**

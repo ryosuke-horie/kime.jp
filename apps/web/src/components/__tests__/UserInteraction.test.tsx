@@ -245,9 +245,7 @@ describe("ユーザーインタラクションテスト", () => {
 
 			// 送信結果の確認（非同期要素の待機）
 			const successElement = await waitForTestId(container, "success");
-			expect(successElement).toHaveTextContent(
-				"送信完了: Keyboard User (keyboard@example.com)",
-			);
+			expect(successElement).toHaveTextContent("送信完了: Keyboard User (keyboard@example.com)");
 		});
 	});
 

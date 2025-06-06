@@ -200,7 +200,7 @@ export default function EditGymPage() {
 											render={({ field }) => (
 												<FormItem>
 													<FormLabel>
-														ジム名 <span className="text-red-500">*</span>
+														ジム名 <span className="text-red-500">※</span>
 													</FormLabel>
 													<FormControl>
 														<Input placeholder="ジム名を入力" {...field} />
@@ -215,7 +215,7 @@ export default function EditGymPage() {
 											render={({ field }) => (
 												<FormItem>
 													<FormLabel>
-														メールアドレス <span className="text-red-500">*</span>
+														メールアドレス <span className="text-red-500">※</span>
 													</FormLabel>
 													<FormControl>
 														<Input type="email" placeholder="連絡先メールアドレス" {...field} />

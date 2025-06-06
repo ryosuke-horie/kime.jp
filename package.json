@@ -20,7 +20,7 @@
 		"@vitest/coverage-istanbul": "^3.2.2",
 		"@vitest/ui": "^3.1.4",
 		"turbo": "latest",
-		"vitest": "3.1.4"
+		"vitest": "3.2.2"
 	},
 	"packageManager": "pnpm@10.11.0",
 	"dependencies": {

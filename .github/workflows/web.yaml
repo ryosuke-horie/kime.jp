@@ -1,17 +1,6 @@
 name: Web App CI
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - '.github/workflows/web.yaml'      # 自身のワークフローファイル
-      - 'apps/web/**'                     # webアプリのソースコード全体
-      - 'biome.json'                      # Biome設定
-      - 'lefthook.yml'                    # Lefthook設定
-      - 'config/biome/**'                 # Biome設定ディレクトリ
-      - 'package.json'                    # ルートパッケージ設定
-      - 'pnpm-workspace.yaml'             # PNPM ワークスペース設定
-      - 'tsconfig.base.json'              # ベースTypeScript設定
   pull_request:
     branches: ["main"]
     paths:
@@ -35,7 +24,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  # テストのみのジョブ（push・PRの両方で実行）
+  # テストのみのジョブ（PRでのみ実行）
   web-test:
     name: Web App Test
     # runs-on: ubuntu-latest

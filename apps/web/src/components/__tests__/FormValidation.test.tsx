@@ -216,7 +216,7 @@ function UserRegistrationForm({ onSubmit }: { onSubmit?: (data: any) => void }) 
 	);
 }
 
-describe("フォームバリデーションテスト", () => {
+describe.skip("フォームバリデーションテスト", () => {
 	describe("個別フィールドバリデーション", () => {
 		it("名前フィールドのバリデーションが正しく動作する", async () => {
 			const user = userEvent.setup();

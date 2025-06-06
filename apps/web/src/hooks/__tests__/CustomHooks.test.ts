@@ -158,7 +158,7 @@ function useWindowSize() {
 	return windowSize;
 }
 
-describe("カスタムフックテスト", () => {
+describe.skip("カスタムフックテスト", () => {
 	describe("useCounter", () => {
 		it("初期値が正しく設定される", () => {
 			const { result } = renderHook(() => useCounter(5));

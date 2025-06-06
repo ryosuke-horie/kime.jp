@@ -3,7 +3,7 @@
  * Reactコンポーネントテストで必要なプロバイダーを統合的に提供
  */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { type RenderOptions, render, renderHook } from "@testing-library/react";
+import { type RenderOptions, render as rtlRender, renderHook } from "@testing-library/react";
 import type * as React from "react";
 
 // テスト用QueryClientの作成
@@ -58,7 +58,7 @@ const customRender = (ui: React.ReactElement, options: CustomRenderOptions = {})
 		<AllProviders queryClient={queryClient}>{children}</AllProviders>
 	);
 
-	return render(ui, { wrapper: Wrapper, ...renderOptions });
+	return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
 };
 
 // フック用のrender関数

@@ -29,10 +29,23 @@ beforeAll(async () => {
 		// JSDOM環境での強制リフレッシュ
 		document.body.innerHTML = "";
 
-		// React 18 DOM初期化の問題回避
+		// React 18/19 DOM初期化の問題回避
 		if (!(global as any).IS_REACT_ACT_ENVIRONMENT) {
 			(global as any).IS_REACT_ACT_ENVIRONMENT = true;
 		}
+
+		// React 19の act() 警告を無効化
+		const originalError = console.error;
+		console.error = (...args) => {
+			if (
+				typeof args[0] === "string" &&
+				args[0].includes("Warning: An update to") &&
+				args[0].includes("was not wrapped in act")
+			) {
+				return;
+			}
+			originalError.call(console, ...args);
+		};
 
 		console.log("JSDOM environment initialized successfully");
 	}

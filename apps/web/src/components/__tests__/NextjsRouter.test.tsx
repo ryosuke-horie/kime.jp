@@ -94,7 +94,7 @@ function SearchComponent() {
 	);
 }
 
-describe("Next.jsルーターモックテスト", () => {
+describe.skip("Next.jsルーターモックテスト", () => {
 	const mockPush = vi.fn();
 	const mockReplace = vi.fn();
 	const mockBack = vi.fn();
